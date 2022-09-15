@@ -1,0 +1,8 @@
+.swiper {
+    width: 1920px;
+    height: 520px;
+    flex-grow: 0;
+    margin: 0px 0 0;
+    object-fit: cover;
+    text-align: left;
+}
