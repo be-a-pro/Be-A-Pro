@@ -9,17 +9,11 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
-public class ProjectImage {
+public class Position {
 
-    @Id @GeneratedValue
-    @Column(name = "project_image_id")
+    @Id
+    @GeneratedValue
+    @Column(name = "position_id")
     private Long id;
 
-    private String originalName;
-
-    private String modifiedName;
-
-    private int size; // byte
-
-    private String filepath;
 }
