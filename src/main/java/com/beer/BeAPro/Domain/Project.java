@@ -44,7 +44,7 @@ public class Project extends BaseEntity {
     private Boolean isApplyPossible; // 지원 가능 여부
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ProjectPosition projectPosition; // 모집 포지션
+    private List<ProjectPosition> projectPositions = new ArrayList<>(); // 모집 포지션
 
     private int views; // 조회수
 
