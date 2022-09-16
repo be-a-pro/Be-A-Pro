@@ -14,4 +14,13 @@ public class PortfolioFile {
     @Id @GeneratedValue
     @Column(name = "portfolio_file_id")
     private Long id;
+
+    private String originalName;
+
+    private String modifiedName;
+
+    private int size; // byte
+
+    private String filepath;
+
 }
