@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class Apply {
+public class Apply extends BaseEntity {
 
     @Id
     @GeneratedValue

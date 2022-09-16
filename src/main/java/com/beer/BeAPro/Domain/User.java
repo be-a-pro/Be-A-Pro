@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-public class User {
+public class User extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "user_id")

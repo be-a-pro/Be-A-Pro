@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class ProjectMember {
+public class ProjectMember extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "project_member_id")
