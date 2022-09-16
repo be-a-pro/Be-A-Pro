@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project extends BaseEntity {
 
     @Id @GeneratedValue
@@ -26,7 +26,8 @@ public class Project extends BaseEntity {
     @JoinColumn(name = "project_image_id", unique = true)
     private ProjectImage projectImage; // 대표 이미지
 
-    private List<String> hashtags = new ArrayList<>(); // 해시태그
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProjectHashtag> projectHashtags = new ArrayList<>(); // 해시태그
 
     private String kakaoLink; // 오픈 카카오톡 링크
 
@@ -36,9 +37,9 @@ public class Project extends BaseEntity {
 
     private String progressMethod; // 진행 방식
 
-    private List<String> usedStacks = new ArrayList<>(); // 사용 프로그램 및 언어
+    private String usedStacks; // 사용 프로그램 및 언어 // 구분자 사용 "stack1, stack2, stack3, ..."
 
-    private List<String> referenceLinks = new ArrayList<>(); // 참고 링크
+    private String referenceLinks; // 참고 링크 // 3개 이하, 구분자 사용 "link1,link2,link3"
 
     private Boolean isApplyPossible; // 지원 가능 여부
 

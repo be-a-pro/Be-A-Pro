@@ -29,7 +29,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user") // *삭제시 userPositions 엔티티에서도 삭제
     private List<UserPosition> userPositions = new ArrayList<>(); // 사용자 포지션 // 2개 이하
 
-    private List<String> hashtags = new ArrayList<>(); // 해시태그
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserHashtag> userHashtags = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_image_id", unique = true)
@@ -39,7 +40,7 @@ public class User extends BaseEntity {
     @JoinColumn(name = "portfolio_file_id", unique = true)
     private PortfolioFile portfolioFile; // 포트폴리오 파일
 
-    private String portfolioLink; // 포트폴리오 링크
+    private String portfolioLinks; // 포트폴리오 링크 // 3개 이하, 구분자 사용 "link1,link2,link3"
 
     private Boolean portfolioIsPublic; // 포트폴리오 공개 여부
 
