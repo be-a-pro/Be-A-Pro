@@ -15,4 +15,12 @@ public class ProfileImage {
     @Column(name = "profile_image_id")
     private Long id;
 
+    private String originalName;
+
+    private String modifiedName;
+
+    private int size; // byte
+
+    private String filepath;
+
 }
