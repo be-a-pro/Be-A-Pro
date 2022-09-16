@@ -32,13 +32,11 @@ public class User extends BaseEntity {
     private List<String> hashtags = new ArrayList<>(); // 해시태그
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "profile_image_id")
-    @Column(unique = true) // FK
+    @JoinColumn(name = "profile_image_id", unique = true)
     private ProfileImage profileImage; // 프로필 이미지
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "portfolio_file_id")
-    @Column(unique = true) // FK
+    @JoinColumn(name = "portfolio_file_id", unique = true)
     private PortfolioFile portfolioFile; // 포트폴리오 파일
 
     private String portfolioLink; // 포트폴리오 링크

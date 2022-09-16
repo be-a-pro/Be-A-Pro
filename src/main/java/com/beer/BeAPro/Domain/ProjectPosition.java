@@ -18,8 +18,7 @@ public class ProjectPosition {
     private Project project;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position_id")
-    @Column(unique = true) // FK
+    @JoinColumn(name = "position_id", unique = true)
     private Position position;
 
     private int currentCount; // 현재 인원

@@ -17,8 +17,7 @@ public class UserPosition {
     private User user; // 사용자
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position_id")
-    @Column(unique = true) // FK
+    @JoinColumn(name = "position_id", unique = true)
     private Position position; // 사용자의 포지션
 
     @Enumerated(EnumType.STRING)

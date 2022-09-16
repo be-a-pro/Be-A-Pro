@@ -23,8 +23,7 @@ public class Project extends BaseEntity {
     private User user; // 사용자
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "project_image_id")
-    @Column(unique = true) // FK
+    @JoinColumn(name = "project_image_id", unique = true)
     private ProjectImage projectImage; // 대표 이미지
 
     private List<String> hashtags = new ArrayList<>(); // 해시태그
