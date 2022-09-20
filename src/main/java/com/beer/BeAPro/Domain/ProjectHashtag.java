@@ -13,7 +13,7 @@ public class ProjectHashtag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_hashtag_id")
+    @Column(name = "project_hashtag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
