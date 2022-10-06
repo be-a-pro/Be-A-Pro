@@ -1,5 +1,6 @@
 package com.beer.BeAPro.Domain;
 
+import com.beer.BeAPro.Dto.AuthDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,8 @@ public class User extends BaseEntity {
     private Long id;
 
     private String name;
+
+    private String password;
 
     private String mobile; // 휴대폰 번호 [00000000000]
 
@@ -50,7 +53,9 @@ public class User extends BaseEntity {
     // private String loginAPI; // 사용 로그인 API
 
     @Enumerated(EnumType.STRING)
-    private Auth auth; // 사용자 권한
+    private Role role; // 사용자 권한
+
+    private String refreshToken; // Refresh Token
 
     private Boolean marketingEmail; // 마케팅 수신 동의 여부(이메일)
 
@@ -63,5 +68,30 @@ public class User extends BaseEntity {
     private LocalDateTime toInactiveDate; // 휴면 계정 변환 예정 날짜
     
     private LocalDateTime pwModifiedDate; // 비밀번호 변경 날짜
+
+
+    // == 생성 메서드 == //
+    public static User registerUser(AuthDto.SignupDto signupDto) {
+        User user = new User();
+
+        user.email = signupDto.getEmail();
+        user.password = signupDto.getPassword();
+        user.role = Role.USER;
+
+        return user;
+    }
+
+
+    // == 비즈니스 로직 == //
+
+    // Refresh Token 저장
+    public static void saveRefreshToken(User user, String refreshToken) {
+        user.refreshToken = refreshToken;
+    }
+    
+    // Refresh Token 삭제
+    public static void deleteRefreshToken(User user) {
+        user.refreshToken = null;
+    }
 
 }
