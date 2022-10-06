@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.cardBox {
+    width: 1200px;
+    column-gap: 24px;
+    row-gap: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}

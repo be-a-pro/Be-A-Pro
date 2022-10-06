@@ -1,0 +1,57 @@
+.filterBar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filterButtonBar {
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 0;
+}
+
+.filterButton {
+    flex-grow: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    border: solid 1px #999;
+    background-color: #fff;
+    transition: 0.3s all;
+    cursor: pointer;
+    padding: 8px 24px;
+}
+
+.filterButton_selected {
+    flex-grow: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    border: solid 1px #999;
+    background-color:#231f20;
+    transition: 0.3s all;
+    padding: 8px 24px;
+}
+
+.filterSpan {
+    height: 19px;
+    flex-grow: 0;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    font-weight: 500;
+    color: #999;
+}
+
+.filterSpan_selected {
+    flex-grow: 0;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+}

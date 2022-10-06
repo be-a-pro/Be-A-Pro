@@ -1,7 +1,7 @@
 @font-face {
-  font-family: 'Pretendard-Regular';
-  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-  font-weight: 400;
+  font-family: 'Pretendard-Medium';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+  font-weight: 500;
   font-style: normal;
 }
 
@@ -16,40 +16,44 @@ html {
   letter-spacing: -0.35px;
   text-align: left;
   color: #bdbdbd;
-  font-family: 'Pretendard-Regular';
+  font-family: 'Pretendard-Medium';
 }
 
 .header {
   display: flex;
-  padding: 20px 373px 20px 300px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   background-color: #fff;
   align-items: center;
+  justify-content: center;
 }
 
 .nav {
   display: flex;
   background-color: #fff;
   align-items: center;
+  margin-top: 11px;
+  margin-bottom: 10px;
 }
 
 .header_project {
   font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.4px;
-  margin: 11px 52px 10px 72px;
+  margin-left:72px;
   color: #231f20;
 }
 
 .header_pro {
   font-size: 16px;
   font-weight: 500;
+  margin-left:52px;
   letter-spacing: -0.4px;
-  margin: 11px 52px 10px;
   color: #231f20;
 }
 
 .header_community {
-  margin: 11px 70px 10px 52px;
+  margin-left:52px;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.4px;
@@ -61,14 +65,14 @@ html {
   font-size: 16px;
   font-weight: 500;
   letter-spacing: -0.4px;
-  margin: 11px 0 10px 65px;
+  margin-left: 65px;
   color: #231f20;
 }
 
 .search_container {
   display: flex;
   align-items: center;
-  margin-left: 70px;
+  margin-left:70px;
 }
 
 .search_bar {
@@ -100,7 +104,7 @@ html {
 a {
   color: #231f20;
   text-decoration: none;
-  font-family: 'Pretendard-Regular';
+  font-family: 'Pretendard-Medium';
 }
 
 a:hover {

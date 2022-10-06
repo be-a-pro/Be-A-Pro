@@ -1,0 +1,100 @@
+{
+  "days": [
+    {
+      "id": 1,
+      "title": "사이드 프로젝트 매칭 플랫폼",
+      "leaderId": "김민지",
+      "projectImage": "./images/project/image 249.png",
+      "createdDate": "22.05.15",
+      "views": 1584,
+      "recruitStatus_1": {
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_2":{
+        "total" : 2,
+        "current" : 0
+      },
+      "recruitStatus_3":{
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_4":{
+        "total" : 1,
+        "current" : 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "사이드 프로젝트 매칭 플랫폼",
+      "leaderId": "김민지",
+      "projectImage": "./images/project/image 249.png",
+      "createdDate": "22.05.15",
+      "views": 1584,
+      "recruitStatus_1": {
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_2":{
+        "total" : 2,
+        "current" : 0
+      },
+      "recruitStatus_3":{
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_4":{
+        "total" : 1,
+        "current" : 0
+      }
+    },
+    {
+      "id": 1,
+      "title": "사이드 프로젝트 매칭 플랫폼",
+      "leaderId": "김민지",
+      "projectImage": "./images/project/image 249.png",
+      "createdDate": "22.05.15",
+      "views": 1584,
+      "recruitStatus_1": {
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_2":{
+        "total" : 2,
+        "current" : 0
+      },
+      "recruitStatus_3":{
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_4":{
+        "total" : 1,
+        "current" : 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "사이드 프로젝트 매칭 플랫폼",
+      "leaderId": "김민지",
+      "projectImage": "./images/project/image 249.png",
+      "createdDate": "22.05.15",
+      "views": 1584,
+      "recruitStatus_1": {
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_2":{
+        "total" : 2,
+        "current" : 0
+      },
+      "recruitStatus_3":{
+        "total" : 1,
+        "current" : 0
+      },
+      "recruitStatus_4":{
+        "total" : 1,
+        "current" : 0
+      }
+    }
+  ]
+}

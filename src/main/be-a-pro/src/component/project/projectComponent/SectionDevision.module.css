@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+
+span {
+    font-family: 'Pretendard-Regular';
+}
+
+.sectionDevision {
+    text-align: center;
+}
+
+.container {
+    justify-content: center;
+}
+
+.titleBar {
+    margin-top: 100px;
+}
+
+.sectionTitle {
+    flex-grow: 0;
+    margin: 0 0 4px;
+    font-family: 'Pretendard-Bold';
+    font-size: 40px;
+    letter-spacing: -1px;
+    color: #231f20;
+}
+
+.sectionContent {
+    flex-grow: 0;
+    margin: 4px 7px 0 6px;
+    font-family: 'Pretendard-Regular';
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: -0.35px;
+    color: #666;
+}
+
+.filterBar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.filterBarLocation {
+    margin: 40px 251px 20px 371.5px;
+}
+
+.viewMore {
+    width: 126px;
+    height: 19px;
+    margin: 48px 0 28px 0px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    object-fit: contain;
+    justify-content: right;
+}
+
+.viewMoreText {
+    height: 19px;
+    margin: 0 4px 0 0;
+    font-family: Pretendard;
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    color: #333;
+}

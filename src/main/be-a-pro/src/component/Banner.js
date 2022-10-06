@@ -30,14 +30,16 @@ function Banner() {
     return (
         <div className={styles.banner}>
 
-
         <Swiper
             className={styles.swiper}
             spaceBetween={50}
             slidesPerView={1}
             navigation
             pagination={{ clickable: true }}
-            autoplay={{ delay: 4000 }}
+            autoplay={{ 
+                delay: 3000,
+                disableOnInteraction: false,
+            }}
             onSlideChange={(e) => {
                 for (let i = 0; i<e.pagination.bullets.length; i++) {
                     if (e.pagination.bullets[i].classList.contains("swiper-pagination-bullet-active")) {
@@ -59,15 +61,14 @@ function Banner() {
                 <img src={banner} alt="첫번째 이미지"/>
             </SwiperSlide>
             <SwiperSlide>
-                <img src={banner} alt="첫번째 이미지"/>
+                <img src={banner} alt="두번째 이미지"/>
             </SwiperSlide>
             <SwiperSlide>
-                <img src={banner} alt="첫번째 이미지"/>
+                <img src={banner} alt="세번째 이미지"/>
             </SwiperSlide>
             <SwiperSlide>
-                <img src={banner} alt="첫번째 이미지"/>
+                <img src={banner} alt="네번째 이미지"/>
             </SwiperSlide>
-            
         </Swiper>
         </div>
     )

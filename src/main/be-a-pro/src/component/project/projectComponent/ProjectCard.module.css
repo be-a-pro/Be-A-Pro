@@ -1,0 +1,173 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+span {
+    font-family: 'Pretendard-Regular';
+}
+
+.card {
+    width: 384px;
+    height: 285px;
+    border-radius: 8px;
+    border: solid 1px #171717;
+    box-shadow: 6px 6px 0 0 #171717;
+}
+
+.cardImg {
+    margin: 0 0 9px;
+    padding: 124px 16px 12px;
+    background-repeat: no-repeat;
+    background-image: url('../../../images/project/card-img.png');
+}
+
+.profilePlace {
+    position: relative;
+    display: flex;
+}
+
+.profile {
+    width: 69px;
+    height: 24px;
+    margin: 0 157px 0 0;
+    display: flex;
+}
+
+.profileImage {
+    width: 24px;
+    height: 24px;
+    flex-grow: 0;
+    margin: 0 8px 0 0;
+}
+
+.profileName {
+    width: 37px;
+    height: 17px;
+    flex-grow: 0;
+    margin: 3px 0 4px 8px;
+    font-family: 'Pretendard-Regular';
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.calendarPlace {
+    width: 62px;
+    height: 16px;
+    margin: 4px 16px 4px 0px;
+    display: flex;
+    align-items: center;
+}
+
+.calendarImage {
+}
+
+.createTime {
+    width: 42px;
+    height: 13px;
+    flex-grow: 0;
+    margin: 1px 0 2px 4px;
+    font-family: 'Pretendard-Regular';
+    font-size: 11px;
+    color: white;
+}
+
+.viewPlace {
+    width: 48px;
+    height: 16px;
+    margin: 4px 0 4px 0px;
+    display: flex;
+    align-items: center;
+}
+
+.viewImage {
+
+}
+
+.viewNum {
+    width: 28px;
+    height: 13px;
+    flex-grow: 0;
+    margin: 1px 0 2px 4px;
+    font-family: 'Pretendard-Regular';
+    font-size: 11px;
+    color: white;
+}
+
+
+.titleBar {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.title {
+    font-family: 'Pretendard-Regular';
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: -0.4px;
+    white-space:nowrap;
+    color: #000;
+}
+
+.heartIcon {
+    margin-left: 157px;
+    cursor: pointer;
+}
+
+.positionBar {
+    margin: 6px 53px 16px 0px;
+}
+
+.positionPM {
+    flex-grow: 0;
+    font-size: 14px;
+    letter-spacing: -0.35px;
+    color: #171717;
+}
+
+.positionDevelop, .positionDesign, .positionETC {
+    flex-grow: 0;
+    font-size: 14px;
+    margin-left: 8px;
+    letter-spacing: -0.35px;
+    color: #171717;
+}
+
+.centerDot {
+    flex-grow: 0;
+    margin-left: 8px;
+}
+
+.recruitBar {
+    margin: 16px 219px 5px 0px;
+    display: flex;
+}
+
+.currentRecruit {
+    flex-grow: 0;
+    margin: 4px 0 3px 8px;
+    font-size: 14px;
+    letter-spacing: -0.35px;
+    color: #171717;
+}
+
+.recruitStatus {
+    position: relative;
+    width: 352px;
+    height: 8px;
+    margin: 5px 16px 0 0;
+    border-radius: 20px;
+    border: solid 1px #dbdbdb;
+}
+
+.currentStatus {
+    position: absolute;
+    width: 70px;
+    height: 8px;
+    border-radius: 20px;
+    background-color: #593eff;
+}
