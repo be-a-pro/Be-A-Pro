@@ -1,0 +1,130 @@
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+.profilePlace {
+    padding: 24px 19px 24px 20px;
+    flex-grow: 0;
+    box-shadow: 6px 6px 0 0 #171717;
+    border-radius: 8px;
+    border: solid 1px #231f20;
+    background-color: #fff;
+    text-align: center;
+}
+
+.imgBar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profileImages {
+    width: 92px;
+    height: 92px;
+    flex-grow: 0;
+    padding: 0.4px 0 0;
+    margin: 0 45px 12px 44px;
+    background-image: url('../../../images/project/profile-img-b.png');
+}
+
+.profileName {
+    flex-grow: 0;
+    font-family: 'Pretendard-Bold';
+    font-size: 16px;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.positionBar {
+    width: 136px;
+    height: 14px;
+    flex-grow: 0;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.position_1 {
+    flex-grow: 0;
+    font-family: 'Pretendard-Regular';
+    font-size: 12px;
+    color: #666;
+}
+
+.centerDot {
+    width: 2px;
+    height: 2px;
+    flex-grow: 0;
+    margin-left: 8px;
+    margin-right: 8px;
+    background-color: #999;
+}
+
+.position_2 {
+    flex-grow: 0;
+    font-family: 'Pretendard-Regular';
+    font-size: 12px;
+    color: #666;
+}
+
+.tagSection {
+    display: flex;
+    width: 181px;
+    height: 28px;
+    margin: 16px 0 6px;
+    justify-content: center;
+}
+
+.skillSection_1, .skillSection_2 {
+    display: flex;
+    justify-content: center;
+}
+
+.skillSection_1 {
+    width: 181px;
+    height: 28px;
+    margin: 16px 0 6px;
+}
+
+.skillSection_2 {
+    width: 109px;
+    height: 28px;
+    margin: auto;
+}
+
+.tagButton {
+    padding: 7.5px 12px;
+    flex-grow: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 0 6px 0 0;
+    border-radius: 20px;
+    border: 1.4px solid #ffb184;
+}
+
+.skillSpan {
+    flex-grow: 0;
+    font-family: 'Pretendard-Regular';
+    font-size: 11px;
+    letter-spacing: -0.28px;
+    color: #ff7827;
+}

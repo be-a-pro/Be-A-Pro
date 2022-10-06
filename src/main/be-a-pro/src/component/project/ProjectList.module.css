@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.container {
+    text-align: left;
+}
+
+.listTitle {
+    width: 1200px;
+    height: 48px;
+    margin: 100px 0px 0px 0px;
+    font-family: 'Pretendard-Bold';
+    font-size: 40px;
+    letter-spacing: -1px;
+    color: #333;
+}
+
+.titleContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.checkBoxLocation {
+    display: flex;
+    margin-left: auto;
+    gap: 40.4px;
+}
+.classifyContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.classifyBar {
+    width: 1200px;
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.checkBoxText {
+    width: 46px;
+    height: 21px;
+    margin-right: 11.6px;
+    font-family: 'Pretendard-Medium';
+    font-size: 18px;
+    letter-spacing: -0.45px;
+    color: #000;
+}
+
+.checkBoxText2 {
+    width: 96px;
+    height: 21px;
+    margin-right: 11.6px;
+    font-family: 'Pretendard-Medium';
+    font-size: 18px;
+    letter-spacing: -0.45px;
+    color: #000;
+}
+
+.checkBox:checked {
+    width: 24px;
+    height: 24px;
+    background-color: #724a26 !important;
+}
+
+.checkBoxBar {
+    display: flex;
+    align-items: center;
+}
+

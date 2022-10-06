@@ -8,12 +8,12 @@ function Header() {
         <header className={styles.header}>
             <nav className={styles.nav}>
                 <span className={styles.logo}>
-                <Link to='#'>
+                <Link to='/'>
                     <img src={logo} alt="로고 이미지"></img>
                 </Link>
                 </span>
                 <span className={styles.header_project}>
-                    <Link to='#' >PROJECT</Link>
+                    <Link to='/projectlist' >PROJECT</Link>
                 </span>
                 <span className={styles.header_pro}>
                     <Link to='#'>PRO</Link>
