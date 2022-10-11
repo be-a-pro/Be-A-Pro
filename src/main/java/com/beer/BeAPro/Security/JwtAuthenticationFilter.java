@@ -28,12 +28,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        // JWT Token 추출
-        String token = resolveToken(request);
+        // Access Token 추출
+        String accessToken = resolveToken(request);
 
         try { // 정상 토큰인지 검사
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            if (accessToken != null && jwtTokenProvider.validateTokenOnlyExpired(accessToken)) {
+                Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 log.debug("Save authentication in SecurityContextHolder.");
             }

@@ -4,6 +4,7 @@ import com.beer.BeAPro.Dto.AuthDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.Authentication;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -55,8 +56,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role; // 사용자 권한
 
-    private String refreshToken; // Refresh Token
-
     private Boolean marketingEmail; // 마케팅 수신 동의 여부(이메일)
 
     private Boolean marketingSMS; // 마케팅 수신 동의 여부(문자)
@@ -81,17 +80,5 @@ public class User extends BaseEntity {
         return user;
     }
 
-
-    // == 비즈니스 로직 == //
-
-    // Refresh Token 저장
-    public static void saveRefreshToken(User user, String refreshToken) {
-        user.refreshToken = refreshToken;
-    }
-    
-    // Refresh Token 삭제
-    public static void deleteRefreshToken(User user) {
-        user.refreshToken = null;
-    }
 
 }

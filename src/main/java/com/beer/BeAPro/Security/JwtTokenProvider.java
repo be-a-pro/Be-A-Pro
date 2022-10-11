@@ -88,20 +88,19 @@ public class JwtTokenProvider implements InitializingBean {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token");
+        } catch (ExpiredJwtException e) { // Access Token
             return e.getClaims();
         }
-    }
-
-    public String getEmail(String token) {
-        return getClaims(token).get(EMAIL_KEY).toString();
     }
 
     public Authentication getAuthentication(String token) {
         String email = getClaims(token).get(EMAIL_KEY).toString();
         UserDetailsImpl userDetailsImpl = userDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetailsImpl, "", userDetailsImpl.getAuthorities());
+    }
+
+    public long getTokenExpirationTime(String token) {
+        return getClaims(token).getExpiration().getTime();
     }
 
 
@@ -134,11 +133,9 @@ public class JwtTokenProvider implements InitializingBean {
     public boolean validateTokenOnlyExpired(String token) {
         try {
             // if(로그아웃) return false;
-            Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(signingKey)
-                    .build()
-                    .parseClaimsJws(token);
-            return claims.getBody().getExpiration().before(new Date());
+            return getClaims(token)
+                    .getExpiration()
+                    .before(new Date());
         } catch(ExpiredJwtException e) {
             return true;
         } catch (Exception e) {
