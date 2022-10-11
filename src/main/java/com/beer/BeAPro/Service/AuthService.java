@@ -4,17 +4,17 @@ import com.beer.BeAPro.Dto.AuthDto;
 import com.beer.BeAPro.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -106,7 +106,26 @@ public class AuthService {
     }
 
     // 로그아웃
-    public void logout(String requestAccessToken, String requestRefreshToken) {
+    @Transactional
+    public void logout(String requestAccessTokenInHeader) {
+        String requestAccessToken = resolveToken(requestAccessTokenInHeader);
+        if (!jwtTokenProvider.validateToken(requestAccessToken)) {
+            throw new RequestRejectedException("Invalid request.");
+        }
+
+        Authentication authentication = jwtTokenProvider.getAuthentication(requestAccessToken);
+
+        // Redis에 저장되어 있는 RT 삭제
+        String refreshTokenInRedis = redisService.getValues("RT:" + authentication.getName());
+        if (refreshTokenInRedis != null) {
+            redisService.deleteValues("RT:" + authentication.getName());
+        }
+
+        // Redis에 로그아웃 처리한 AT 저장
+        long expiration = jwtTokenProvider.getTokenExpirationTime(requestAccessToken) - new Date().getTime();
+        redisService.setValuesWithTimeout(requestAccessToken,
+                "logout",
+                expiration);
     }
 
 }

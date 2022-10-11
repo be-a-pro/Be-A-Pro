@@ -4,7 +4,6 @@ import com.beer.BeAPro.Dto.AuthDto;
 import com.beer.BeAPro.Service.AuthService;
 import com.beer.BeAPro.Service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +18,7 @@ public class AuthApiController {
     private final AuthService authService;
     private final UserService userService;
 
-    @Value("${be-a-pro.cookie-expiration}")
-    public final long COOKIE_EXPIRATION;
+    private final long COOKIE_EXPIRATION = 7776000;
 
     // 회원가입
     @PostMapping("/signup")
@@ -51,7 +49,7 @@ public class AuthApiController {
 
     // 토큰 재발급
     @PostMapping("/reissue")
-    public ResponseEntity<?> reissue(@CookieValue(name = "refresh-token", required = false) String requestRefreshToken,
+    public ResponseEntity<?> reissue(@CookieValue(name = "refresh-token") String requestRefreshToken,
                                      @RequestHeader("Authorization") String requestAccessToken) {
         AuthDto.TokenDto reissuedTokenDto = authService.reissue(requestAccessToken, requestRefreshToken);
 
@@ -82,4 +80,19 @@ public class AuthApiController {
         }
     }
 
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@CookieValue(name = "refresh-token") String requestRefreshToken,
+                                    @RequestHeader("Authorization") String requestAccessToken) {
+        authService.logout(requestAccessToken);
+        ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
+                .maxAge(0)
+                .path("/")
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .build();
+    }
 }
