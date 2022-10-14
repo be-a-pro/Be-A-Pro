@@ -5,18 +5,29 @@ import { ReactComponent as Eye } from '../../../images/icon/eye.svg';
 import { ReactComponent as Heart } from '../../../images/icon/heart.svg';
 import { ReactComponent as HeartFilled } from '../../../images/icon/heart-filled.svg';
 import { ReactComponent as People } from '../../../images/icon/people.svg';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import $ from 'jquery';
+import jquery from 'jquery';
 
 function ProejctCard() {
 
     const [heartState, setState] = useState(false);
+    const heart = useRef();
+
+    useEffect(() => {
+        /* 여기서 링크에 관련된 부분을 작업해야해요! */
+    }, []);
 
     const actionLike = (e) => {
         setState(!heartState);
     }
 
     return (
+        <>
             <div className={styles.card}>
+                {(!heartState) ? <Heart ref={heart} onClick={actionLike} className={styles.heartIcon}/> : <HeartFilled onClick={actionLike} className={styles.heartIcon}/>}
+                <Link to='/projectdetail'>
                 <div className={styles.cardImg}>
                     <div className={styles.profilePlace}>
                         <div className={styles.profile}>
@@ -34,7 +45,6 @@ function ProejctCard() {
                     </div>
                     <div className={styles.titleBar}>
                         <span className={styles.title}>사이드 프로젝트 매칭 플랫폼</span>
-                        {(!heartState) ? <Heart onClick={actionLike} className={styles.heartIcon}/> : <HeartFilled onClick={actionLike} className={styles.heartIcon}/>}
                     </div>
                     <div className={styles.positionBar}>
                         <span className={styles.positionPM}>기획(0/1)</span>
@@ -53,7 +63,9 @@ function ProejctCard() {
                         <div className={styles.currentStatus}></div>
                     </div>
                 </div>
+                </Link>
             </div>
+            </>
     )
 }
 

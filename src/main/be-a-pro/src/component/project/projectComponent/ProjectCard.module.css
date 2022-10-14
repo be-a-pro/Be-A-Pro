@@ -3,7 +3,25 @@
     src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
     font-weight: 400;
     font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
 }
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+  }
+
 
 span {
     font-family: 'Pretendard-Regular';
@@ -18,6 +36,7 @@ span {
 }
 
 .cardImg {
+    z-index: -1;
     margin: 0 0 9px;
     padding: 124px 16px 12px;
     background-repeat: no-repeat;
@@ -105,7 +124,7 @@ span {
 }
 
 .title {
-    font-family: 'Pretendard-Regular';
+    font-family: 'Pretendard-Bold';
     font-size: 16px;
     font-weight: bold;
     letter-spacing: -0.4px;
@@ -114,8 +133,20 @@ span {
 }
 
 .heartIcon {
+    z-index: 30;
+    margin-top: 168.5px;
+    margin-left: 344px;
+    cursor: pointer;
+    position: absolute;
+}
+
+.heartIcon_t {
     margin-left: 157px;
     cursor: pointer;
+}
+
+.heartIcon:hover {
+    opacity: 80%;
 }
 
 .positionBar {
