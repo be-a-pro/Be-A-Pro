@@ -1,0 +1,508 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+pre {
+    margin-top: 24px;
+    white-space: pre-wrap;
+    overflow: auto;
+    word-break: break-all;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    line-height: 140%;
+    text-align: left;
+    color: #333;
+}
+
+.containerOfPage {
+    display: flex;
+    justify-content: center;
+    padding-left: 360px;
+    padding-right: 360px;
+    padding-top: 100px;
+}
+
+.containerOfCenter {
+}
+
+.containerOfView {
+    display: flex;
+    align-items: center;
+}
+
+.containerOfCalendar {
+    display: flex;
+    align-items: center;
+}
+
+.imageOfView {
+    width: 24px;
+    height: 24px;
+    flex-grow: 0;
+    margin: 0 7px 0 24px;
+    object-fit: contain;
+}
+
+.testOfView {
+    flex-grow: 0;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    color: #000;
+}
+
+
+
+.imageOfView g {
+    fill: #000;
+}
+
+.imageOfCalendar {
+    width: 24px;
+    height: 24px;
+    flex-grow: 0;
+    margin: 0 8px 0 0;
+    object-fit: contain;
+}
+
+.imageOfCalendar g > path:nth-child(1) {   
+    fill: black;
+}
+
+.imageOfCalendar g > path:nth-child(2) {   
+    fill: white;
+}
+
+.textOfCalendar {
+    font-family: 'Pretendard-Medium';
+    flex-grow: 0;
+    letter-spacing: -0.4px;
+}
+
+.detailOfBoard {
+    margin-left: auto;
+    display: flex;
+}
+
+.sectionOfInfo {
+    margin-top: 40px;
+    display: flex;
+}
+
+.infoOfProject {
+    /* 여기를 채워야해요! */
+    display: flex;
+    width: 536px;
+}
+
+.infoOfUser {
+    display: flex;
+    align-items: center;
+}
+
+.imageOfUser {
+    width: 32px;
+    height: 32px;
+    flex-grow: 0;
+    margin: 0 12px 0 0;
+}
+
+.nameOfUser {
+    flex-grow: 0;
+    font-family: 'Pretendard-Medium';
+    font-size: 24px;
+    letter-spacing: -0.6px;
+    text-align: left;
+    color: #000;
+}
+
+.containerOfTitle {
+    text-align: center;
+}
+
+.title {
+    font-family: 'Pretendard-Bold';
+    font-size: 40px;
+    letter-spacing: -1px;
+    color: #000;
+}
+
+.containerOfProject {
+    text-align: left;
+    margin-left: 24px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.containerOfPosition {
+    display: flex;
+    flex-direction: row;
+    flex-wrap : wrap;
+    row-gap: 8px;
+}
+
+
+.containerOfPosition > div:nth-child(odd) {
+    margin-right: auto;
+}
+
+.containerOfPosition > div:nth-child(even) {
+    margin-left: auto;
+}
+
+
+.infoOfPosition {
+    display: flex;
+    width: 490px;
+}
+
+.textOfPosition {
+    margin: 32px 10px 16px 0px;
+    font-family: 'Pretendard-Bold';
+    font-size: 20px;
+    color: #333;
+}
+
+.textOfTag {
+    margin: 32px 28px 16px 0px;
+    font-family: 'Pretendard-Bold';
+    font-size: 20px;
+    color: #333;
+}
+
+.containerOfTag {
+    width: 500px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap : wrap;
+    gap: 8px;
+}
+
+.containerOfButton {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    margin-top: 40px;
+}
+
+.buttonOfLike {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    border: solid 1.5px #ff7827;
+    background-color: white;
+}
+
+.iconOfLike {
+    width: 24px;
+    height: 24px;
+}
+
+.iconOfLike_selected path {
+    fill: #FF7827;
+}
+
+.buttonOfApply {
+    width: 236px;
+    height: 48px;
+    border-radius: 8px;
+    background-color: #ff7827;
+    border: none;
+    font-family: 'Pretendard-Bold';
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    color: #fff;
+}
+
+.buttonOfCall {
+    width: 236px;
+    height: 48px;
+    border-radius: 8px;
+    border: solid 1.5px #ff7827;
+    background-color: #fff;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.4px;
+    color: #ff7827;
+}
+
+.navOfBoard {
+    display: flex;
+    margin-top: 60px;
+}
+
+.textOfNav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 48px;
+    flex-grow: 0;
+    background-color: #fff;
+    font-size: 16px;
+    font-family: 'Pretendard-Bold';
+    letter-spacing: -0.4px;
+    color: #bdbdbd;
+}
+
+.textOfNav_Line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 48px;
+    line-height: 10px;
+    flex-grow: 0;
+    background-color: #fff;
+    font-size: 16px;
+    font-family: 'Pretendard-Bold';
+    letter-spacing: -0.4px;
+    color: #ff7827;
+    border-bottom: 4px solid #ff7827;
+    transform: scaleX(1);
+    transition: transform 250ms ease-in-out;
+}
+
+.menuOfCalendar {
+    position: relative;
+    flex-grow: 0;
+    margin: 0 0 24px;
+    padding: 24px 155px 24px 24px;
+    background-color: #fafafd;
+    display: flex;
+    align-items: center;
+}
+
+.textOfCalendarM {
+    flex-grow: 0;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    text-align: left;
+    color: #333;
+}
+
+.containerOfMenu {
+    display: relative;
+    height: 400px;
+}
+
+.contentsOfProject {
+    display: flex;
+    width: 1200px;
+}
+
+.containerOfContent {
+    margin-top: 48px;
+    width: 776px;
+}
+
+.quickmenu {
+    position: absolute;
+    top: 912px;
+    margin-left: 60px;
+}
+
+.menuOfContents {
+    width: 360px;
+    flex-grow: 0;
+    margin: 48px 362px 8px 16px;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.menuOfPosition {
+    position: relative;
+    width: 300px;
+    margin-top: 35px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 44px;
+    row-gap: 27px;
+    margin-left: 24px;
+}
+
+.splitLine {
+    width: 312px;
+    height: 1px;
+    flex-grow: 0;
+    margin: 31px 24px 24px 24px;
+    border: none;
+    background-color: #efefef;
+}
+
+.splitLine_twice {
+    width: 312px;
+    height: 1px;
+    flex-grow: 0;
+    margin: 24px 24px 24px 24px;
+    border: none;
+    background-color: #efefef;
+}
+
+.menuOfTag {
+    width: 312px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: 24px;
+    column-gap: 8px;
+    row-gap: 8px;
+}
+
+.buttonOfApply_M {
+    width: 312px;
+    height: 48px;
+    flex-grow: 0;
+    margin: 0px 24px 24px 24px;
+    border-radius: 8px;
+    background-color: #ff7827;
+    font-family: 'Pretendard-Bold';
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    text-align: center;
+    color: #fff;
+    border: none;
+}
+
+.buttonOfCall_M {
+    width: 312px;
+    height: 48px;
+    flex-grow: 0;
+    margin: 0px 24px 6px 24px;
+    border-radius: 8px;
+    border: solid 1px #ff7827;
+    background-color: #fff;
+    font-family: 'Pretendard-Medium';
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    text-align: center;
+    color: #ff7827;
+}
+
+/* 여기부터 상세 내용이 들어가는 CSS예요! */
+
+.detailOfProject {
+    font-family: 'Pretendard-Bold';
+    font-size: 28px;
+    letter-spacing: -0.7px;
+    text-align: left;
+    color: #333;
+}
+
+.detailOfContents {
+    font-family: 'Pretendard-Bold';
+    font-size: 24px;
+    letter-spacing: -0.7px;
+    text-align: left;
+    color: #333;
+}
+
+.detailOfTag {
+    margin-top: 24px;
+    width: 700px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap : wrap;
+    gap: 8px;
+}
+
+.articleOfDetail {
+    margin-top: 60px;
+}
+
+.lineOfSplit {
+    width: 776px;
+    height: 1px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+    background-color: #efefef;
+    border: none;
+}
+
+.urlOfGoogleForm {
+    font-family: 'Pretendard-Medium';
+    font-size: 14px;
+    text-align: left;
+    margin-top: 24px;
+    color: #000;
+}
+
+.boxOfGoogleForm {
+    width: 776px;
+    height: 110px;
+    flex-grow: 0;
+    padding: 0 0 0 16px;
+    border: solid 1px #b0b0b0;
+}
+
+.boxOfUser {
+    display: flex;
+    align-items: center;
+    margin-top: 14px;
+}
+
+.boxOfImage {
+    position: absolute;
+    width: 210px;
+    height: 110px;
+    margin-left: 567px;
+    flex-grow: 0;
+    background-image: linear-gradient(to top, #000 66%, rgba(0, 0, 0, 0) 0%);
+    background-color: black;
+}
+
+.boxOfLink {
+    margin-left: 8px;
+    width: 500px;
+    font-family: 'Pretendard-Medium';
+    font-size: 12px;
+    text-align: left;
+    color: #000;
+}
+
+.boxOfContents {
+    margin-top: 16px;
+}
+
+.boxTitle {
+    font-family: 'Pretendard-Medium';
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    color: #000;
+}
+
+.boxContent {
+    margin-top: 7px;
+    font-family: 'Pretendard-Medium';
+    font-size: 12px;
+    text-align: left;
+    color: #000;
+}

@@ -9,6 +9,7 @@ import Index from './component/Index';
 import ProjectList from './component/project/ProjectList';
 import Header from './component/Header';
 import ScrollToTop from './hooks/ScrollToTop';
+import ProejctDetail from './component/project/ProjectDetail';
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path='/' element={<Index/>}></Route> , {/* 기존 리액트 시작 화면에서 메인 라우터로 변경 */}
         <Route path='/projectList' element={<ProjectList/>}></Route> , {/* 프로젝트 리스트 라우터 */}
         <Route path='/projectWrite' element={<ProjectWrite/>}></Route> , {/* 프로젝트 작성 라우터 */}
+        <Route path='/projectDetail' element={<ProejctDetail/>}></Route>
       </Routes>
       </div>
     </BrowserRouter>

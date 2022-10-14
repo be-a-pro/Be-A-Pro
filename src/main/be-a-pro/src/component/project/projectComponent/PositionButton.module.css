@@ -1,0 +1,62 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.containerOfPosition {
+    /* pass */
+}
+
+.buttonOfPosition {
+    display: flex;
+    width: 128px;
+    height: 40px;
+    flex-grow: 0;
+    margin: 0 24px 0 0;
+    border-radius: 8px;
+    border: solid 1px #7d69ff;
+    background-color: #fff;
+    align-items: center;
+    justify-content: center;
+}
+
+.infoOfPosition {
+    display: flex;
+    align-items: center;
+}
+
+.infoOfPosition span {
+    font-family: 'Pretendard-Bold';
+}
+
+.infoOfPosition {
+    flex-grow: 0;
+    letter-spacing: -0.4px;
+    font-size: 16px;
+}
+
+.textOfButton {
+    flex-grow: 0;
+    font-size: 14px;
+    letter-spacing: -0.35px;
+    color: #4834d9;
+}
