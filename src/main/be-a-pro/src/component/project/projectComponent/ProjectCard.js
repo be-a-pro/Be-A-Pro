@@ -15,9 +15,11 @@ function ProejctCard() {
     const [heartState, setState] = useState(false);
     const heart = useRef();
 
+    /*
     useEffect(() => {
-        /* 여기서 링크에 관련된 부분을 작업해야해요! */
+         여기서 링크에 관련된 부분을 작업해야해요! 
     }, []);
+    */
 
     const actionLike = (e) => {
         setState(!heartState);
