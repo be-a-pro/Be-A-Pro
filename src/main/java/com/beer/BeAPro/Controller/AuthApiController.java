@@ -5,6 +5,7 @@ import com.beer.BeAPro.Service.AuthService;
 import com.beer.BeAPro.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,13 +18,17 @@ public class AuthApiController {
 
     private final AuthService authService;
     private final UserService userService;
+    private final BCryptPasswordEncoder encoder;
 
     private final long COOKIE_EXPIRATION = 7776000;
 
     // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody @Valid AuthDto.SignupDto signupDto) {
-        Long userId = userService.registerUser(signupDto);
+        String encodedPassword = encoder.encode(signupDto.getPassword());
+        AuthDto.SignupDto newSignupDto = AuthDto.SignupDto.encodePassword(signupDto, encodedPassword);
+
+        userService.registerUser(newSignupDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
