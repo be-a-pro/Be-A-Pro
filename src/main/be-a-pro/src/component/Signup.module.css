@@ -1,0 +1,121 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.centerLocation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.containerOfSignup {
+    display: flex;
+    justify-content: center;
+    border: none;
+    width: 720px;
+    height: 640px;
+    flex-grow: 0;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.contentOfSignup {
+    margin-top: 143px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.logoOfSignup {
+    width: auto;
+    height: 40px;
+}
+
+.iconOfQuit {
+    position: absolute;
+    margin-left: 677.4px;
+    margin-top: 24px;
+    margin-right: 24px;
+    cursor: pointer;
+}
+
+.textOfSignup {
+    flex-grow: 0;
+    font-family: 'Pretendard-Medium';
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    color: #231f20;
+    margin-top: 48.1px;
+}
+
+.kakaoOfSignup {
+    width: 593px;
+    height: 61px;
+    margin-top: 143px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    border-radius: 7px;
+    background-color: #fee500;
+}
+
+.naverOfSignup {
+    width: 593px;
+    height: 61px;
+    display: flex;
+    align-items: center;
+    border-radius: 7px;
+    background-color: #03c75a;
+    font-size: 18px;
+}
+
+.textOfNaver {
+    width: 100%;
+    font-family: 'Pretendard-Bold';
+    display: flex;
+    color: white;
+    font-size: 18px;
+    justify-content: center;
+    text-align: center;
+}
+
+.textOfKakao {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Pretendard-Bold';
+    font-size: 18px;
+    color: #000;
+}
+
+.logoOfNaver {
+    position: absolute;
+    margin-left: 29px;
+}
+
+.logoOfKakao {
+    position: absolute;
+    margin-left: 27px;
+}

@@ -1,29 +1,32 @@
-
 import axios from "axios";
 
 export default function UseOpenGraph() {
+  async function onClickOpenGraph () {
 
-    function test() {
-        axios.get('/search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%E3%85%8D%E3%85%87%E3%84%B4%E3%85%81%E3%85%8D%E3%84%B4%E3%85%81')
-             .then(data => {
-               console.log(data.data)
-             })
-      }
-
-  const onClickOpenGraph = async () => {
-
-    const result = await axios.get("/search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%E3%85%8D%E3%85%87%E3%84%B4%E3%85%81%E3%85%8D%E3%84%B4%E3%85%81");
-    console.log(result);    
+    // 네이버는 테스트를 완료했어요!
     /*
     console.log(
       result.data.split("<meta").filter((el: string) => el.includes("og:title")) // 요런식으로 끄내면 된다잉
-    );
-    */
+    ); */
+    try {
+
+      const result = await axios.get("/?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%ED%85%8C%EC%8A%A4%ED%8A%B8");
+      console.log(result.data);
+
+      const resultOfWeb = await axios.get("/klmhyeonwoo/H4VEBEAUTY_BRANDING_PAGE");
+      console.log(resultOfWeb);
+  
+      const resultOfGoogle = await axios.get("/forms/d/1BjxWWSKOcco8-oTSQJe4KyU9JBjKTomyvclZgTjsZs8/edit?pli=1");
+      console.log(resultOfGoogle);
+    }
+    catch {
+      console.log('error!');
+    }
   };
+
   return (
     <div>
       <h1>사이트 미리보기 연습</h1>
-      <button onClick={test}>미리보기 실행</button>
       <button onClick={onClickOpenGraph}>미리보기 실행</button>
     </div>
   );

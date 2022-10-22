@@ -58,16 +58,16 @@ function Banner() {
             >
 
             <SwiperSlide>
-                <img src={banner} alt="첫번째 이미지"/>
+                <img src={banner} className={styles.imageOfBanner} alt="첫번째 이미지"/>
             </SwiperSlide>
             <SwiperSlide>
-                <img src={banner} alt="두번째 이미지"/>
+                <img src={banner} className={styles.imageOfBanner} alt="두번째 이미지"/>
             </SwiperSlide>
             <SwiperSlide>
-                <img src={banner} alt="세번째 이미지"/>
+                <img src={banner} className={styles.imageOfBanner} alt="세번째 이미지"/>
             </SwiperSlide>
             <SwiperSlide>
-                <img src={banner} alt="네번째 이미지"/>
+                <img src={banner} className={styles.imageOfBanner} alt="네번째 이미지"/>
             </SwiperSlide>
         </Swiper>
         </div>

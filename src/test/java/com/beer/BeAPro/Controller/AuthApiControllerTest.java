@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class AuthApiControllerTest extends BaseTests {
 
@@ -40,7 +41,6 @@ class AuthApiControllerTest extends BaseTests {
                 .modules(new JavaTimeModule())
                 .build();
     }
-
     @Test
     @Transactional
     public void 회원가입_로그인_재발급_로그아웃() throws Exception {
@@ -89,7 +89,7 @@ class AuthApiControllerTest extends BaseTests {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setMaxAge(60);
-        
+
         // 재발급
         mockMvc.perform(post(authControllerUrl+"/reissue")
                         .header("Authorization", "Bearer " + accessToken)

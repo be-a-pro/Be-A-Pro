@@ -1,10 +1,10 @@
 import styles from './ProjectCard.module.css';
 import profileImages from '../../../images/project/profile-img.png';
-import { ReactComponent as Calendar } from '../../../images/icon/calendar.svg';
-import { ReactComponent as Eye } from '../../../images/icon/eye.svg';
-import { ReactComponent as Heart } from '../../../images/icon/heart.svg';
-import { ReactComponent as HeartFilled } from '../../../images/icon/heart-filled.svg';
-import { ReactComponent as People } from '../../../images/icon/people.svg';
+import { ReactComponent as Calendar } from '../../../images/icons/calendar.svg';
+import { ReactComponent as Eye } from '../../../images/icons/eye.svg';
+import { ReactComponent as Heart } from '../../../images/icons/heart.svg';
+import { ReactComponent as HeartFilled } from '../../../images/icons/heart-filled.svg';
+import { ReactComponent as People } from '../../../images/icons/people.svg';
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import $ from 'jquery';

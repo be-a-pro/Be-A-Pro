@@ -2,10 +2,38 @@ import styles from './Header.module.css';
 import logo from '../images/be-a-pro-b.svg';
 import search from '../images/search-icon.svg';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import $ from 'jquery';
+import jquery from 'jquery';
+import { useRef } from 'react';
+import Signup from './Signup';
 
 function Header() {
+
+    const modal = useRef(null);
+    const [state, setState] = useState(false);
+
+    function checkSignUp() {
+        setState(true);
+    }
+
+    useEffect(() => {
+        if (state) {
+            modal.current.style.display = 'block';
+            document.body.style.overflow = "hidden";
+        } else {
+            modal.current.style.display = 'none';
+            document.body.style.overflow = "auto";
+        }
+    }, [state])
+
     return (
         <header className={styles.header}>
+            {/* 여기에 모달창이 삽입될거예요 :-) */}
+            <div className={styles.modal} ref={modal}>
+                <Signup state={state} setState={setState}/>
+            </div>
+
             <nav className={styles.nav}>
                 <span className={styles.logo}>
                 <Link to='/'>
@@ -26,7 +54,7 @@ function Header() {
                     <img src={search} className={styles.search_icon} alt="검색 아이콘"/>
                 </div>
                 <span className={styles.header_login}>
-                    <Link to='#' >LOGIN</Link>
+                    <Link to='#' onClick={checkSignUp}>LOGIN</Link>
                 </span>
             </nav>
         </header>
