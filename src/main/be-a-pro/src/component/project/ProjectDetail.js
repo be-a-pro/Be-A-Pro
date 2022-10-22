@@ -3,9 +3,9 @@ import styles from './ProjectDetail.module.css';
 import imageOfProject from '../../images/project/imageOfProject.png';
 import imageOfUser from '../../images/project/profile-img-b.png';
 import { Link } from 'react-router-dom';
-import { ReactComponent as Calendar } from '../../images/icon/calendar.svg';
-import { ReactComponent as Eye } from '../../images/icon/eye.svg';
-import { ReactComponent as Heart} from '../../images/icon/heart.svg';
+import { ReactComponent as Calendar } from '../../images/icons/calendar.svg';
+import { ReactComponent as Eye } from '../../images/icons/eye.svg';
+import { ReactComponent as Heart} from '../../images/icons/heart.svg';
 import profile from '../../images/project/profile-img.png';
 import PostionButton from "./projectComponent/PositionButton";
 import HashTag from "./projectComponent/HashTag";
@@ -192,6 +192,7 @@ export default function ProejctDetail() {
                                 </div>
                             </div>
                         </a>
+                        <UseOpenGraph/>
                     </article>
                 </div>
 

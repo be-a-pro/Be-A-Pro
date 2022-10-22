@@ -5,9 +5,7 @@ import styles from "./Index.module.css";
 import { useEffect, useRef, useState } from "react";
 import { Link } from 'react-router-dom'; 
 import SectionDevision from "./project/projectComponent/SectionDevision";
-import { ReactComponent as Arrow } from '../images/icon/arrow.svg';
 import Footer from "./Footer";
-import FilterBar from "./project/projectComponent/FilterBar";
 import ProCardSlider from "./project/projectComponent/ProCardSlider";
 import GridSection from "./project/projectComponent/GridSection";
 

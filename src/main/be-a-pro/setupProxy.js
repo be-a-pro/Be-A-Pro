@@ -2,12 +2,10 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
   app.use(
-    createProxyMiddleware('/naver', {
-      target: 'https://search.naver.com',
-      pathRewrite: {
-        '^/naver':''
-      },
-      changeOrigin: true
+    '/api',
+    createProxyMiddleware({
+      target: process.env.REACT_APP_PROXY_MIDDLEWARE_TARGET,
+      changeOrigin: true,
     })
   )
 };

@@ -10,21 +10,25 @@ import ProjectList from './component/project/ProjectList';
 import Header from './component/Header';
 import ScrollToTop from './hooks/ScrollToTop';
 import ProejctDetail from './component/project/ProjectDetail';
+import Signup from './component/Signup';
+import { useRef } from 'react';
+import $ from 'jquery';
+import jquery from 'jquery';
 
 function App() {
 
   return (
-
     <BrowserRouter>
-      <div className="App"> 
-      <ScrollToTop/> {/* 새로고침 시, 최상단으로 스크롤 이동하는 커스텀 컴포넌트 */}
+      <div className="App">
       <Header/> {/* 공통 컴포넌트인 HEADER 컴포넌트 */}
+      <ScrollToTop/> {/* 새로고침 시, 최상단으로 스크롤 이동하는 커스텀 컴포넌트 */}
       <Routes>
         {/* <Route path='/' element={<Main/>}></Route> ,  기존 리액트 시작 화면 */}
         <Route path='/' element={<Index/>}></Route> , {/* 기존 리액트 시작 화면에서 메인 라우터로 변경 */}
         <Route path='/projectList' element={<ProjectList/>}></Route> , {/* 프로젝트 리스트 라우터 */}
         <Route path='/projectWrite' element={<ProjectWrite/>}></Route> , {/* 프로젝트 작성 라우터 */}
         <Route path='/projectDetail' element={<ProejctDetail/>}></Route>
+        <Route path='/Signup' element={<Signup/>}></Route>
       </Routes>
       </div>
     </BrowserRouter>

@@ -1,5 +1,5 @@
 import styles from './SectionDevision.module.css';
-import { ReactComponent as Arrow } from '../../../images/icon/arrow.svg';
+import { ReactComponent as Arrow } from '../../../images/icons/arrow.svg';
 import ProCard from './ProCard';
 import ProCardSlider from './ProCardSlider';
 import FilterBar from './FilterBar';

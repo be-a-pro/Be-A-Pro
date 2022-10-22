@@ -7,3 +7,4 @@
 - react-router-dom (npm install react-router-dom)
 - sass (npm install --save sass)
 - swiper (npm install --save swiper)
+- jquery (npm install jquery)
