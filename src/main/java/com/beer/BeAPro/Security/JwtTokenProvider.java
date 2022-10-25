@@ -104,7 +104,11 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     public long getTokenExpirationTime(String token) {
-        return getClaims(token).getExpiration().getTime();
+        try {
+            return getClaims(token).getExpiration().getTime();
+        }catch (MalformedJwtException e) { // OAuth2.0 토큰일 경우
+            return accessTokenValidityInMilliseconds;
+        }
     }
 
 

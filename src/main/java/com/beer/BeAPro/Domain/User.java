@@ -1,17 +1,17 @@
 package com.beer.BeAPro.Domain;
 
 import com.beer.BeAPro.Dto.AuthDto;
+import com.beer.BeAPro.Dto.OAuth2NaverUserDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.Authentication;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -69,6 +69,15 @@ public class User extends BaseEntity {
     private LocalDateTime pwModifiedDate; // 비밀번호 변경 날짜
 
 
+    // ===== OAuth2.0 ===== //
+    @Enumerated(EnumType.STRING)
+    private OAuthType oAuthType; // 회원 가입할 때 사용한 인증 서버
+
+    private String naverId;
+    private LocalDateTime naverConnectedDate; // 네이버 연동 날짜
+    private LocalDateTime naverDisconnectedDate; // 네이버 연동 해제 날짜
+
+
     // == 생성 메서드 == //
     public static User registerUser(AuthDto.SignupDto signupDto) {
         User user = new User();
@@ -80,5 +89,28 @@ public class User extends BaseEntity {
         return user;
     }
 
+    public static User registerUserByNaver(OAuth2NaverUserDto oAuth2NaverUserDto) {
+        User user = new User();
+
+        user.naverId = oAuth2NaverUserDto.getNaverId();
+        user.email = oAuth2NaverUserDto.getEmail();
+        user.mobile = oAuth2NaverUserDto.getMobile();
+        user.name = oAuth2NaverUserDto.getName();
+        user.birthday = oAuth2NaverUserDto.getBirthday();
+        user.role = Role.USER;
+        user.oAuthType = OAuthType.NAVER;
+
+        return user;
+    }
+
+    public void connectNaver(String naverId) {
+        this.naverId = naverId;
+        this.naverConnectedDate = LocalDateTime.now();
+    }
+
+    public void disconnectNaver() {
+        this.naverId = null;
+        this.naverDisconnectedDate = LocalDateTime.now();
+    }
 
 }

@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -136,4 +138,20 @@ public class AuthService {
                 expiration);
     }
 
+
+    // === 네이버 ===
+
+    public String generateState() {
+        SecureRandom random = new SecureRandom();
+        return new BigInteger(130, random).toString(32);
+    }
+
+    @Transactional
+    public void saveState(String state) {
+        redisService.setValuesWithTimeout(state, "state", 180000); // 3분
+    }
+
+    public boolean existsState(String state) {
+        return redisService.getValues(state) != null;
+    }
 }
