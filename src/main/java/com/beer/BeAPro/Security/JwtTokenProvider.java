@@ -1,6 +1,7 @@
 package com.beer.BeAPro.Security;
 
 import com.beer.BeAPro.Dto.AuthDto;
+import com.beer.BeAPro.Service.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -22,6 +23,7 @@ import java.util.Date;
 public class JwtTokenProvider implements InitializingBean {
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final RedisService redisService;
 
     private static final String AUTHORITIES_KEY = "role";
     private static final String EMAIL_KEY = "email";
@@ -35,10 +37,12 @@ public class JwtTokenProvider implements InitializingBean {
 
     public JwtTokenProvider(
             UserDetailsServiceImpl userDetailsService,
+            RedisService redisService,
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidityInMilliseconds,
             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidityInMilliseconds) {
         this.userDetailsService = userDetailsService;
+        this.redisService = redisService;
         this.secretKey = secretKey;
         // seconds -> milliseconds
         this.accessTokenValidityInMilliseconds = accessTokenValidityInMilliseconds * 1000;
@@ -106,13 +110,15 @@ public class JwtTokenProvider implements InitializingBean {
 
     // == 토큰 검증 == //
 
-    public boolean validateToken(String token){
+    public boolean validateRefreshToken(String refreshToken){
         try {
+            if (redisService.getValues(refreshToken).equals("delete")) { // 회원 탈퇴했을 경우
+                return false;
+            }
             Jwts.parserBuilder()
                     .setSigningKey(signingKey)
                     .build()
-                    .parseClaimsJws(token);
-            // if (탈퇴)
+                    .parseClaimsJws(refreshToken);
             return true;
         } catch (SignatureException e) {
             log.error("Invalid JWT signature.");
@@ -130,10 +136,12 @@ public class JwtTokenProvider implements InitializingBean {
         return false;
     }
 
-    public boolean validateTokenOnlyExpired(String token) {
+    public boolean validateAccessTokenOnlyExpired(String accessToken) {
         try {
-            // if(로그아웃) return false;
-            return getClaims(token)
+            if (redisService.getValues(accessToken).equals("logout")) { // 로그아웃 했을 경우
+                return false;
+            }
+            return getClaims(accessToken)
                     .getExpiration()
                     .before(new Date());
         } catch(ExpiredJwtException e) {
