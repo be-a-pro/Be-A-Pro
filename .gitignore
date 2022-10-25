@@ -343,3 +343,4 @@ yarn-error.log*
 ## My .gitignore ##
 application.yml
 application-security.yml
+application-oauth.yml

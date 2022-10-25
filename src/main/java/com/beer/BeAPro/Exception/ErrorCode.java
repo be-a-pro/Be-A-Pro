@@ -11,8 +11,8 @@ public enum ErrorCode {
     /*
      * 400 BAD_REQUEST: 잘못된 요청
      */
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, "Invalid request."),
-    INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid parameter included."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "Bad request."),
+    PARAMETER_REQUIRED(HttpStatus.BAD_REQUEST, "Parameter required."),
 
     /*
      * 401 UNAUTHORIZED: 인증되지 않은 사용자의 요청
@@ -24,16 +24,19 @@ public enum ErrorCode {
      * 403 FORBIDDEN: 권한이 없는 사용자의 요청
      */
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "Forbidden."),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied."),
 
     /*
      * 404 NOT_FOUND: 리소스를 찾을 수 없음
      */
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found post."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found user."),
 
     /*
      * 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출
      */
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Not allowed method."),
+    CANNOT_DISCONNECT(HttpStatus.METHOD_NOT_ALLOWED, "The SNS account used for membership registration cannot be disconnected."),
 
     /*
      * 500 INTERNAL_SERVER_ERROR: 내부 서버 오류
