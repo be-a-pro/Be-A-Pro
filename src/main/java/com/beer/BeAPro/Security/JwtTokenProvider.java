@@ -114,6 +114,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     // == 토큰 검증 == //
 
+    // RT 검증
     public boolean validateRefreshToken(String refreshToken){
         try {
             if (redisService.getValues(refreshToken).equals("delete")) { // 회원 탈퇴했을 경우
@@ -140,11 +141,29 @@ public class JwtTokenProvider implements InitializingBean {
         return false;
     }
 
-    public boolean validateAccessTokenOnlyExpired(String accessToken) {
+    // AT가 유효 기간을 제외하고 정상적인 토큰인지 검증
+    public boolean validateAccessToken(String accessToken) {
         try {
-            if (redisService.getValues(accessToken).equals("logout")) { // 로그아웃 했을 경우
+            if (redisService.getValues(accessToken) != null // NPE 방지
+                    && redisService.getValues(accessToken).equals("logout")) { // 로그아웃 했을 경우
                 return false;
             }
+            Jwts.parserBuilder()
+                    .setSigningKey(signingKey)
+                    .build()
+                    .parseClaimsJws(accessToken);
+            return true;
+        } catch(ExpiredJwtException e) {
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // AT가 유효기간만 만료된 정상적인 토큰인지 검증
+    public boolean validateAccessTokenOnlyExpired(String accessToken) {
+        try {
+            // 만료되지 않았을 경우 false 반환
             return getClaims(accessToken)
                     .getExpiration()
                     .before(new Date());
