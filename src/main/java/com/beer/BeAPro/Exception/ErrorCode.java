@@ -39,6 +39,16 @@ public enum ErrorCode {
     CANNOT_DISCONNECT(HttpStatus.METHOD_NOT_ALLOWED, "The SNS account used for membership registration cannot be disconnected."),
 
     /*
+     * 413 PAYLOAD_TOO_LARGE: 서버에서 지원하지 않는 미디어 포맷
+     */
+    FILE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "File size is too large."),
+
+    /*
+     * 415 UNSUPPORTED_MEDIA_TYPE: 서버에서 지원하지 않는 미디어 포맷
+     */
+    INVALID_EXTENSION(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Invalid extension."),
+
+    /*
      * 500 INTERNAL_SERVER_ERROR: 내부 서버 오류
      */
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server error.");
