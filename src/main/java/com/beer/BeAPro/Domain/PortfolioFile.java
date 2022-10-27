@@ -1,5 +1,6 @@
 package com.beer.BeAPro.Domain;
 
+import com.beer.BeAPro.Dto.FileUploadDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,20 @@ public class PortfolioFile {
 
     private String modifiedName;
 
-    private int size; // byte
+    private long size; // byte
 
     private String filepath;
 
+
+    // == 생성 메서드 == //
+    public static PortfolioFile createProjectImage(FileUploadDto fileUploadDto) {
+        PortfolioFile portfolioFile = new PortfolioFile();
+
+        portfolioFile.originalName = fileUploadDto.getOriginalName();
+        portfolioFile.modifiedName = fileUploadDto.getModifiedName();
+        portfolioFile.size = fileUploadDto.getSize();
+        portfolioFile.filepath = fileUploadDto.getFilepath();
+
+        return portfolioFile;
+    }
 }
