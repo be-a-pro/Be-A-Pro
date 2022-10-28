@@ -9,11 +9,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserInterestKeyword {
+public class UserTool {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_interest_keyword_id")
+    @Column(name = "user_tool_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

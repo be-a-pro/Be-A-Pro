@@ -37,7 +37,10 @@ public class User extends BaseEntity {
     private List<UserPosition> userPositions = new ArrayList<>(); // 사용자 포지션 // 2개 이하
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserHashtag> userHashtags = new ArrayList<>();
+    private List<UserInterestKeyword> userInterestKeywords = new ArrayList<>(); // 관심 키워드
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserTool> userTools = new ArrayList<>(); // 사용 툴
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_image_id", unique = true)
@@ -50,8 +53,6 @@ public class User extends BaseEntity {
     private String portfolioLinks; // 포트폴리오 링크 // 3개 이하, 구분자 사용 "link1,link2,link3"
 
     private Boolean portfolioIsPublic; // 포트폴리오 공개 여부
-
-    // private String loginAPI; // 사용 로그인 API
 
     @Enumerated(EnumType.STRING)
     private Role role; // 사용자 권한
