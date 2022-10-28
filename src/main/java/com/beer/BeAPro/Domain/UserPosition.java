@@ -23,7 +23,4 @@ public class UserPosition {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id", unique = true)
     private Position position; // 사용자의 포지션
-
-    @Enumerated(EnumType.STRING)
-    private Career career; // 해당 포지션 경력
 }
