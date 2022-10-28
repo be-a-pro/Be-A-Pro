@@ -52,4 +52,9 @@ public class UserService {
         }
     }
 
+    // 약관 동의 여부 값 설정
+    @Transactional
+    public void setTermsAgree(User user, AuthDto.AgreeDto agreeDto) {
+        user.setTermsAgree(agreeDto);
+    }
 }

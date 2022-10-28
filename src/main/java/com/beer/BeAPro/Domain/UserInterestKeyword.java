@@ -9,11 +9,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserHashtag {
+public class UserInterestKeyword {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_hashtag_id")
+    @Column(name = "user_interest_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

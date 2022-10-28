@@ -1,5 +1,6 @@
 package com.beer.BeAPro.Controller;
 
+import com.beer.BeAPro.Domain.User;
 import com.beer.BeAPro.Dto.AuthDto;
 import com.beer.BeAPro.Service.AuthService;
 import com.beer.BeAPro.Service.UserService;
@@ -23,12 +24,27 @@ public class AuthApiController {
     private final long COOKIE_EXPIRATION = 7776000;
 
     // 회원가입
-    @PostMapping("/signup")
+    @PutMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody @Valid AuthDto.SignupDto signupDto) {
         String encodedPassword = encoder.encode(signupDto.getPassword());
         AuthDto.SignupDto newSignupDto = AuthDto.SignupDto.encodePassword(signupDto, encodedPassword);
 
         userService.registerUser(newSignupDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 약관 동의
+    @PostMapping("/agree")
+    public ResponseEntity<String> setUserTermsAgree(@RequestHeader("Authorization") String requestAccessTokenInHeader,
+                                                    @RequestBody AuthDto.AgreeDto agreeDto) {
+        // AT로부터 사용자 추출
+        String requestAccessToken = authService.resolveToken(requestAccessTokenInHeader);
+        String principal = authService.getPrincipal(requestAccessToken);
+        User findUser = userService.findByEmail(principal);
+
+        // 약관 동의 여부 값 설정
+        userService.setTermsAgree(findUser, agreeDto);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

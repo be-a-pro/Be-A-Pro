@@ -56,6 +56,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role; // 사용자 권한
 
+    private Boolean provideToThirdParties; // 제3자 제공 동의 여부
+
     private Boolean marketingEmail; // 마케팅 수신 동의 여부(이메일)
 
     private Boolean marketingSMS; // 마케팅 수신 동의 여부(문자)
@@ -113,4 +115,13 @@ public class User extends BaseEntity {
         this.naverDisconnectedDate = LocalDateTime.now();
     }
 
+    
+    // == 비즈니스 로직 == //
+
+    // 약관 동의 여부 값 설정
+    public void setTermsAgree(AuthDto.AgreeDto agreeDto) {
+        this.provideToThirdParties = agreeDto.getProvideToThirdParties();
+        this.marketingEmail = agreeDto.getMarketingEmail();
+        this.marketingSMS = agreeDto.getMarketingSMS();
+    }
 }
