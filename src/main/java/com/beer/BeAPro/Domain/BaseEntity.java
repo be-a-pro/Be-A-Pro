@@ -24,14 +24,14 @@ public abstract class BaseEntity {
     @Column(updatable = false)
     private LocalDate createdDate;
 
-    //@CreatedBy
-    //@Column(updatable = false)
-    //private Long createdBy;
+    @CreatedBy
+    @Column(updatable = false)
+    private Long createdBy;
 
     @LastModifiedDate
     private LocalDate modifiedDate;
 
-    //@LastModifiedBy
-    //private Long modifiedBy;
+    @LastModifiedBy
+    private Long modifiedBy;
 
 }
