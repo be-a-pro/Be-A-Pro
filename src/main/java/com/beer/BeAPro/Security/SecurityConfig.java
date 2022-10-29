@@ -58,9 +58,11 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint) //customEntryPoint
                 .accessDeniedHandler(jwtAccessDeniedHandler) // cutomAccessDeniedHandler
 
+                // 접근 제어
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/mypage/**").authenticated() // 마이페이지 인증 필요
+                .antMatchers("/api/auth/agree").authenticated()
+                .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ADMIN") // 관리자 페이지
                 .anyRequest().permitAll()
 

@@ -1,15 +1,19 @@
 package com.beer.BeAPro.Service;
 
-import com.beer.BeAPro.Domain.OAuthType;
-import com.beer.BeAPro.Domain.User;
+import com.beer.BeAPro.Domain.*;
 import com.beer.BeAPro.Dto.AuthDto;
 import com.beer.BeAPro.Dto.OAuth2NaverUserDto;
+import com.beer.BeAPro.Dto.RequestDto;
+import com.beer.BeAPro.Dto.UserDto;
 import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
-import com.beer.BeAPro.Repository.UserRepository;
+import com.beer.BeAPro.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,6 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserInterestKeywordRepository userInterestKeywordRepository;
+    private final UserToolRepository userToolRepository;
+    private final UserPositionRepository userPositionRepository;
+    private final PositionRepository positionRepository;
+
 
     @Transactional
     public void registerUser(AuthDto.SignupDto signupDto) {
@@ -52,4 +61,51 @@ public class UserService {
         }
     }
 
+    // 약관 동의 여부 값 설정
+    @Transactional
+    public void setTermsAgree(User user, AuthDto.AgreeDto agreeDto) {
+        user.setTermsAgree(agreeDto);
+    }
+
+    // 추가 정보 저장
+    @Transactional
+    public void saveUserAdditionalInfo(User user, RequestDto.SignUpAdditionalInfoDto signUpAdditionalInfoDto) {
+        // 데이터 가공
+        List<Position> positions = signUpAdditionalInfoDto.getUserPositions().stream()
+                .map(Position::createPosition) // Position 생성
+                .collect(Collectors.toList());
+        List<UserPosition> userPositions = positions.stream()
+                .map(position -> UserPosition.createUserPosition(user, position)) // UserPosition 생성
+                .collect(Collectors.toList());
+        List<UserInterestKeyword> userInterestKeywords = signUpAdditionalInfoDto.getUserInterestKeywords().stream()
+                .map(keyword -> UserInterestKeyword.createUserInterestKeyword(user, keyword)) // UserInterestKeyword 생성
+                .collect(Collectors.toList());
+        List<UserTool> userTools = signUpAdditionalInfoDto.getUserTools().stream()
+                .map(userTool -> UserTool.createUserTool(user, userTool)) // UserTool 생성
+                .collect(Collectors.toList());
+        String portfolioLinks = String.join(",", signUpAdditionalInfoDto.getPortfolioLinks());
+
+        // DTO 생성
+        UserDto.SignUpAdditionalInfoDto info = UserDto.SignUpAdditionalInfoDto.builder()
+                .mobileIsPublic(signUpAdditionalInfoDto.getMobileIsPublic())
+                .userPositions(userPositions)
+                .userInterestKeywords(userInterestKeywords)
+                .userTools(userTools)
+                .portfolioIsPublic(signUpAdditionalInfoDto.getPortfolioIsPublic())
+                .portfolioLinks(portfolioLinks)
+                .build();
+
+        // 저장
+        positionRepository.saveAll(positions);
+        userPositionRepository.saveAll(userPositions);
+        userInterestKeywordRepository.saveAll(userInterestKeywords);
+        userToolRepository.saveAll(userTools);
+        user.saveUserAdditionalInfo(info);
+    }
+
+    // 포트폴리오 파일 업로드
+    @Transactional
+    public void setPortfolioFile(User user, PortfolioFile portfolioFile) {
+        user.setPortfolioFile(portfolioFile);
+    }
 }

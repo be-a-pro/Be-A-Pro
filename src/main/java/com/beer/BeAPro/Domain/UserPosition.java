@@ -24,6 +24,14 @@ public class UserPosition {
     @JoinColumn(name = "position_id", unique = true)
     private Position position; // 사용자의 포지션
 
-    @Enumerated(EnumType.STRING)
-    private Career career; // 해당 포지션 경력
+
+    // == 생성 메서드 == //
+    public static UserPosition createUserPosition(User user, Position position) {
+        UserPosition userPosition = new UserPosition();
+
+        userPosition.user = user;
+        userPosition.position = position;
+
+        return userPosition;
+    }
 }

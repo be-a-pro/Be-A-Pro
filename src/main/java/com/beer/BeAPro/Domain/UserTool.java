@@ -9,17 +9,27 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserHashtag {
+public class UserTool {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_hashtag_id")
+    @Column(name = "user_tool_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String hashtag;
+    private String name;
 
+
+    // == 생성 메서드 == //
+    public static UserTool createUserTool(User user, String name) {
+        UserTool userTool = new UserTool();
+
+        userTool.user = user;
+        userTool.name = name;
+
+        return userTool;
+    }
 }

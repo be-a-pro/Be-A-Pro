@@ -13,12 +13,15 @@ public enum ErrorCode {
      */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "Bad request."),
     PARAMETER_REQUIRED(HttpStatus.BAD_REQUEST, "Parameter required."),
+    INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "Invalid file name."),
+    VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "Validation failed for argument"),
 
     /*
      * 401 UNAUTHORIZED: 인증되지 않은 사용자의 요청
      */
     UNAUTHORIZED_REQUEST(HttpStatus.UNAUTHORIZED, "Unauthorized."),
     SOCIAL_LOGIN_ERROR(HttpStatus.UNAUTHORIZED, "Unauthorized."),
+    TERMS_AGREEMENT_REQUIRED(HttpStatus.UNAUTHORIZED, "Agreement to the terms and conditions is required."),
 
     /*
      * 403 FORBIDDEN: 권한이 없는 사용자의 요청
