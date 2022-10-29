@@ -21,4 +21,15 @@ public class UserTool {
     private User user;
 
     private String name;
+
+
+    // == 생성 메서드 == //
+    public static UserTool createUserTool(User user, String name) {
+        UserTool userTool = new UserTool();
+
+        userTool.user = user;
+        userTool.name = name;
+
+        return userTool;
+    }
 }

@@ -23,4 +23,15 @@ public class UserPosition {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id", unique = true)
     private Position position; // 사용자의 포지션
+
+
+    // == 생성 메서드 == //
+    public static UserPosition createUserPosition(User user, Position position) {
+        UserPosition userPosition = new UserPosition();
+
+        userPosition.user = user;
+        userPosition.position = position;
+
+        return userPosition;
+    }
 }

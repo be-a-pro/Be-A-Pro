@@ -2,6 +2,7 @@ package com.beer.BeAPro.Domain;
 
 import com.beer.BeAPro.Dto.AuthDto;
 import com.beer.BeAPro.Dto.OAuth2NaverUserDto;
+import com.beer.BeAPro.Dto.UserDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -124,5 +125,20 @@ public class User extends BaseEntity {
         this.provideToThirdParties = agreeDto.getProvideToThirdParties();
         this.marketingEmail = agreeDto.getMarketingEmail();
         this.marketingSMS = agreeDto.getMarketingSMS();
+    }
+
+    // 회원 가입 절차 중 사용자 추가 정보 저장
+    public void saveUserAdditionalInfo(UserDto.SignUpAdditionalInfoDto signUpAdditionalInfoDto) {
+        this.mobileIsPublic = signUpAdditionalInfoDto.getMobileIsPublic();
+        this.userPositions.addAll(signUpAdditionalInfoDto.getUserPositions());
+        this.userInterestKeywords.addAll(signUpAdditionalInfoDto.getUserInterestKeywords());
+        this.userTools.addAll(signUpAdditionalInfoDto.getUserTools());
+        this.portfolioIsPublic = signUpAdditionalInfoDto.getPortfolioIsPublic();
+        this.portfolioLinks = signUpAdditionalInfoDto.getPortfolioLinks();
+    }
+
+    // 포트폴리오 파일 저장
+    public void setPortfolioFile(PortfolioFile portfolioFile) {
+        this.portfolioFile = portfolioFile;
     }
 }

@@ -21,4 +21,15 @@ public class UserInterestKeyword {
     private User user;
 
     private String name;
+
+
+    // == 생성 메서드 == //
+    public static UserInterestKeyword createUserInterestKeyword(User user, String name) {
+        UserInterestKeyword userInterestKeyword = new UserInterestKeyword();
+
+        userInterestKeyword.user = user;
+        userInterestKeyword.name = name;
+
+        return userInterestKeyword;
+    }
 }
