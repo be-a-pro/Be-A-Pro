@@ -24,8 +24,6 @@ public class User extends BaseEntity {
 
     private String name;
 
-    private String password;
-
     private String mobile; // 휴대폰 번호 [00000000000]
 
     private Boolean mobileIsPublic; // 휴대폰 번호 공개 여부
@@ -70,8 +68,6 @@ public class User extends BaseEntity {
 
     private LocalDateTime toInactiveDate; // 휴면 계정 변환 예정 날짜
     
-    private LocalDateTime pwModifiedDate; // 비밀번호 변경 날짜
-
 
     // ===== OAuth2.0 ===== //
     @Enumerated(EnumType.STRING)
@@ -83,16 +79,6 @@ public class User extends BaseEntity {
 
 
     // == 생성 메서드 == //
-    public static User registerUser(AuthDto.SignupDto signupDto) {
-        User user = new User();
-
-        user.email = signupDto.getEmail();
-        user.password = signupDto.getPassword();
-        user.role = Role.USER;
-
-        return user;
-    }
-
     public static User registerUserByNaver(OAuth2NaverUserDto oAuth2NaverUserDto) {
         User user = new User();
 
@@ -117,7 +103,7 @@ public class User extends BaseEntity {
         this.naverDisconnectedDate = LocalDateTime.now();
     }
 
-    
+
     // == 비즈니스 로직 == //
 
     // 약관 동의 여부 값 설정

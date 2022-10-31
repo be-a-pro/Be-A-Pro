@@ -6,10 +6,7 @@ import com.beer.BeAPro.Service.AuthService;
 import com.beer.BeAPro.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 
 @RestController
@@ -19,19 +16,9 @@ public class AuthApiController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final BCryptPasswordEncoder encoder;
 
     private final long COOKIE_EXPIRATION = 7776000;
 
-    // 회원가입
-    @PutMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody @Valid AuthDto.SignupDto signupDto) {
-        String encodedPassword = encoder.encode(signupDto.getPassword());
-        AuthDto.SignupDto newSignupDto = AuthDto.SignupDto.encodePassword(signupDto, encodedPassword);
-
-        userService.registerUser(newSignupDto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     // 약관 동의
     @PostMapping("/agree")
@@ -46,27 +33,6 @@ public class AuthApiController {
         userService.setTermsAgree(findUser, agreeDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    // 로그인 -> 토큰 발급
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid AuthDto.LoginDto loginDto) {
-        // User 등록 및 Refresh Token 저장
-        AuthDto.TokenDto tokenDto = authService.login(loginDto);
-
-        // RT 저장
-        HttpCookie httpCookie = ResponseCookie.from("refresh-token", tokenDto.getRefreshToken())
-                .maxAge(COOKIE_EXPIRATION)
-                .path("/")
-                .httpOnly(true)
-                .secure(true)
-                .build();
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, httpCookie.toString())
-                // AT 저장
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDto.getAccessToken())
-                .build();
     }
 
     // AT 검증
