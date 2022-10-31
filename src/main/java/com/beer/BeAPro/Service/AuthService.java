@@ -29,18 +29,6 @@ public class AuthService {
 
     private final String SERVER = "Server";
 
-    // 로그인: 인증 정보 저장 및 비어 토큰 발급
-    @Transactional
-    public AuthDto.TokenDto login(AuthDto.LoginDto loginDto) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
-
-        Authentication authentication = authenticationManagerBuilder.getObject()
-                .authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return generateToken(SERVER, authentication.getName(), getAuthorities(authentication));
-    }
 
     // AT가 만료일자만 초과한 유효한 토큰인지 검사
     public boolean validate(String requestAccessTokenInHeader) {

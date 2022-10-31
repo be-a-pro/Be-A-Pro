@@ -29,12 +29,6 @@ public class UserService {
 
 
     @Transactional
-    public void registerUser(AuthDto.SignupDto signupDto) {
-        User user = User.registerUser(signupDto);
-        userRepository.save(user);
-    }
-
-    @Transactional
     public void registerUserByNaver(OAuth2NaverUserDto oAuth2NaverUserDto) {
         User user = User.registerUserByNaver(oAuth2NaverUserDto);
         userRepository.save(user);

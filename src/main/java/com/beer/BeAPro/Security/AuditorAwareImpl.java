@@ -1,7 +1,5 @@
 package com.beer.BeAPro.Security;
 
-import com.beer.BeAPro.Domain.User;
-import com.beer.BeAPro.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -20,21 +18,16 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableJpaAuditing
 @RequiredArgsConstructor
-public class AuditorAwareImpl implements AuditorAware<Long> {
-
-    private final UserService userService;
+public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
-    public Optional<Long> getCurrentAuditor() {
+    public Optional<String> getCurrentAuditor() {
         return Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication) // 인증 정보 추출
                 .map(authentication -> {
                     String authorities = getAuthorities(authentication);
                     if (authorities.equals("ROLE_USER") || authorities.equals("ROLE_ADMIN")){
-                        User findUser = userService.findByEmail(authentication.getName());
-                        if (findUser != null) {
-                            return findUser.getId();
-                        }
+                        return authentication.getName();
                     }
                     log.debug("AuditorAware: User not found or anonymous.");
                     return null;
