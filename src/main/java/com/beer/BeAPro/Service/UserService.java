@@ -9,11 +9,11 @@ import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +57,14 @@ public class UserService {
 
 
     // ===== 조회 ===== //
+
+    public List<User> findUserToInactive() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getIsInactive().equals(false))
+                .filter(user -> user.getToInactiveDate().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
+    }
+
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
