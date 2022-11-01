@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,14 +30,12 @@ public class UserService {
     private final PositionRepository positionRepository;
 
 
+    // ===== 생성 및 삭제 ===== //
     @Transactional
-    public void registerUserByNaver(OAuth2NaverUserDto oAuth2NaverUserDto) {
+    public User registerUserByNaver(OAuth2NaverUserDto oAuth2NaverUserDto) {
         User user = User.registerUserByNaver(oAuth2NaverUserDto);
         userRepository.save(user);
-    }
-
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+        return user;
     }
 
     @Transactional
@@ -54,6 +54,33 @@ public class UserService {
             throw new RestApiException(ErrorCode.CANNOT_DISCONNECT);
         }
     }
+
+
+    // ===== 조회 ===== //
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+
+    // ===== 세부 설정 ===== //
+
+    @Transactional
+    public void login(User user) { // 로그인
+        user.login();
+    }
+
+    @Transactional
+    public void setInactive(User user) { // 휴면 계정 전환
+        user.setInactive();
+    }
+
+    @Transactional
+    public void setEnable(User user, Boolean bool) { // 비활성화(정지) 여부 결정
+        user.setEnable(bool);
+    }
+
+
+    // ===== 비즈니스 로직 ===== //
 
     // 약관 동의 여부 값 설정
     @Transactional

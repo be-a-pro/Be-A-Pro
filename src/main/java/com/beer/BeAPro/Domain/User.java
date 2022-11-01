@@ -67,6 +67,8 @@ public class User extends BaseEntity {
     private Boolean isInactive; // 휴면 계정 여부
 
     private LocalDateTime toInactiveDate; // 휴면 계정 변환 예정 날짜
+
+    private Boolean isEnable; // 계정 정지 여부
     
 
     // ===== OAuth2.0 ===== //
@@ -101,6 +103,25 @@ public class User extends BaseEntity {
     public void disconnectNaver() {
         this.naverId = null;
         this.naverDisconnectedDate = LocalDateTime.now();
+    }
+
+
+    // == 세부 설정 == //
+    // 로그인
+    public void login() {
+        this.lastLoginDate = LocalDateTime.now();
+        this.toInactiveDate = LocalDateTime.now().plusYears(1).minusDays(1);
+        this.isInactive = false;
+    }
+
+    // 휴면 계정 전환
+    public void setInactive() {
+        this.isInactive = true;
+    }
+
+    // 비활성화(정지)
+    public void setEnable(Boolean bool) {
+        this.isEnable = bool;
     }
 
 

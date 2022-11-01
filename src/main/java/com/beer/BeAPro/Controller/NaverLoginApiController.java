@@ -200,9 +200,11 @@ public class NaverLoginApiController {
                 userService.connectNaver(findUser, oAuth2Attribute.getNaverId());
             }
         } else { // 새로운 사용자 -> 회원가입 처리
-            userService.registerUserByNaver(oAuth2NaverUserDto);
+            findUser = userService.registerUserByNaver(oAuth2NaverUserDto);
         }
 
+        // 사용자 로그인
+        userService.login(findUser);
         // Redis에 네이버의 RT 저장
         authService.saveRefreshToken(clientName, oAuth2Attribute.getEmail(), naverRefreshToken);
         // 사용할 토큰 생성 및 저장
