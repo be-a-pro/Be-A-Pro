@@ -9,7 +9,6 @@ import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +30,13 @@ public class UserService {
 
 
     // ===== 생성 및 삭제 ===== //
+    @Transactional
+    public User registerUser(String email) {
+        User user = User.registerUserTestOnly(email);
+        userRepository.save(user);
+        return user;
+    }
+
     @Transactional
     public User registerUserByNaver(OAuth2NaverUserDto oAuth2NaverUserDto) {
         User user = User.registerUserByNaver(oAuth2NaverUserDto);
