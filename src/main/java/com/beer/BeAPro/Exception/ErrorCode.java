@@ -22,6 +22,7 @@ public enum ErrorCode {
     UNAUTHORIZED_REQUEST(HttpStatus.UNAUTHORIZED, "Unauthorized."),
     SOCIAL_LOGIN_ERROR(HttpStatus.UNAUTHORIZED, "Unauthorized."),
     TERMS_AGREEMENT_REQUIRED(HttpStatus.UNAUTHORIZED, "Agreement to the terms and conditions is required."),
+    LOGOUT_FAILED(HttpStatus.UNAUTHORIZED, "Logout failed. Invalid user."),
 
     /*
      * 403 FORBIDDEN: 권한이 없는 사용자의 요청

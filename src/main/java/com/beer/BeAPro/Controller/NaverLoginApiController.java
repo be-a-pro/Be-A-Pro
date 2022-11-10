@@ -312,7 +312,10 @@ public class NaverLoginApiController {
 
         // RT 삭제
         redisService.deleteValues("RT(" + clientName + "):" + principal); // 네이버
-        authService.logout(beaproAccessToken); // 비어프로
+        boolean isLoggedOut = authService.logout(beaproAccessToken);// 비어프로
+        if (!isLoggedOut) {
+            throw new RestApiException(ErrorCode.LOGOUT_FAILED);
+        }
 
         ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
                 .maxAge(0)

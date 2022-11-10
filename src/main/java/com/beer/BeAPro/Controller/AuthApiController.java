@@ -2,6 +2,8 @@ package com.beer.BeAPro.Controller;
 
 import com.beer.BeAPro.Domain.User;
 import com.beer.BeAPro.Dto.AuthDto;
+import com.beer.BeAPro.Exception.ErrorCode;
+import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Service.AuthService;
 import com.beer.BeAPro.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,9 @@ public class AuthApiController {
         String requestAccessToken = authService.resolveToken(requestAccessTokenInHeader);
         String principal = authService.getPrincipal(requestAccessToken);
         User findUser = userService.findByEmail(principal);
+        if (findUser == null) {
+            throw new RestApiException(ErrorCode.USER_NOT_FOUND);
+        }
 
         // 약관 동의 여부 값 설정
         userService.setTermsAgree(findUser, agreeDto);
@@ -35,10 +40,10 @@ public class AuthApiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // AT 검증
+    // AT 재발급이 필요한지 검사
     @PostMapping("/validate")
     public ResponseEntity<?> validate(@RequestHeader("Authorization") String requestAccessToken) {
-        if (!authService.validate(requestAccessToken)) {
+        if (!authService.isRequiredReissue(requestAccessToken)) {
             return ResponseEntity.status(HttpStatus.OK).build(); // 재발급 필요X
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 재발급 필요
@@ -48,8 +53,8 @@ public class AuthApiController {
     // 토큰 재발급
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(@CookieValue(name = "refresh-token") String requestRefreshToken,
-                                     @RequestHeader("Authorization") String requestAccessToken) {
-        AuthDto.TokenDto reissuedTokenDto = authService.reissue(requestAccessToken, requestRefreshToken);
+                                     @RequestHeader("Authorization") String requestAccessTokenInHeader) {
+        AuthDto.TokenDto reissuedTokenDto = authService.reissue(requestAccessTokenInHeader, requestRefreshToken);
 
         if (reissuedTokenDto != null) { // 토큰 재발급 성공
             // RT 저장
@@ -81,8 +86,12 @@ public class AuthApiController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String requestAccessToken) {
-        authService.logout(requestAccessToken);
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String requestAccessTokenInHeader) {
+        boolean isLoggedOut = authService.logout(requestAccessTokenInHeader);
+        if (!isLoggedOut) {
+            throw new RestApiException(ErrorCode.LOGOUT_FAILED);
+        }
+
         ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
                 .maxAge(0)
                 .path("/")
