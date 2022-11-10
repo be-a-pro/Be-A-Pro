@@ -1,0 +1,195 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+section {
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Pretendard-Bold';
+    font-size: 32px;
+}
+
+
+.boxOfNameForm, .boxOfNumForm, .boxOfPositionForm {
+    display: flex;
+    align-items: center;
+
+    .boxOfInput { 
+        font-size: 14px;
+        padding: 1em 50.44em 0.92em 1.14em;
+        border-radius: 12px;
+        border: solid 1px #bdbdbd;
+        font-family: 'Pretendard-Medium';
+    }
+
+    .boxOfTitle {
+        font-size: 18px;
+        font-family: 'Pretendard-Bold';
+    }
+}
+
+.boxOfNameForm {
+    font-size: 14px;
+    column-gap: 5em;
+}
+
+.boxOfNumForm {
+    font-size: 14px;
+    column-gap: 2.78em;
+    margin-top: 24px;
+
+    .boxOfTitle {
+        margin-bottom: auto;
+    }
+
+    .contentOfBox {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        row-gap: 8px;
+        font-family: 'Pretendard-Medium';
+    }
+
+    .descriptionOfNum {
+        letter-spacing: -0.35px;
+        color: #bdbdbd;
+    }
+}
+
+.boxOfPositionForm {
+    font-size: 14px;
+    margin-top: 27px;
+    column-gap: 3.92em;
+    font-family: 'Pretendard-Medium';
+    
+
+    .boxOfTitle {
+        margin-bottom: auto;
+    }
+
+    .descriptionOfPostion {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .sectionOfTag {
+        display: flex;
+        column-gap: 12px;
+        margin-top: 12px;
+    }
+
+    .position1 {
+        display: flex;
+        letter-spacing: -0.4px;
+        color: #333;
+        border-radius: 12px;
+
+        .boxOfPostion1 {
+            font-size: 16px;
+            background-color: #fafafd;
+            padding-right: 1em;
+            padding-left: 1em;
+            padding-top: 1.25em;
+
+            display: flex;
+            flex-direction: column;
+            row-gap: 56.5px;
+            justify-content: center;
+            align-items: center;
+
+            .lineOfSplit {
+                width: 116px;
+                height: 1px;
+                border: none;
+                flex-grow: 0;
+                background-color: #efefef;
+            }
+        }
+    }
+}
+
+.toggleSwitch {
+    width: 118px;
+    height: 29px;
+    display: block;
+    position: relative;
+    border-radius: 30px;
+    background-color: #fff;
+    box-shadow: 0 0 1rem 3px rgba(0 0 0 / 15%);
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+
+    z-index: 10;
+    .text {
+        position: absolute;
+        display: flex;
+        text-align: center;
+        gap: 27px;
+        color: white;
+    }
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 27px;
+    font-size: 14px;
+    font-family: 'Pretendard-Medium';
+}
+
+.toggleSwitch_checked {
+    background-color: #efefef;
+}
+
+/* 토글 버튼 */
+.toggleButton {
+    /* 버튼은 토글보다 작아야함  */
+    width: 62px;
+    height: 29px;
+    position: absolute;
+    top: 50%;
+    left: -2px;
+    transform: translateY(-50%);
+    border-radius: 30px;
+    background-color: #ff7827;
+    transition: all 0.2s ease-in;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-family: 'Pretendard-Medium';
+}
+
+.toggleButton_checked {
+    /* 100% -> 끝위치, 2.8rem -> 버튼 크기 */
+    left: calc(45%);
+    background-color: #666;
+}
