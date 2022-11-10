@@ -4,8 +4,6 @@ import com.beer.BeAPro.Dto.AuthDto;
 import com.beer.BeAPro.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,16 +22,15 @@ import java.util.stream.Collectors;
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
 
     private final String SERVER = "Server";
 
 
     // AT가 만료일자만 초과한 유효한 토큰인지 검사
-    public boolean validate(String requestAccessTokenInHeader) {
+    public boolean isRequiredReissue(String requestAccessTokenInHeader) {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
-        return jwtTokenProvider.validateAccessTokenOnlyExpired(requestAccessToken); // true = 재발급
+        return jwtTokenProvider.validateAccessTokenOnlyExpired(requestAccessToken); // true = 재발급 필요
     }
 
     // 토큰 재발급: validate 메서드가 true 반환할 때만 사용 -> AT, RT 재발급
@@ -42,16 +39,16 @@ public class AuthService {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
 
         Authentication authentication = jwtTokenProvider.getAuthentication(requestAccessToken);
-        String principal = getPrincipal(requestAccessToken);
+        String email = getPrincipal(requestAccessToken);
 
-        String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + principal);
+        String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + email);
         if (refreshTokenInRedis == null) { // Redis에 저장되어 있는 RT가 없을 경우
             return null; // -> 재로그인 요청
         }
 
         // 요청된 RT의 유효성 검사 & Redis에 저장되어 있는 RT와 같은지 비교
         if(!jwtTokenProvider.validateRefreshToken(requestRefreshToken) || !refreshTokenInRedis.equals(requestRefreshToken)) {
-            redisService.deleteValues("RT(" + SERVER + "):" + principal); // 탈취 가능성 -> 삭제
+            redisService.deleteValues("RT(" + SERVER + "):" + email); // 탈취 가능성 -> 삭제
             return null; // -> 재로그인 요청
         }
 
@@ -59,9 +56,9 @@ public class AuthService {
         String authorities = getAuthorities(authentication);
 
         // 토큰 재발급 및 Redis 업데이트
-        redisService.deleteValues("RT(" + SERVER + "):" + principal); // 기존 RT 삭제
-        AuthDto.TokenDto tokenDto = jwtTokenProvider.createToken(principal, authorities);
-        saveRefreshToken(SERVER, principal, tokenDto.getRefreshToken());
+        redisService.deleteValues("RT(" + SERVER + "):" + email); // 기존 RT 삭제
+        AuthDto.TokenDto tokenDto = jwtTokenProvider.createToken(email, authorities);
+        saveRefreshToken(SERVER, email, tokenDto.getRefreshToken());
         return tokenDto;
     }
 
@@ -81,8 +78,8 @@ public class AuthService {
 
     // RT를 Redis에 저장
     @Transactional
-    public void saveRefreshToken(String provider, String principal, String refreshToken) {
-        redisService.setValuesWithTimeout("RT(" + provider + "):" + principal, // key
+    public void saveRefreshToken(String provider, String email, String refreshToken) {
+        redisService.setValuesWithTimeout("RT(" + provider + "):" + email, // key
                 refreshToken, // value
                 jwtTokenProvider.getTokenExpirationTime(refreshToken)); // timeout(milliseconds)
     }
@@ -99,7 +96,7 @@ public class AuthService {
         return jwtTokenProvider.getAuthentication(requestAccessToken).getName();
     }
 
-    // "Bearer {AT}"에서 {AT} 추출
+    // Authorization Header로부터 AT 추출
     public String resolveToken(String requestAccessTokenInHeader) {
         if (requestAccessTokenInHeader != null && requestAccessTokenInHeader.startsWith("Bearer ")) {
             return requestAccessTokenInHeader.substring(7);
@@ -109,21 +106,29 @@ public class AuthService {
 
     // 로그아웃
     @Transactional
-    public void logout(String requestAccessTokenInHeader) {
+    public boolean logout(String requestAccessTokenInHeader) {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
-        String principal = getPrincipal(requestAccessToken);
+        String email = getPrincipal(requestAccessToken);
+
+        // 이미 로그아웃했거나, 만료 기간 제외 유효하지 않은 AT
+        if (!jwtTokenProvider.validateAccessToken(requestAccessToken)) {
+            return false;
+        }
 
         // Redis에 저장되어 있는 RT 삭제
-        String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + principal);
+        String refreshTokenInRedis = redisService.getValues("RT(" + SERVER + "):" + email);
         if (refreshTokenInRedis != null) {
-            redisService.deleteValues("RT(" + SERVER + "):" + principal);
+            redisService.deleteValues("RT(" + SERVER + "):" + email);
         }
 
         // Redis에 로그아웃 처리한 AT 저장
         long expiration = jwtTokenProvider.getTokenExpirationTime(requestAccessToken) - new Date().getTime();
-        redisService.setValuesWithTimeout(requestAccessToken,
-                "logout",
-                expiration);
+        if (expiration > 0) {
+            redisService.setValuesWithTimeout(requestAccessToken,
+                    "logout",
+                    expiration);
+        }
+        return true;
     }
 
 

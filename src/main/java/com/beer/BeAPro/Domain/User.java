@@ -81,6 +81,12 @@ public class User extends BaseEntity {
 
 
     // == 생성 메서드 == //
+    public static User registerUserTestOnly(String email) { // *테스트 코드에서 사용
+        User user = new User();
+        user.email = email;
+        return user;
+    }
+
     public static User registerUserByNaver(OAuth2NaverUserDto oAuth2NaverUserDto) {
         User user = new User();
 
