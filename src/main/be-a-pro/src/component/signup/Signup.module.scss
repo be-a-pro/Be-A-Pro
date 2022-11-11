@@ -32,25 +32,46 @@ section {
     align-items: center;
 }
 
+.contentOfContainer {
+    width: 990px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 h1 {
     font-family: 'Pretendard-Bold';
     font-size: 32px;
 }
 
 
-.boxOfNameForm, .boxOfNumForm, .boxOfPositionForm {
+.boxOfNameForm, .boxOfNumForm, .boxOfPositionForm, .keywordOfForm, .keywordOfForm_tool, .boxOfPortfolioForm {
     display: flex;
     align-items: center;
 
     .boxOfInput { 
         font-size: 14px;
-        padding: 1em 50.44em 0.92em 1.14em;
+        width: 63em;
         border-radius: 12px;
+        padding-top: 1em;
+        padding-bottom: 0.92em;
+        padding-left: 1.14em;
         border: solid 1px #bdbdbd;
         font-family: 'Pretendard-Medium';
     }
 
     .boxOfTitle {
+        font-size: 18px;
+        white-space: nowrap;
+        font-family: 'Pretendard-Bold';
+    }
+}
+
+.boxOfPortfolioForm {
+    font-size: 14px;
+    column-gap: 1.7em;
+
+    .textofLink {
         font-size: 18px;
         font-family: 'Pretendard-Bold';
     }
@@ -62,9 +83,13 @@ h1 {
 }
 
 .boxOfNumForm {
-    font-size: 14px;
     column-gap: 2.78em;
+}
+
+.boxOfNumForm, .boxOfPortfolioForm {
+    font-size: 14px;
     margin-top: 24px;
+    width: 70.71em;
 
     .boxOfTitle {
         margin-bottom: auto;
@@ -75,14 +100,174 @@ h1 {
         flex-direction: column;
         font-size: 14px;
         row-gap: 8px;
+        width: 63.45em;
         font-family: 'Pretendard-Medium';
-    }
 
-    .descriptionOfNum {
-        letter-spacing: -0.35px;
-        color: #bdbdbd;
+        .descriptionOfNum {
+            width: 100%;
+            letter-spacing: -0.35px;
+            color: #bdbdbd;
+        }
+
+        .numOfInput {
+            font-size: 14px;
+            border-radius: 12px;
+            padding-top: 1em;
+            padding-bottom: 0.92em;
+            padding-left: 1.14em;
+            border: solid 1px #bdbdbd;
+            font-family: 'Pretendard-Medium';
+        }
     }
 }
+
+.keywordOfForm_tool {
+    column-gap: 51px;
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+
+    .contentOfBox_tool {
+        width: 100%;
+    }
+
+    .searchBar_tool {
+        display: flex;
+        align-items: center;
+
+        .symbolOfSearch {
+            position: absolute;
+            width: 20.4px;
+            height: 20.4px;
+            margin-left: 1.27em;
+        }
+
+        .keywordOfInput { 
+            width: 100%;
+            font-size: 14px;
+            border-radius: 12px;
+            padding-top: 1em;
+            padding-bottom: 0.92em;
+            padding-left: 4em;
+            border: solid 1px #bdbdbd;
+            font-family: 'Pretendard-Medium';
+        }
+    }
+
+    .test {
+        display: flex;
+    }
+
+    .searchBar {
+        margin-top: 30px;
+    }
+}
+
+.keywordOfForm {
+    column-gap: 20px;
+    margin-top: 24px;
+}
+
+.keywordOfForm {
+    display: flex;
+    align-items: center;
+
+    .boxOfTitle {
+        margin-bottom: auto;
+        margin-top: 5.5px;
+    }
+
+    .sectionOfTag {
+        display: flex;
+        column-gap: 12px;
+    }
+
+    .contentOfBox {
+        display: flex;
+        flex-direction: column;
+        width: 63em;
+
+        .searchBar {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+
+            .symbolOfSearch {
+                position: absolute;
+                width: 20.4px;
+                height: 20.4px;
+                margin-left: 1.27em;
+            }
+
+            .keywordOfInput { 
+                width: 100%;
+                font-size: 14px;
+                border-radius: 12px;
+                padding-top: 1em;
+                padding-bottom: 0.92em;
+                padding-left: 4em;
+                border: solid 1px #bdbdbd;
+                font-family: 'Pretendard-Medium';
+            }
+        }
+    
+        .boxOfInput::placeholder {
+            font-size: 14px;
+        }
+    }
+}
+
+
+.selectBox {
+    padding-top: 1.25em;
+    padding-left: 2.28em;
+
+    .selectBoxOfContent {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+
+        .contentSelect {
+            display: grid;
+            font-size: 14px;
+            width: 21.6em;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 16px;
+        }
+
+        .contentSelect2 {
+            display: grid;
+            font-size: 14px;
+            width: 32.57em;
+            grid-template-columns: 1fr 1fr 1fr;
+            row-gap: 16px;
+        }
+
+        .contentSelect3 {
+            display: grid;
+            font-size: 14px;
+            width: 43.5em;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            row-gap: 16px;
+        }
+
+        .contentSelect4 {
+            display: grid;
+            font-size: 14px;
+            width: 21.8em;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 16px;
+        }
+
+        .lineOfSplit {
+            font-size: 14px;
+            width: 615px;
+            margin-top: 1.598em;
+        }
+
+    }
+}
+
 
 .boxOfPositionForm {
     font-size: 14px;
@@ -112,27 +297,52 @@ h1 {
         color: #333;
         border-radius: 12px;
 
+        // 블록 블록으로 해야할듯;
         .boxOfPostion1 {
+            height: 70%;
             font-size: 16px;
-            background-color: #fafafd;
+            background-color: black;
             padding-right: 1em;
             padding-left: 1em;
             padding-top: 1.25em;
+            border-radius: 12px;
 
             display: flex;
             flex-direction: column;
-            row-gap: 56.5px;
             justify-content: center;
             align-items: center;
-
-            .lineOfSplit {
-                width: 116px;
-                height: 1px;
-                border: none;
-                flex-grow: 0;
-                background-color: #efefef;
-            }
+            margin-bottom: auto;
         }
+    }
+}
+
+.selectOfPosition {
+    display: flex;
+    font-size: 14px;
+    width: 63.43em;
+    margin-top: 12px;
+    height: 384px;
+
+    .positionBox {
+        text-align: center;
+        font-size: 16px;
+        padding-top: 1.25em;
+        padding-right: 1em;
+        padding-left: 1em;
+        background-color: #fafafd;
+        border-radius: 12px;
+    }
+
+    .lineOfSplit {
+        font-size: 16px;
+        margin-top: 3.53em;
+        margin-bottom: 1.218em;
+        width: 116px;
+        height: 1px;
+        border: none;
+        flex-grow: 0;
+        
+        background-color: #efefef;
     }
 }
 
@@ -142,8 +352,7 @@ h1 {
     display: block;
     position: relative;
     border-radius: 30px;
-    background-color: #fff;
-    box-shadow: 0 0 1rem 3px rgba(0 0 0 / 15%);
+    background-color: #efefef;
     cursor: pointer;
     transition: all 0.2s ease-in;
 
