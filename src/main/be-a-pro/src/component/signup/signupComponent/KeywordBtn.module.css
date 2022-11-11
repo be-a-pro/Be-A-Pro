@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 10px;
+    font-size: 16px;
+    padding-right: 0.75em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 0.75em;
+    border: solid 1px #a293ff;
+    border-radius: 8px;
+    font-family: 'Pretendard-Medium';
+}
+
+.removeTag {
+    width: 22px;
+    height: 22px;
+    flex-grow: 0;
+}

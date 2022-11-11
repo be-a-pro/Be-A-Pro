@@ -10,7 +10,7 @@ import ProjectList from './component/project/ProjectList';
 import Header from './component/Header';
 import ScrollToTop from './hooks/ScrollToTop';
 import ProejctDetail from './component/project/ProjectDetail';
-import Signup from './component/Signup';
+import Signup from './component/signup/Signup';
 import { useRef } from 'react';
 import $ from 'jquery';
 import jquery from 'jquery';

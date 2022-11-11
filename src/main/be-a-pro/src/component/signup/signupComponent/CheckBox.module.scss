@@ -1,0 +1,24 @@
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.checkBox {
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+    font-size: 14px;
+
+    .symbol {
+        width: 20px;
+        height: 20px;
+    }
+
+    span {
+        font-family: 'Pretendard-Medium';
+        color: #333;
+    }
+
+}
