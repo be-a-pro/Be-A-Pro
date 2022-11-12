@@ -3,16 +3,78 @@ import { useEffect, useRef, useState } from 'react';
 import PostionBtn from './signupComponent/PositionBtn';
 import Checkbox from './signupComponent/CheckBox';
 import KeywordBtn from './signupComponent/KeywordBtn';
+import Footer from '../Footer';
 import {ReactComponent as Search} from '../../images/search-icon.svg';
+import {ReactComponent as Add} from '../../images/icons/add.svg';
 
 function Signup() {
 
-    const toggleDOM = useRef(null);
     const [toggle, setToggle] = useState(false);
+    const [file, setFile] = useState("");
+    const [url, setUrl] = useState("");
+    const valueOfUrl = useRef(null);
+    const valueOfFile = useRef(null);
+    const filelist = ['jpg', 'png', 'pdf', 'ppt', 'pptx', 'hwp', 'hwpx'];
 
     function changeToggle() {
         setToggle(!toggle);
-        console.log(toggle);
+    }
+
+    function inputOfFile(e) {
+        const data = e.target.value;
+        const fileName = data.split('\\');
+        let filter = "";
+        // 사용자가 HTML 코드를 수정하여 접근하고자 할 때, 비정상적인 코드 차단
+        filelist.map((item) => {
+            if (item === fileName[fileName.length - 1].split('.')[1]) {
+                setFile(fileName[fileName.length - 1]);
+                filter = item;
+            };
+        });
+
+        if (filter === "") {
+            valueOfFile.current.value = "";
+            alert("잘못된 접근입니다!");
+        }
+    }
+
+    function deleteOfFile() {
+        valueOfFile.current.disabled = false;
+        valueOfFile.current.value = "";
+        setFile("");
+    }
+
+    function inputOfUrl() {
+        const data = valueOfUrl.current.value;
+        if (data !== "") {
+            if (data.includes(`https`) || data.includes("www")) {
+                setUrl(data);
+                valueOfUrl.current.disabled = true;
+                valueOfUrl.current.style.color = "#bdbdbd";
+            } else {
+                alert("올바른 URL을 입력해주세요!")
+            }
+        } else {
+            alert("URL을 입력해주세요!")
+        }
+    }
+
+    function deleteOfUrl() {
+        valueOfUrl.current.disabled = false;
+        valueOfUrl.current.style.color = "#000";
+        valueOfUrl.current.value = "";
+        setUrl("");
+    }
+
+    function inputOfUrl_key(e) {
+        if (url === "") {
+            if (e.key === 'Enter') {
+                const data = e.target.value;
+                setUrl(data);
+                valueOfUrl.current.disabled = true;
+                valueOfUrl.current.style.color = "#bdbdbd";
+            }
+        }
     }
 
     //$toggle.classList.toggle('active');
@@ -32,9 +94,9 @@ function Signup() {
                         <span className={styles.boxOfTitle}>전화번호</span>
                         <div className={styles.contentOfBox}>
                             <input type="checkbox" className={styles.toggle} hidden/> 
-                                <div for={styles.toggle} onClick={changeToggle} class={toggle ? `${styles.toggleSwitch} ${styles.toggleSwitch_checked}` : styles.toggleSwitch}>
-                                    <div class={toggle ? `${styles.toggleButton} ${styles.toggleButton_checked}` : styles.toggleButton}></div>
-                                    <div class={styles.text}>
+                                <div htmlFor={styles.toggle} onClick={changeToggle} className={toggle ? `${styles.toggleSwitch} ${styles.toggleSwitch_checked}` : styles.toggleSwitch}>
+                                    <div className={toggle ? `${styles.toggleButton} ${styles.toggleButton_checked}` : styles.toggleButton}></div>
+                                    <div className={styles.text}>
                                         <span>공개</span>
                                         <span>비공개</span>
                                     </div>
@@ -56,39 +118,39 @@ function Signup() {
                                 <PostionBtn text="서비스 기획"/>
                             </div>
       
-                            <div class={styles.selectOfPosition}>
-                                <div class={styles.positionBox}>
+                            <div className={styles.selectOfPosition}>
+                                <div className={styles.positionBox}>
                                     기획
-                                    <hr class={styles.lineOfSplit}/>
+                                    <hr className={styles.lineOfSplit}/>
                                     디자인
-                                    <hr class={styles.lineOfSplit}/>                                   
+                                    <hr className={styles.lineOfSplit}/>                                   
                                     개발
-                                    <hr class={styles.lineOfSplit}/>                                   
+                                    <hr className={styles.lineOfSplit}/>                                   
                                     기타
                                 </div>
 
-                                <div class={styles.selectBox}>
-                                    <div class={styles.selectBoxOfContent}>
-                                        <div class={styles.contentSelect}>
+                                <div className={styles.selectBox}>
+                                    <div className={styles.selectBoxOfContent}>
+                                        <div className={styles.contentSelect}>
                                             <Checkbox text="UX 기획"/>
                                             <Checkbox text="프로젝트 매니저"/>
                                             <Checkbox text="서비스 기획"/>
                                             <Checkbox text="제품 기획"/>
                                         </div>
-                                        <hr class={styles.lineOfSplit}/>
+                                        <hr className={styles.lineOfSplit}/>
                                     </div>
-                                    <div class={styles.selectBoxOfContent}>
-                                        <div class={styles.contentSelect2}>
+                                    <div className={styles.selectBoxOfContent}>
+                                        <div className={styles.contentSelect2}>
                                             <Checkbox text="그래픽 디자인"/>
                                             <Checkbox text="3D 디자인"/>
                                             <Checkbox text="컨텐츠 디자인"/>
                                             <Checkbox text="UXUX 디자인"/>
                                             <Checkbox text="영상 디자인"/>
                                         </div>
-                                        <hr class={styles.lineOfSplit}/>
+                                        <hr className={styles.lineOfSplit}/>
                                     </div>
-                                    <div class={styles.selectBoxOfContent}>
-                                        <div class={styles.contentSelect3}>
+                                    <div className={styles.selectBoxOfContent}>
+                                        <div className={styles.contentSelect3}>
                                             <Checkbox text="IOS"/>
                                             <Checkbox text="크로스 플랫폼"/>
                                             <Checkbox text="웹 서버"/>
@@ -99,10 +161,10 @@ function Signup() {
                                             <Checkbox text="DB"/>
 
                                         </div>
-                                        <hr class={styles.lineOfSplit}/>
+                                        <hr className={styles.lineOfSplit}/>
                                     </div>
-                                    <div class={styles.selectBoxOfContent}>
-                                        <div class={styles.contentSelect4}>
+                                    <div className={styles.selectBoxOfContent}>
+                                        <div className={styles.contentSelect4}>
                                             <Checkbox text="마케팅"/>
                                             <Checkbox text="재무/회계"/>
                                             <Checkbox text="영업"/>
@@ -144,9 +206,9 @@ function Signup() {
                         <span className={styles.boxOfTitle}>포트폴리오</span>
                         <div className={styles.contentOfBox}>
                             <input type="checkbox" className={styles.toggle} hidden/> 
-                                <div for={styles.toggle} onClick={changeToggle} class={toggle ? `${styles.toggleSwitch} ${styles.toggleSwitch_checked}` : styles.toggleSwitch}>
-                                    <div class={toggle ? `${styles.toggleButton} ${styles.toggleButton_checked}` : styles.toggleButton}></div>
-                                    <div class={styles.text}>
+                                <div htmlFor={styles.toggle} onClick={changeToggle} className={toggle ? `${styles.toggleSwitch} ${styles.toggleSwitch_checked}` : styles.toggleSwitch}>
+                                    <div className={toggle ? `${styles.toggleButton} ${styles.toggleButton_checked}` : styles.toggleButton}></div>
+                                    <div className={styles.text}>
                                         <span>공개</span>
                                         <span>비공개</span>
                                     </div>
@@ -157,11 +219,53 @@ function Signup() {
                             </span>
 
                             <span className={styles.textofLink}>링크</span>
-                            <input type="input" className={styles.numOfInput} placeholder='링크를 입력하세요'/>
+                            <div className={styles.searchBar_portfolio}>
+                                <input type="input" onKeyPress={inputOfUrl_key} ref={valueOfUrl} className={styles.portfolioOfInput_url} placeholder='링크를 입력하세요'/>
+                                {url !== "" ? null : <Add className={styles.addBtn} onClick={inputOfUrl}/>}
+                            </div>
+                            {url === "" ? null :  
+                            <div className={styles.sectionOfFile}>
+                            <div className={styles.enrollFile}>
+                                <span>{url}</span>
+                                <div className={styles.deleteBtn} onClick={deleteOfUrl}>
+                                        삭제
+                                    </div>
+                                </div>
+                            </div>}
+
+                            <span className={styles.textofLink}>파일</span>
+                            <div className={styles.searchBar_portfolio}>
+                                <label type="input" className={styles.portfolioOfInput_file} htmlFor="input-file">
+                                    파일형식 : JPG, PNG, PDF, PPT, PPTX, HWP, HWPX
+                                </label>
+                                {file !== "" ? null : <label htmlFor="input-file" className={styles.uploadBtn}>업로드</label>}
+                                <input type="file" onChange={inputOfFile} ref={valueOfFile} id="input-file" className={styles.upload} accept=".jpg, .png, .pdf, .ppt, .pptx, .hwp, .hwpx"/>
+                            </div>
+                            {file === "" ? null : 
+                            <div className={styles.sectionOfFile}>
+                            <div className={styles.enrollFile}>
+                                <span>{file}</span>
+                                <div className={styles.deleteBtn} onClick={deleteOfFile}>
+                                            삭제
+                                        </div>
+                                    </div>
+                                </div>}
                         </div>
-                    </div>            
+                    </div>    
+
+                    {/* 마지막으로 버튼을 적는 칸이에요 */}
+                    <div className={styles.containerOfBtn}>
+                        <button className={styles.prevBtn}>
+                            나중에 하기
+                        </button>
+                        <button className={styles.submitBtn}>
+                            회원가입
+                        </button>
+                    </div>
+
                 </div>
             </div>
+            <Footer/>
         </section>
     )
 }
