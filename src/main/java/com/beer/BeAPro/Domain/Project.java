@@ -104,4 +104,14 @@ public class Project extends BaseEntity {
 
         return this;
     }
+
+    // == 비즈니스 로직 == //
+    // 복구 가능 기한 설정(삭제 처리)
+    public void setRestorationDate(boolean bool) {
+        if (bool) {
+            this.restorationDate = LocalDateTime.now().plusWeeks(2);
+        } else {
+            this.restorationDate = null;
+        }
+    }
 }

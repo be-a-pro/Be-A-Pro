@@ -140,6 +140,35 @@ public class ProjectService {
 
 
     // ===== 삭제 ===== //
+    // 프로젝트 객체 삭제(영구 삭제)
+    @Transactional
+    public void deleteProject(Project project) {
+        // ProjectMember 삭제
+        List<ProjectMember> findProjectMembers = projectMemberRepository.findAllByProject(project);
+        projectMemberRepository.deleteAll(findProjectMembers);
+        // Position 삭제
+        deletePosition(project);
+        // Project 삭제
+        projectRepository.delete(project);
+    }
+
+    // 프로젝트 삭제 처리(USER 권한으로 삭제할 경우)
+    @Transactional
+    public void deleteProcessingProject(Project project) {
+        // 팀장 제외 팀원이 있는지
+        if (projectMemberRepository.findByProjectAndTeamPosition(project, TeamPosition.MEMBER).isPresent()) {
+            project.setRestorationDate(true); // 복구 가능 기간 가짐
+        } else {
+            deleteProject(project); // 영구 삭제
+        }
+    }
+
+    // 삭제된 프로젝트 복구(삭제 예정 취소)
+    @Transactional
+    public void restorationProject(Project project) {
+        project.setRestorationDate(false);
+    }
+
     // ProjectPosition 객체와 연관된 Position 삭제
     @Transactional
     public void deletePosition(Project project) {
@@ -159,12 +188,14 @@ public class ProjectService {
         return projectRepository.findByUserAndId(user, id).orElse(null);
     }
 
-    
+
     // ===== 비즈니스 로직 ===== //
 
     // 프로젝트 데이터 불러오기
     public ResponseDto.GetProjectDataDto getProjectData(Project project) {
-        // TODO: 삭제 처리된 프로젝트일 경우
+        // 삭제 처리된 프로젝트일 경우
+        if(project.getRestorationDate() != null)
+            throw new RestApiException(ErrorCode.PROJECT_AWAITING_DELETION);
 
         // 데이터 가공
         List<String> projectHashtags = project.getProjectHashtags().stream()
