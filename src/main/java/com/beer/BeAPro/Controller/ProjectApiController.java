@@ -74,7 +74,7 @@ public class ProjectApiController {
         // 사용자 검증
         User findUser = extractUserFromAccessToken(requestAccessTokenInHeader);
         checkPortfolioIsPublic(findUser);
-        Project findProject = findTemporaryProjectByWriter(findUser, id);
+        Project findProject = findProjectByWriter(findUser, id);
 
         // 프로젝트 대표 이미지
         // AWS S3에서 기존 프로젝트 대표 이미지 삭제
@@ -109,7 +109,7 @@ public class ProjectApiController {
         // 사용자 검증
         User findUser = extractUserFromAccessToken(requestAccessTokenInHeader);
         checkPortfolioIsPublic(findUser);
-        Project findProject = findTemporaryProjectByWriter(findUser, id);
+        Project findProject = findProjectByWriter(findUser, id);
 
         // 프로젝트 데이터 가져오기
         ResponseDto.GetProjectDataDto getProjectDataDto = projectService.getProjectData(findProject);
@@ -154,11 +154,10 @@ public class ProjectApiController {
         }
     }
 
-    // 접근한 사용자가 작성 중이던 프로젝트 데이터
-    public Project findTemporaryProjectByWriter(User accessUser, Long id) {
-        Project findProject = projectService.findById(id);
-        // 접근한 사용자가 작성자와 같은지 확인
-        if (findProject == null || accessUser != findProject.getUser()) {
+    // 사용자가 작성한 프로젝트 데이터 가져오기
+    public Project findProjectByWriter(User accessUser, Long id) {
+        Project findProject = projectService.findByUserAndId(accessUser, id);
+        if (findProject == null) {
             throw new RestApiException(ErrorCode.POST_NOT_FOUND);
         }
         return findProject;
