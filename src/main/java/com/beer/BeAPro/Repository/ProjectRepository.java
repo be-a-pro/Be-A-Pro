@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByUserAndIsTemporary(User user, Boolean isTemporary);
+    Optional<Project> findByUserAndId(User user, Long id);
 }

@@ -152,11 +152,11 @@ public class ProjectService {
 
     // ===== 조회 ===== //
     public Project findTemporaryProjectByUser(User user) {
-        return projectRepository.findByUserAndIsTemporary(user, false).orElse(null);
+        return projectRepository.findByUserAndIsTemporary(user, true).orElse(null);
     }
 
-    public Project findById(Long id) {
-        return projectRepository.findById(id).orElse(null);
+    public Project findByUserAndId(User user, Long id) {
+        return projectRepository.findByUserAndId(user, id).orElse(null);
     }
 
     
