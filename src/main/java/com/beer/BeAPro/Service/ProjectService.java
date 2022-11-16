@@ -3,6 +3,7 @@ package com.beer.BeAPro.Service;
 import com.beer.BeAPro.Domain.*;
 import com.beer.BeAPro.Dto.ProjectDto;
 import com.beer.BeAPro.Dto.RequestDto;
+import com.beer.BeAPro.Dto.ResponseDto;
 import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.*;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,6 +161,58 @@ public class ProjectService {
 
     
     // ===== 비즈니스 로직 ===== //
+
+    // 프로젝트 데이터 불러오기
+    public ResponseDto.GetProjectDataDto getProjectData(Project project) {
+        // TODO: 삭제 처리된 프로젝트일 경우
+
+        // 데이터 가공
+        List<String> projectHashtags = project.getProjectHashtags().stream()
+                .map(ProjectHashtag::getHashtag)
+                .collect(Collectors.toList());
+        List<ResponseDto.PositionDto> projectPositions = new ArrayList<>();
+        List<Long> currentCountPerPosition = new ArrayList<>();
+        List<Long> closingCountPerPosition = new ArrayList<>();
+        for (ProjectPosition projectPosition : project.getProjectPositions()) {
+            Position position = projectPosition.getPosition();
+            projectPositions.add(ResponseDto.PositionDto.builder()
+                    .category(position.getCategory())
+                    .development(position.getDevelopment())
+                    .design(position.getDesign())
+                    .planning(position.getPlanning())
+                    .etc(position.getEtc())
+                    .build());
+            currentCountPerPosition.add(projectPosition.getCurrentCount());
+            closingCountPerPosition.add(projectPosition.getClosingCount());
+        }
+        List<String> usedStacks = Arrays.stream(project.getUsedStacks().split(","))
+                .collect(Collectors.toList());
+        List<String> referenceLinks = Arrays.stream(project.getReferenceLinks().split(","))
+                .collect(Collectors.toList());
+        ResponseDto.ImageDto projectImage = null;
+        if (project.getProjectImage()!=null) {
+            projectImage = ResponseDto.ImageDto.builder()
+                    .filepath(project.getProjectImage().getFilepath())
+                    .originalName(project.getProjectImage().getOriginalName())
+                    .build();
+        }
+
+        return ResponseDto.GetProjectDataDto.builder()
+                .title(project.getTitle())
+                .projectImage(projectImage)
+                .projectHashtags(projectHashtags)
+                .kakaoLink(project.getKakaoLink())
+                .info(project.getInfo())
+                .freeInfo(project.getFreeInfo())
+                .progressMethod(project.getProgressMethod())
+                .usedStacks(usedStacks)
+                .referenceLinks(referenceLinks)
+                .projectPositions(projectPositions)
+                .currentCountPerPosition(currentCountPerPosition)
+                .closingCountPerPosition(closingCountPerPosition)
+                .build();
+    }
+
     // 작성자(팀장)의 ProjectMember 객체 생성
     @Transactional
     public void createProjectLeader(User writer, Project project) {
