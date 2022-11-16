@@ -1,6 +1,7 @@
 package com.beer.BeAPro.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +25,10 @@ public class AwsS3UploadService implements UploadService {
     @Override
     public void uploadFile(InputStream inputStream, ObjectMetadata objectMetadata, String fileName) {
         amazonS3.putObject(new PutObjectRequest(s3Component.getBucket(), fileName, inputStream, objectMetadata));
+    }
+
+    @Override
+    public void deleteFile(String fileName) {
+        amazonS3.deleteObject(new DeleteObjectRequest(s3Component.getBucket(), fileName));
     }
 }
