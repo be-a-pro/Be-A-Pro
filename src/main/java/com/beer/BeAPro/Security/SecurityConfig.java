@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/agree").authenticated()
-                .antMatchers("/api/project/write", "/api/project/temporary").hasRole("USER")
+                .antMatchers("/api/project/write", "/api/project/temporary", "/api/project/delete").hasRole("USER")
                 .antMatchers("/api/user/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole("ADMIN") // 관리자 페이지
                 .anyRequest().permitAll()
