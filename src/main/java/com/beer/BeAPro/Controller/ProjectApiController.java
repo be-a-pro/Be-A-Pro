@@ -101,6 +101,39 @@ public class ProjectApiController {
     }
 
 
+    // ===== 프로젝트 조회 ===== //
+    // 프로젝트 데이터 가져오기: 임시저장된 글 작성 또는 글 수정시
+    @GetMapping("/write")
+    public ResponseEntity<ResponseDto.GetProjectDataDto> getTemporaryProject(@RequestHeader("Authorization") String requestAccessTokenInHeader,
+                                                                             @RequestParam Long id) {
+        // 사용자 검증
+        User findUser = extractUserFromAccessToken(requestAccessTokenInHeader);
+        checkPortfolioIsPublic(findUser);
+        Project findProject = findTemporaryProjectByWriter(findUser, id);
+
+        // 프로젝트 데이터 가져오기
+        ResponseDto.GetProjectDataDto getProjectDataDto = projectService.getProjectData(findProject);
+        return ResponseEntity.status(HttpStatus.OK).body(getProjectDataDto);
+    }
+
+    // 임시저장된 프로젝트가 있는지 체크
+    @GetMapping("/temporary")
+    public ResponseEntity<ResponseDto.GetProjectIdDto> checkTemporaryProject(@RequestHeader("Authorization") String requestAccessTokenInHeader) {
+        // 사용자 검증
+        User findUser = extractUserFromAccessToken(requestAccessTokenInHeader);
+        Project temporaryProject = projectService.findTemporaryProjectByUser(findUser);
+
+        if (temporaryProject != null) {
+            ResponseDto.GetProjectIdDto responseDto = ResponseDto.GetProjectIdDto.builder()
+                    .projectId(temporaryProject.getId())
+                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+    }
+
+
     // ===== 비즈니스 로직 ===== //
 
     // AT로부터 사용자 추출
