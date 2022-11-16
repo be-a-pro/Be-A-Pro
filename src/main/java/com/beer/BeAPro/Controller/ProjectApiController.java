@@ -101,6 +101,37 @@ public class ProjectApiController {
     }
 
 
+    // ===== 프로젝트 삭제 ===== //
+
+    // 임시저장된 프로젝트 영구 삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteTemporaryProject(@RequestHeader("Authorization") String requestAccessTokenInHeader,
+                                                         @RequestParam Long id) {
+        // 사용자 검증
+        User findUser = extractUserFromAccessToken(requestAccessTokenInHeader);
+        Project findProject = findProjectByWriter(findUser, id);
+        if (!findProject.getIsTemporary()) { // 임시저장된 프로젝트가 아닐경우
+            throw new RestApiException(ErrorCode.METHOD_NOT_ALLOWED);
+        }
+
+        projectService.deleteProject(findProject);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // 사용자 권한으로 프로젝트 삭제: 삭제 처리(복구 가능)
+    @PutMapping("/delete")
+    public ResponseEntity<String> deleteProject(@RequestHeader("Authorization") String requestAccessTokenInHeader,
+                                                @RequestParam Long id) {
+        // 사용자 검증
+        User findUser = extractUserFromAccessToken(requestAccessTokenInHeader);
+        Project findProject = findProjectByWriter(findUser, id);
+
+        // 삭제 처리
+        projectService.deleteProcessingProject(findProject);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
     // ===== 프로젝트 조회 ===== //
     // 프로젝트 데이터 가져오기: 임시저장된 글 작성 또는 글 수정시
     @GetMapping("/write")

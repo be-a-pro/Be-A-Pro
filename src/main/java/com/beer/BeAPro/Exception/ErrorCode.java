@@ -36,6 +36,7 @@ public enum ErrorCode {
      */
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found post."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found user."),
+    PROJECT_AWAITING_DELETION(HttpStatus.NOT_FOUND, "Project awaiting deletion."),
 
     /*
      * 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출

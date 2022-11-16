@@ -28,8 +28,6 @@ public class BatchScheduler {
 
     @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
     public void updateUserData() throws InterruptedException {
-        System.out.println("update start: " + Thread.currentThread().getName());
-
         // job parameter 설정
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(LocalDateTime.now().toString()));
@@ -42,6 +40,21 @@ public class BatchScheduler {
                 JobParametersInvalidException | JobRestartException e) {
             log.error(e.getMessage());
         }
-        System.out.println("update end: " + Thread.currentThread().getName());
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
+    public void deleteProject() throws InterruptedException {
+        // job parameter 설정
+        Map<String, JobParameter> confMap = new HashMap<>();
+        confMap.put("time", new JobParameter(LocalDateTime.now().toString()));
+        JobParameters jobParameters = new JobParameters(confMap);
+
+        // batch 실행
+        try{
+            jobLauncher.run(batchConfig.deleteProjectJob(), jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException |
+                JobParametersInvalidException | JobRestartException e) {
+            log.error(e.getMessage());
+        }
     }
 }
