@@ -6,5 +6,6 @@ import java.io.InputStream;
 
 public interface UploadService {
     void uploadFile(InputStream inputStream, ObjectMetadata objectMetadata, String fileName);
+    void deleteFile(String filename);
     String getFileUrl(String filename);
 }

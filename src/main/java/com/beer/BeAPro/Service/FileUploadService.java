@@ -93,6 +93,12 @@ public class FileUploadService {
                 .build();
     }
 
+    // AWS S3에서 파일 삭제
+    @Transactional
+    public void deleteFile(String fileName) {
+        awsS3UploadService.deleteFile(fileName);
+    }
+
 
     // ===== DB에 저장 ===== //
 

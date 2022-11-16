@@ -28,4 +28,18 @@ public class ProjectMember extends BaseEntity {
     @JoinColumn(name = "position_id", unique = true)
     private Position position; // 담당 포지션
 
+    @Enumerated(EnumType.STRING)
+    private TeamPosition teamPosition;
+
+    // == 생성 메서드 == //
+    public static ProjectMember createProjectMember(User user, Project project, Position position, TeamPosition teamPosition) {
+        ProjectMember projectMember = new ProjectMember();
+
+        projectMember.user = user;
+        projectMember.project = project;
+        projectMember.position = position;
+        projectMember.teamPosition = teamPosition;
+
+        return projectMember;
+    }
 }
