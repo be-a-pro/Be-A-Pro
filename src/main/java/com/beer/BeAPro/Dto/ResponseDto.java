@@ -15,27 +15,13 @@ public class ResponseDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class CheckTemporaryProjectDto {
-        @NotBlank
-        private String temporaryId;
-
-        @Builder
-        public CheckTemporaryProjectDto(String temporaryId) {
-            this.temporaryId = temporaryId;
-        }
-    }
-
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class SaveProjectDto {
+    public static class GetProjectIdDto {
         @NotBlank
         private Long projectId;
-        private String temporaryId;
 
         @Builder
-        public SaveProjectDto(Long projectId, String temporaryId) {
+        public GetProjectIdDto(Long projectId) {
             this.projectId = projectId;
-            this.temporaryId = temporaryId;
         }
     }
 
@@ -74,7 +60,7 @@ public class ResponseDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class GetProjectDto {
+    public static class GetProjectDataDto {
         @NotBlank
         private String title;
         private ImageDto projectImage = null;
@@ -99,18 +85,18 @@ public class ResponseDto {
         private List<Long> closingCountPerPosition; // 마감 인원
 
         @Builder
-        public GetProjectDto(String title,
-                             ImageDto projectImage,
-                             List<String> projectHashtags,
-                             String kakaoLink,
-                             String info,
-                             String freeInfo,
-                             String progressMethod,
-                             List<String> usedStacks,
-                             List<String> referenceLinks,
-                             List<PositionDto> projectPositions,
-                             List<Long> currentCountPerPosition,
-                             List<Long> closingCountPerPosition) {
+        public GetProjectDataDto(String title,
+                                 ImageDto projectImage,
+                                 List<String> projectHashtags,
+                                 String kakaoLink,
+                                 String info,
+                                 String freeInfo,
+                                 String progressMethod,
+                                 List<String> usedStacks,
+                                 List<String> referenceLinks,
+                                 List<PositionDto> projectPositions,
+                                 List<Long> currentCountPerPosition,
+                                 List<Long> closingCountPerPosition) {
             this.title  = title;
             this.projectImage = projectImage;
             this.projectHashtags = projectHashtags;

@@ -17,13 +17,10 @@ public class ProjectDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class CreateDto { // 프로젝트 생성
         private User user;
-        private String temporaryId;
 
         @Builder
-        public CreateDto(User user,
-                         String temporaryId) {
+        public CreateDto(User user) {
             this.user = user;
-            this.temporaryId = temporaryId;
         }
     }
 
