@@ -1,5 +1,6 @@
 package com.beer.BeAPro.Domain;
 
+import com.beer.BeAPro.Dto.ProjectDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,8 @@ public class Project extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user; // 사용자
+
+    private String title; // 제목
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "project_image_id", unique = true)
@@ -53,4 +56,52 @@ public class Project extends BaseEntity {
 
     private LocalDateTime restorationDate; // 복구 가능 날짜
 
+
+    // == 생성 메서드 == //
+    public static Project createProject(ProjectDto.CreateDto createDto) { // 생성
+        Project project = new Project();
+
+        project.user = createDto.getUser();
+
+        project.views = 0;
+        project.isApplyPossible = true;
+
+        return project;
+    }
+
+    public Project saveData(ProjectDto.SaveDataDto saveDataDto) { // 저장 또는 최초의 임시저장
+        this.title = saveDataDto.getTitle();
+        this.projectImage = saveDataDto.getProjectImage();
+        this.projectHashtags = saveDataDto.getProjectHashtags();
+        this.kakaoLink = saveDataDto.getKakaoLink();
+        this.info = saveDataDto.getInfo();
+        this.freeInfo = saveDataDto.getFreeInfo();
+        this.progressMethod = saveDataDto.getProgressMethod();
+        this.usedStacks = saveDataDto.getUsedStacks();
+        this.referenceLinks = saveDataDto.getReferenceLinks();
+        this.projectPositions = saveDataDto.getProjectPositions();
+        this.isTemporary = saveDataDto.getIsTemporary();
+
+        return this;
+    }
+
+    public Project update(ProjectDto.SaveDataDto saveDataDto) { // 수정
+        this.title = saveDataDto.getTitle();
+        this.projectImage = saveDataDto.getProjectImage();
+        this.kakaoLink = saveDataDto.getKakaoLink();
+        this.info = saveDataDto.getInfo();
+        this.freeInfo = saveDataDto.getFreeInfo();
+        this.progressMethod = saveDataDto.getProgressMethod();
+        this.usedStacks = saveDataDto.getUsedStacks();
+        this.referenceLinks = saveDataDto.getReferenceLinks();
+        this.isTemporary = saveDataDto.getIsTemporary();
+
+        // 연관관계 매핑 중 콜렉션 데이터 처리
+        this.projectHashtags.clear();
+        this.projectHashtags.addAll(saveDataDto.getProjectHashtags());
+        this.projectPositions.clear();
+        this.projectPositions.addAll(saveDataDto.getProjectPositions());
+
+        return this;
+    }
 }

@@ -22,4 +22,14 @@ public class ProjectHashtag {
 
     private String hashtag;
 
+
+    // == 생성 메서드 == //
+    public static ProjectHashtag createProjectHashtag(Project project, String hashtag) {
+        ProjectHashtag projectHashtag = new ProjectHashtag();
+
+        projectHashtag.project = project;
+        projectHashtag.hashtag = hashtag;
+
+        return projectHashtag;
+    }
 }
