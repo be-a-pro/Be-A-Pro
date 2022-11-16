@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -186,6 +187,13 @@ public class ProjectService {
 
     public Project findByUserAndId(User user, Long id) {
         return projectRepository.findByUserAndId(user, id).orElse(null);
+    }
+
+    // DB에서 삭제할 프로젝트 목록
+    public List<Project> findProjectToDelete() {
+        return projectRepository.findAll().stream()
+                .filter(project -> project.getRestorationDate().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
     }
 
 
