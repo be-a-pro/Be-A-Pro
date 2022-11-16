@@ -29,6 +29,7 @@ public enum ErrorCode {
      */
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "Forbidden."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied."),
+    CREATING_PROJECT_DENIED(HttpStatus.FORBIDDEN, "Unable to create the project. The portfolio must be made public."),
 
     /*
      * 404 NOT_FOUND: 리소스를 찾을 수 없음
@@ -41,6 +42,12 @@ public enum ErrorCode {
      */
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Not allowed method."),
     CANNOT_DISCONNECT(HttpStatus.METHOD_NOT_ALLOWED, "The SNS account used for membership registration cannot be disconnected."),
+
+    /*
+     * 409 CONFLICT: 서버의 현재 상태와 요청이 충돌
+     */
+    CONFLICT_REQUEST(HttpStatus.CONFLICT, "Conflict request."),
+    LEADER_ALREADY_EXISTS(HttpStatus.CONFLICT, "The team leader of the project already exists."),
 
     /*
      * 413 PAYLOAD_TOO_LARGE: 서버에서 지원하지 않는 미디어 포맷
