@@ -50,7 +50,7 @@ public class Project extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProjectPosition> projectPositions = new ArrayList<>(); // 모집 포지션
 
-    private int views; // 조회수
+    private Long views; // 조회수
 
     private Boolean isTemporary; // 임시 저장 여부
 
@@ -63,7 +63,7 @@ public class Project extends BaseEntity {
 
         project.user = createDto.getUser();
 
-        project.views = 0;
+        project.views = 0L;
         project.isApplyPossible = true;
 
         return project;
@@ -113,5 +113,10 @@ public class Project extends BaseEntity {
         } else {
             this.restorationDate = null;
         }
+    }
+
+    // 조회수 증가
+    public void increaseViews() {
+        this.views += 1;
     }
 }

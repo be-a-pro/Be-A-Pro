@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -181,6 +182,10 @@ public class ProjectService {
 
 
     // ===== 조회 ===== //
+    public Project findById(Long id) {
+        return projectRepository.findById(id).orElse(null);
+    }
+
     public Project findTemporaryProjectByUser(User user) {
         return projectRepository.findByUserAndIsTemporary(user, true).orElse(null);
     }
@@ -252,6 +257,38 @@ public class ProjectService {
                 .build();
     }
 
+    public ResponseDto.GetProjectDetailDto getProjectDetail(Project project) {
+        // GetProjectDataDto 생성
+        ResponseDto.GetProjectDataDto projectData = getProjectData(project);
+        // ProjectWriterDto 생성
+        User projectWriter = project.getUser();
+        ResponseDto.ProjectWriterDto projectWriterDto = null; // 사용자가 탈퇴했을 경우 null
+        if (projectWriter != null) {
+            ResponseDto.ImageDto writerProfileImage = null; // 사용자 프로필 이미지가 없을 경우 null
+            if (projectWriter.getProfileImage() != null) {
+                writerProfileImage = ResponseDto.ImageDto.builder()
+                        .originalName(projectWriter.getProfileImage().getOriginalName())
+                        .filepath(projectWriter.getProfileImage().getFilepath())
+                        .build();
+            }
+            projectWriterDto = ResponseDto.ProjectWriterDto.builder()
+                    .name(projectWriter.getName())
+                    .email(projectWriter.getEmail())
+                    .profileImage(writerProfileImage)
+                    .build();
+        }
+        // 생성 날짜 리포맷
+        String createDateTime = project.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        return ResponseDto.GetProjectDetailDto.builder()
+                .project(projectData)
+                .user(projectWriterDto)
+                .createdDateTime(createDateTime)
+                .views(project.getViews())
+                .isApplyPossible(project.getIsApplyPossible())
+                .build();
+    }
+
     // 작성자(팀장)의 ProjectMember 객체 생성
     @Transactional
     public void createProjectLeader(User writer, Project project) {
@@ -265,5 +302,11 @@ public class ProjectService {
             throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
         }
         projectMemberRepository.save(projectMember);
+    }
+
+    // 조회수 증가
+    @Transactional
+    public void increaseViews(Project project) {
+        project.increaseViews();
     }
 }
