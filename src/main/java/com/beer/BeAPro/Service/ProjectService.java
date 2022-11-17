@@ -266,4 +266,10 @@ public class ProjectService {
         }
         projectMemberRepository.save(projectMember);
     }
+
+    // 조회수 증가
+    @Transactional
+    public void increaseViews(Project project) {
+        project.increaseViews();
+    }
 }
