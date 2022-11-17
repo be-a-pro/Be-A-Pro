@@ -164,6 +164,19 @@ public class ProjectApiController {
         }
     }
 
+    // 프로젝트 상세 내용 가져오기
+    @GetMapping("/project/detail")
+    public ResponseEntity<ResponseDto.GetProjectDetailDto> getProjectDetail(@RequestParam Long id) {
+        Project findProject = projectService.findById(id);
+        if (findProject != null) {
+            projectService.increaseViews(findProject); // 조회수 증가
+            ResponseDto.GetProjectDetailDto responseDto = projectService.getProjectDetail(findProject);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        } else {
+            throw new RestApiException(ErrorCode.POST_NOT_FOUND);
+        }
+    }
+
 
     // ===== 비즈니스 로직 ===== //
 

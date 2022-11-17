@@ -111,4 +111,42 @@ public class ResponseDto {
             this.closingCountPerPosition = closingCountPerPosition;
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ProjectWriterDto { // 프로젝트 상세 페이지에서 필요한 작성자 정보
+        private String name;
+        private String email;
+        private ImageDto profileImage = null;
+
+        @Builder
+        public ProjectWriterDto(String name, String email, ImageDto profileImage) {
+            this.name = name;
+            this.email = email;
+            this.profileImage = profileImage;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class GetProjectDetailDto {
+        private GetProjectDataDto project;
+        private ProjectWriterDto user = null;
+        private String createdDateTime; // yyyy-MM-dd HH:mm:ss
+        private Long views;
+        private Boolean isApplyPossible;
+
+        @Builder
+        public GetProjectDetailDto(GetProjectDataDto project,
+                                   ProjectWriterDto user,
+                                   String createdDateTime,
+                                   Long views,
+                                   Boolean isApplyPossible) {
+            this.project = project;
+            this.user = user;
+            this.createdDateTime = createdDateTime;
+            this.views = views;
+            this.isApplyPossible = isApplyPossible;
+        }
+    }
 }
