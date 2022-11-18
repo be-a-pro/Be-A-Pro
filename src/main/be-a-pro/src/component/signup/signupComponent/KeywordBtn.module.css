@@ -9,19 +9,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    column-gap: 10px;
-    font-size: 16px;
-    padding-right: 0.75em;
-    padding-top: 0.25em;
-    padding-bottom: 0.25em;
-    padding-left: 0.75em;
+    gap: 7.5px;
+    font-size: 14px;
+    padding-right: 0.6em;
+    padding-top: 1.9px;
+    padding-bottom: 1.9px;
+    padding-left: 0.85em;
     border: solid 1px #a293ff;
     border-radius: 8px;
     font-family: 'Pretendard-Medium';
+    margin-bottom: 12px;
 }
 
 .removeTag {
-    width: 22px;
-    height: 22px;
+    width: 19.5px;
+    height: 19.5px;
     flex-grow: 0;
+    cursor: pointer;
 }

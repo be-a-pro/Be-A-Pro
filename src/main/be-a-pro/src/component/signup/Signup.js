@@ -6,23 +6,85 @@ import KeywordBtn from './signupComponent/KeywordBtn';
 import Footer from '../Footer';
 import {ReactComponent as Search} from '../../images/search-icon.svg';
 import {ReactComponent as Add} from '../../images/icons/add.svg';
+import SearchBar from './SearchBar';
 
 function Signup() {
 
     const [toggle, setToggle] = useState(false);
+    const [toggle2, setToggle2] = useState(false);
     const [file, setFile] = useState("");
-    const [url, setUrl] = useState("");
+    const [url, setUrl] = useState([]);
+    const [tagPosition, setTagPostion] = useState([]);
+    const [tagkeyword, setTagKeyword] = useState([]);
     const valueOfUrl = useRef(null);
+    const label = useRef(null);
+    const search = useRef(null);
+    const keyword = useRef(null);
     const valueOfFile = useRef(null);
     const filelist = ['jpg', 'png', 'pdf', 'ppt', 'pptx', 'hwp', 'hwpx'];
+    const nextID = useRef(0);
+    const keywordID = useRef(0);
+
+    const dummy = ['컨텐츠', '컨텐츠 디자인', '공룡'];
+    const [query, setQuery] = useState("");
+
+    useEffect(() => {
+        if (url.length === 3) {
+            valueOfUrl.current.disabled = true;
+            valueOfUrl.current.value = "링크를 입력해주세요"
+            valueOfUrl.current.style.color = "#bdbdbd";
+        }
+    }, [url, tagkeyword]);
 
     function changeToggle() {
         setToggle(!toggle);
     }
 
-    function inputOfFile(e) {
+    function changeToggle2() {
+        setToggle2(!toggle2);
+    }
+
+    function submitOfKeyword(e) {
         const data = e.target.value;
+        if (e.key === "Enter") {
+            setTagKeyword([...tagkeyword, {
+                id : tagkeyword.length,
+                tag : `#${data}`,
+            }])
+            keyword.current.value = "";
+            search.current.style.visibility = "hidden";
+        }
+    }
+
+    function inputOfKeyword(e) {
+        const data = e.target.value;
+        if (data !== "") {
+            search.current.style.visibility = "visible";
+        } else {
+            search.current.style.visibility = "hidden";
+        }
+        setQuery(data);
+    }
+
+    function deleteOfKeyword(id) {
+        const inputs = [];
+        setTagKeyword(tagkeyword.filter(item => item.id !== id));
+
+        const data = tagkeyword.filter(item => item.id !== id);
+        if (id !== keyword.length-1) {
+            data.map((item) => {
+                item.id === 0 ? inputs.push({id : item.id, tag : item.tag}) : inputs.push({id : item.id-1, tag: item.tag})
+            });
+        }
+        setTagKeyword(inputs);
+    }
+
+    function inputOfFile(e) {
+        const data = e.target.value;    
         const fileName = data.split('\\');
+        valueOfFile.current.disabled = true;
+        label.current.style.backgroundColor = "#FAFAFA";
+
         let filter = "";
         // 사용자가 HTML 코드를 수정하여 접근하고자 할 때, 비정상적인 코드 차단
         filelist.map((item) => {
@@ -40,39 +102,76 @@ function Signup() {
 
     function deleteOfFile() {
         valueOfFile.current.disabled = false;
-        valueOfFile.current.value = "";
+        label.current.disabled = false;
+        label.current.style.backgroundColor = "white";
         setFile("");
     }
 
     function inputOfUrl() {
+        let addOfUrl = {};
         const data = valueOfUrl.current.value;
         if (data !== "") {
-            if (data.includes(`https`) || data.includes("www")) {
-                setUrl(data);
-                valueOfUrl.current.disabled = true;
-                valueOfUrl.current.style.color = "#bdbdbd";
+            if (data.includes(`http`) && data.includes("www")) {
+                addOfUrl = {
+                    id: url.length,
+                    url: data,
+                }
+                setUrl(url => [...url, addOfUrl]);
             } else {
                 alert("올바른 URL을 입력해주세요!")
             }
         } else {
-            alert("URL을 입력해주세요!")
+            alert("올바른 URL을 입력해주세요!")
         }
     }
 
-    function deleteOfUrl() {
+    function deleteOfUrl(id) {
         valueOfUrl.current.disabled = false;
         valueOfUrl.current.style.color = "#000";
         valueOfUrl.current.value = "";
-        setUrl("");
+        const inputs = [];
+        console.log("id : ", id);
+        setUrl(url.filter(data => data.id !== id));
+
+        const del = url.filter(data => data.id !== id);
+        if (id !== 2) {
+            del.map((item) => {
+                item.id === 0 ? inputs.push({id : item.id, url : item.url}) : inputs.push({id : item.id-1, url : item.url});
+            })
+            setUrl(inputs);
+        }
     }
 
     function inputOfUrl_key(e) {
-        if (url === "") {
+        const data = e.target.value;
+        let addOfUrl;
+        if (url.length !== 3) {
             if (e.key === 'Enter') {
-                const data = e.target.value;
-                setUrl(data);
-                valueOfUrl.current.disabled = true;
-                valueOfUrl.current.style.color = "#bdbdbd";
+                if (data !== "") {
+                    if (data.includes(`http`) && data.includes("www")) {
+                    const data = e.target.value;
+                        if (url.length === 0) {
+                            addOfUrl = {
+                                id: 0,
+                                url: data,
+                            }
+                        } else {
+                            addOfUrl = {
+                                id: url.length,
+                                url: data,
+                            }
+                        }
+                        setUrl(url => [...url, addOfUrl]);
+                        if (url.length === 3) {
+                            valueOfUrl.current.disabled = true;
+                            valueOfUrl.current.style.color = "#bdbdbd";
+                        }
+                    } else {
+                        alert("올바른 URL을 입력해주세요!");
+                    }
+                } else {
+                    alert("올바른 URL을 입력해주세요!")
+                }
             }
         }
     }
@@ -180,14 +279,29 @@ function Signup() {
                         <span className={styles.boxOfTitle}>관심 키워드</span>
                         <div className={styles.contentOfBox}>
                             <div className={styles.sectionOfTag}>
-                                <KeywordBtn text="#UXUI"/>
-                                <KeywordBtn text="#Figma"/>
-                                <KeywordBtn text="#상세페이지"/>
-                                <KeywordBtn text="#컨텐츠 디자인"/>
+                                {tagkeyword.map((item, id) => {
+                                    return <KeywordBtn key={id} onClick={() => deleteOfKeyword(id)} text={item.tag}/>
+                                })}
                             </div>
                             <div className={styles.searchBar}>
                                 <Search className={styles.symbolOfSearch}/>
-                                <input type="input" className={styles.keywordOfInput} placeholder='관심있는 키워드를 태그해주세요   (ex. 창업, 대학생, 컨텐츠 디자인 등)'/>
+                                <input type="input" className={styles.keywordOfInput} onChange={inputOfKeyword} ref={keyword} onKeyPress={submitOfKeyword} placeholder='관심있는 키워드를 태그해주세요 (ex. 창업, 대학생, 컨텐츠 디자인 등)'/>
+                            </div>
+                            <div className={styles.containerOfSearch} ref={search}>
+                                <ul>
+                                    {dummy.map((item) => {
+                                        if (item.includes(query, 0)) {
+                                            if (item.indexOf(query) === 0) {
+                                                return (
+                                                    <li>
+                                                        <span style={{ color: "#ff7827" }}>{item.slice(0, query.length)}</span>
+                                                        <span>{item.slice(query.length, item.length)}</span>
+                                                    </li>
+                                                )
+                                            }
+                                        }})
+                                    }   
+                                </ul>                            
                             </div>
                         </div>
                     </div>
@@ -206,8 +320,8 @@ function Signup() {
                         <span className={styles.boxOfTitle}>포트폴리오</span>
                         <div className={styles.contentOfBox}>
                             <input type="checkbox" className={styles.toggle} hidden/> 
-                                <div htmlFor={styles.toggle} onClick={changeToggle} className={toggle ? `${styles.toggleSwitch} ${styles.toggleSwitch_checked}` : styles.toggleSwitch}>
-                                    <div className={toggle ? `${styles.toggleButton} ${styles.toggleButton_checked}` : styles.toggleButton}></div>
+                                <div htmlFor={styles.toggle} onClick={changeToggle2} className={toggle2 ? `${styles.toggleSwitch} ${styles.toggleSwitch_checked}` : styles.toggleSwitch}>
+                                    <div className={toggle2 ? `${styles.toggleButton} ${styles.toggleButton_checked}` : styles.toggleButton}></div>
                                     <div className={styles.text}>
                                         <span>공개</span>
                                         <span>비공개</span>
@@ -220,22 +334,25 @@ function Signup() {
 
                             <span className={styles.textofLink}>링크</span>
                             <div className={styles.searchBar_portfolio}>
-                                <input type="input" onKeyPress={inputOfUrl_key} ref={valueOfUrl} className={styles.portfolioOfInput_url} placeholder='링크를 입력하세요'/>
-                                {url !== "" ? null : <Add className={styles.addBtn} onClick={inputOfUrl}/>}
+                            <input type="input" onKeyPress={inputOfUrl_key} ref={valueOfUrl} className={styles.portfolioOfInput_url} placeholder='링크를 입력하세요'/>
+                            {url.length !== 3 ? <Add className={styles.addBtn} onClick={inputOfUrl}/> : null}
                             </div>
-                            {url === "" ? null :  
-                            <div className={styles.sectionOfFile}>
-                            <div className={styles.enrollFile}>
-                                <span>{url}</span>
-                                <div className={styles.deleteBtn} onClick={deleteOfUrl}>
-                                        삭제
-                                    </div>
-                                </div>
-                            </div>}
+
+                            {url === [] ? null : url.map((item, id) => {
+                                return(                                
+                                <div key={id} className={styles.sectionOfFile}>
+                                    <div className={styles.enrollFile}>
+                                        <span>{item.url}</span>
+                                        <div className={styles.deleteBtn} onClick={() => deleteOfUrl(id)}>
+                                                삭제
+                                            </div>
+                                        </div>
+                                </div>)
+                            })}
 
                             <span className={styles.textofLink}>파일</span>
                             <div className={styles.searchBar_portfolio}>
-                                <label type="input" className={styles.portfolioOfInput_file} htmlFor="input-file">
+                                <label type="input" className={styles.portfolioOfInput_file} htmlFor="input-file" ref={label}>
                                     파일형식 : JPG, PNG, PDF, PPT, PPTX, HWP, HWPX
                                 </label>
                                 {file !== "" ? null : <label htmlFor="input-file" className={styles.uploadBtn}>업로드</label>}
