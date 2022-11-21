@@ -1,7 +1,14 @@
+buildscript  {
+	ext {
+		queryDslVersion = "5.0.0"
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '2.7.3'
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.beer'
@@ -12,6 +19,7 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	querydsl.extendsFrom compileClasspath
 }
 
 repositories {
@@ -40,6 +48,10 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.1'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.1'
 
+	// querydsl
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'mysql:mysql-connector-java'
 	testRuntimeOnly 'com.h2database:h2'
@@ -56,12 +68,19 @@ tasks.named('test') {
 }
 
 def frontendDir = "$projectDir/src/main/be-a-pro"
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
 
 sourceSets {
 	main {
 		resources { srcDirs = ["$projectDir/src/main/resources"]
 		}
 	}
+	main.java.srcDir querydslDir
 }
 
 processResources { dependsOn "copyReactBuildFiles" }
@@ -94,4 +113,8 @@ task copyReactBuildFiles(type: Copy) {
 	dependsOn "buildReact"
 	from "$frontendDir/build"
 	into "$projectDir/src/main/resources/static"
+}
+
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
 }
