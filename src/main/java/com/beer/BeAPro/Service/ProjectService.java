@@ -182,6 +182,7 @@ public class ProjectService {
 
 
     // ===== 조회 ===== //
+
     public Project findById(Long id) {
         return projectRepository.findById(id).orElse(null);
     }
@@ -257,6 +258,46 @@ public class ProjectService {
                 .build();
     }
 
+    // 프로젝트 목록 페이지에서 보일 프로젝트 데이터 불러오기
+    public ResponseDto.ProjectDataOfProjectListDto getProjectDataOfProjectList(Project project) {
+        // 삭제 처리된 프로젝트일 경우
+        if(project.getRestorationDate() != null)
+            throw new RestApiException(ErrorCode.PROJECT_AWAITING_DELETION);
+
+        // 데이터 가공
+        List<ResponseDto.PositionDto> projectPositions = new ArrayList<>();
+        List<Long> currentCountPerPosition = new ArrayList<>();
+        List<Long> closingCountPerPosition = new ArrayList<>();
+        for (ProjectPosition projectPosition : project.getProjectPositions()) {
+            Position position = projectPosition.getPosition();
+            projectPositions.add(ResponseDto.PositionDto.builder()
+                    .category(position.getCategory())
+                    .development(position.getDevelopment())
+                    .design(position.getDesign())
+                    .planning(position.getPlanning())
+                    .etc(position.getEtc())
+                    .build());
+            currentCountPerPosition.add(projectPosition.getCurrentCount());
+            closingCountPerPosition.add(projectPosition.getClosingCount());
+        }
+        ResponseDto.ImageDto projectImage = null;
+        if (project.getProjectImage()!=null) {
+            projectImage = ResponseDto.ImageDto.builder()
+                    .filepath(project.getProjectImage().getFilepath())
+                    .originalName(project.getProjectImage().getOriginalName())
+                    .build();
+        }
+
+        return ResponseDto.ProjectDataOfProjectListDto.builder()
+                .id(project.getId())
+                .title(project.getTitle())
+                .projectImage(projectImage)
+                .projectPositions(projectPositions)
+                .currentCountPerPosition(currentCountPerPosition)
+                .closingCountPerPosition(closingCountPerPosition)
+                .build();
+    }
+
     public ResponseDto.GetProjectDetailDto getProjectDetail(Project project) {
         // GetProjectDataDto 생성
         ResponseDto.GetProjectDataDto projectData = getProjectData(project);
@@ -282,6 +323,39 @@ public class ProjectService {
 
         return ResponseDto.GetProjectDetailDto.builder()
                 .project(projectData)
+                .user(projectWriterDto)
+                .createdDateTime(createDateTime)
+                .views(project.getViews())
+                .isApplyPossible(project.getIsApplyPossible())
+                .build();
+    }
+
+    // 프로젝트 목록 페이지에서 보일 전체 데이터 불러오기
+    public ResponseDto.GetProjectListDto getProjectList(Project project) {
+        // GetProjectDataOfListDto 생성
+        ResponseDto.ProjectDataOfProjectListDto projectSimple = getProjectDataOfProjectList(project);
+        // ProjectWriterDto 생성
+        User projectWriter = project.getUser();
+        ResponseDto.ProjectWriterDto projectWriterDto = null; // 사용자가 탈퇴했을 경우 null
+        if (projectWriter != null) {
+            ResponseDto.ImageDto writerProfileImage = null; // 사용자 프로필 이미지가 없을 경우 null
+            if (projectWriter.getProfileImage() != null) {
+                writerProfileImage = ResponseDto.ImageDto.builder()
+                        .originalName(projectWriter.getProfileImage().getOriginalName())
+                        .filepath(projectWriter.getProfileImage().getFilepath())
+                        .build();
+            }
+            projectWriterDto = ResponseDto.ProjectWriterDto.builder()
+                    .name(projectWriter.getName())
+                    .email(projectWriter.getEmail())
+                    .profileImage(writerProfileImage)
+                    .build();
+        }
+        // 생성 날짜 리포맷
+        String createDateTime = project.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        return ResponseDto.GetProjectListDto.builder()
+                .project(projectSimple)
                 .user(projectWriterDto)
                 .createdDateTime(createDateTime)
                 .views(project.getViews())
