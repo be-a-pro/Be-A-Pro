@@ -13,6 +13,7 @@ import com.beer.BeAPro.Service.FileUploadService;
 import com.beer.BeAPro.Service.ProjectService;
 import com.beer.BeAPro.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -165,7 +168,7 @@ public class ProjectApiController {
     }
 
     // 프로젝트 상세 내용 가져오기
-    @GetMapping("/project/detail")
+    @GetMapping
     public ResponseEntity<ResponseDto.GetProjectDetailDto> getProjectDetail(@RequestParam Long id) {
         Project findProject = projectService.findById(id);
         if (findProject != null) {
@@ -175,6 +178,26 @@ public class ProjectApiController {
         } else {
             throw new RestApiException(ErrorCode.POST_NOT_FOUND);
         }
+    }
+
+    // 프로젝트 목록 불러오기
+    @GetMapping("/list")
+    public ResponseEntity<ResponseDto.GetProjectListDto> getProjectList(@RequestParam(value = "id", required = false) Long lastProjectId) {
+        // 페이징 처리
+        Slice<Project> projects = projectService.defaultPagingProjectList(lastProjectId);
+
+        // 프로젝트 목록에 보일 전체 데이터 DTO로 변환
+        List<ResponseDto.TotalDataOfProjectListDto> projectList = new ArrayList<>();
+        for (Project project : projects) {
+            projectList.add(projectService.getTotalDataOfProjectList(project));
+        }
+
+        // 프로젝트 목록과 다음 컨텐츠 유무 여부
+        ResponseDto.GetProjectListDto responseDto = ResponseDto.GetProjectListDto.builder()
+                .projectList(projectList)
+                .hasNext(projects.hasNext())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
 

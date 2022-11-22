@@ -7,7 +7,13 @@ import com.beer.BeAPro.Dto.ResponseDto;
 import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.*;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +24,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.beer.BeAPro.Domain.QProject.*;
+
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProjectService {
 
+    private final JPAQueryFactory jpaQueryFactory;
     private final ProjectRepository projectRepository;
     private final ProjectPositionRepository projectPositionRepository;
     private final ProjectMemberRepository projectMemberRepository;
@@ -331,7 +340,7 @@ public class ProjectService {
     }
 
     // 프로젝트 목록 페이지에서 보일 전체 데이터 불러오기
-    public ResponseDto.GetProjectListDto getProjectList(Project project) {
+    public ResponseDto.TotalDataOfProjectListDto getTotalDataOfProjectList(Project project) {
         // GetProjectDataOfListDto 생성
         ResponseDto.ProjectDataOfProjectListDto projectSimple = getProjectDataOfProjectList(project);
         // ProjectWriterDto 생성
@@ -354,13 +363,61 @@ public class ProjectService {
         // 생성 날짜 리포맷
         String createDateTime = project.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        return ResponseDto.GetProjectListDto.builder()
+        return ResponseDto.TotalDataOfProjectListDto.builder()
                 .project(projectSimple)
                 .user(projectWriterDto)
                 .createdDateTime(createDateTime)
                 .views(project.getViews())
                 .isApplyPossible(project.getIsApplyPossible())
                 .build();
+    }
+    
+    // 프로젝트 목록 페이지 페이징
+    public Slice<Project> defaultPagingProjectList(Long lastId) {
+        // Page 사이즈 설정
+        Pageable pageable = setPageSize(lastId);
+
+        // 프로젝트 페이징
+        List<Project> contents = jpaQueryFactory
+                .selectFrom(project)
+                .where(
+                        // no-offset 페이징 처리
+                        pagingByLastId(lastId),
+
+                        // 공통 조건
+                        project.isTemporary.eq(false), // 임시저장된 프로젝트 제외
+                        project.restorationDate.isNull() // 삭제 예정된 프로젝트 제외
+                )
+                .orderBy(project.createdDate.desc()) // 생성 날짜 내림차순
+                .orderBy(project.id.desc()) // 생성 날짜가 같을 경우
+                .limit(pageable.getPageSize() + 1) // 뒤에 페이지가 더 있는지 확인
+                .fetch();
+
+        // 무한 스크롤 처리
+        boolean hasNext = false;
+        // 조회한 결과 개수가 요청한 페이지 사이즈보다 크면, 뒤에 데이터가 더 있음을 의미
+        if (contents.size() > pageable.getPageSize()) {
+            contents.remove(pageable.getPageSize()); // 확인용으로 추가한 데이터 삭제
+            hasNext = true; // 다음 페이지 존재
+        }
+
+        return new SliceImpl<>(contents, pageable, hasNext);
+    }
+
+    // Page 사이즈 설정
+    public Pageable setPageSize(Long lastId) {
+        if (lastId == null) { // 처음 조회할 경우
+            return PageRequest.ofSize(18);
+        }
+        return PageRequest.ofSize(9);
+    }
+
+    // 마지막 조회 id를 기준으로 no-offset 페이징 처리
+    public BooleanExpression pagingByLastId(Long lastId) {
+        if (lastId == null) { // 처음 조회할 경우
+            return null;
+        }
+        return project.id.lt(lastId);
     }
 
     // 작성자(팀장)의 ProjectMember 객체 생성
