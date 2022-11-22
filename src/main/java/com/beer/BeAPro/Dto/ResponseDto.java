@@ -183,7 +183,7 @@ public class ResponseDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class GetProjectListDto { // 프로젝트 목록 페이지에서 보일 프로젝트, 작성자 등을 포함한 전체 데이터
+    public static class TotalDataOfProjectListDto { // 프로젝트 목록 페이지에서 보일 프로젝트, 작성자 등을 포함한 전체 데이터
         private ProjectDataOfProjectListDto project;
         private ProjectWriterDto user = null;
         private String createdDateTime; // yyyy-MM-dd HH:mm:ss
@@ -191,16 +191,30 @@ public class ResponseDto {
         private Boolean isApplyPossible;
 
         @Builder
-        public GetProjectListDto(ProjectDataOfProjectListDto project,
-                                 ProjectWriterDto user,
-                                 String createdDateTime,
-                                 Long views,
-                                 Boolean isApplyPossible) {
+        public TotalDataOfProjectListDto(ProjectDataOfProjectListDto project,
+                                         ProjectWriterDto user,
+                                         String createdDateTime,
+                                         Long views,
+                                         Boolean isApplyPossible) {
             this.project = project;
             this.user = user;
             this.createdDateTime = createdDateTime;
             this.views = views;
             this.isApplyPossible = isApplyPossible;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class GetProjectListDto { // 프로젝트 목록 페이지 응답 DTO
+        private List<TotalDataOfProjectListDto> projectList;
+        private Boolean hasNext;
+
+        @Builder
+        public GetProjectListDto(List<TotalDataOfProjectListDto> projectList,
+                                 Boolean hasNext) {
+            this.projectList = projectList;
+            this.hasNext = hasNext;
         }
     }
 }
