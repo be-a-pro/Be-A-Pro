@@ -1,0 +1,85 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.logoOfSignup {
+    margin-top: 89px;
+    width: auto;
+    height: 24px;
+}
+
+.checkBox {
+    width: 24px;
+    height: 24px;
+}
+
+.articleOfCheckBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 32px;
+    margin-right: auto;
+
+    span, .checkOfAllText{
+        flex-grow: 0;
+        font-family: 'Pretendard-Medium';
+        font-size: 16px;
+        letter-spacing: -0.4px;
+        color: #333;
+    }
+
+    .checkOfAllText {
+        font-family: 'Pretendard-Bold';
+    }
+}
+
+.submitBtn {
+    margin-top: 5rem;
+    font-size: 16px;
+    flex-grow: 0;
+    padding: 0.93rem 5.87rem 0.87em;
+    border-radius: 8px;
+    background-color: #999;
+    border: none;
+
+    font-family: 'Pretendard-Bold';
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    color: #fff;
+}
+
+.sectionOfAgree {
+    display: flex;
+    flex-direction: column;
+    margin-top: 89px;
+    row-gap: 19.5px;
+    margin-bottom: 0;
+}
+
+.splitOfLine {
+    width: 38.3rem;
+    height: 1px;
+    margin: 0;
+    background-color: #efefef;
+    border: none;
+}

@@ -27,6 +27,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    /* 테스트 용으로 사용하는 border 속성, 빌드할 때는 삭제해주세요 */
+    border: solid;
 }
 
 .containerOfSignup {
@@ -41,7 +43,6 @@
 }
 
 .contentOfSignup {
-    margin-top: 143px;
     display: flex;
     justify-content: center;
     text-align: center;
@@ -67,57 +68,4 @@
     letter-spacing: -0.5px;
     color: #231f20;
     margin-top: 48.1px;
-}
-
-.kakaoOfSignup {
-    width: 593px;
-    height: 61px;
-    margin-top: 143px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    border-radius: 7px;
-    background-color: #fee500;
-}
-
-.naverOfSignup {
-    width: 593px;
-    height: 61px;
-    /* 카카오가 존재한다면 naverOfSignup의 margin-top 값을 제거해주세요 */
-    margin-top: 143px;
-    display: flex;
-    align-items: center;
-    border-radius: 7px;
-    background-color: #03c75a;
-    font-size: 18px;
-}
-
-.textOfNaver {
-    width: 100%;
-    font-family: 'Pretendard-Bold';
-    display: flex;
-    color: white;
-    font-size: 18px;
-    justify-content: center;
-    text-align: center;
-}
-
-.textOfKakao {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    font-family: 'Pretendard-Bold';
-    font-size: 18px;
-    color: #000;
-}
-
-.logoOfNaver {
-    position: absolute;
-    margin-left: 29px;
-}
-
-.logoOfKakao {
-    position: absolute;
-    margin-left: 27px;
 }
