@@ -14,6 +14,7 @@ import Signup from './component/signup/Signup';
 import { useRef } from 'react';
 import $ from 'jquery';
 import jquery from 'jquery';
+import Unknown from './component/test/Unknown';
 
 function App() {
 
@@ -28,7 +29,8 @@ function App() {
         <Route path='/projectList' element={<ProjectList/>}></Route> , {/* 프로젝트 리스트 라우터 */}
         <Route path='/projectWrite' element={<ProjectWrite/>}></Route> , {/* 프로젝트 작성 라우터 */}
         <Route path='/projectDetail' element={<ProejctDetail/>}></Route>
-        <Route path='/Signup' element={<Signup/>}></Route>
+        <Route path='/signup' element={<Signup/>}></Route>
+        <Route path='/test' element={<Unknown/>}></Route>
       </Routes>
       </div>
     </BrowserRouter>

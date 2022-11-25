@@ -1,0 +1,95 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.logoOfSignup {
+    margin-top: 89px;
+    width: auto;
+    height: 24px;
+}
+
+.sectionOfRestrict {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* sectionOfRestrict 클래스 안에 있는 1, 2번 자식 요소 <span> 태그에 스타일 속성 지정 */
+    span:nth-child(1) {
+        margin-top: 6.45em;
+        flex-grow: 0;
+        font-family: 'Pretendard-Bold';
+        font-size: 20px;
+        letter-spacing: -0.5px;
+        color: #333;
+
+        padding-left: 10.4em;
+        padding-right: 9.2em;
+    }
+
+    span:nth-child(2) {
+        margin-top: 2.5em;
+        font-family: 'Pretendard-Medium';
+        font-size: 16px;
+        letter-spacing: -0.4px;
+        color: #333;
+    }
+
+    /* sectionOfRestrict 클래스 안에 btnArea 클래스 지정 */
+    .btnArea {
+        margin-top: 10.18em;
+        display: flex;
+        align-items: center;
+        column-gap: 0.5em;
+
+        button:nth-child(1) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 12.5em;
+            height: 3em;
+            border-radius: 8px;
+            border: solid 1px #999;
+            background-color: #fff;
+            font-family: 'Pretendard-Medium';
+            font-size: 16px;
+            letter-spacing: -0.4px;
+            color: #999;
+        }
+
+        button:nth-child(2) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 12.5em;
+            height: 3em;
+            border-radius: 8px;  
+            border: solid 1px #ff7827;
+            background-color: #ff7827;
+            font-family: 'Pretendard-Medium';
+            font-size: 16px;
+            letter-spacing: -0.4px;
+            color: #fff;
+        }
+    }
+}

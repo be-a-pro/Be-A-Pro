@@ -20,12 +20,14 @@ export default function Signup(props) {
                             <div className={styles.textOfSignup}>
                                 간편하게 가입하고<br/>커리어를 풍부하게 만들어 줄 프로젝트에 참여해 보세요
                             </div>
+                            {/* 
                             <div className={styles.kakaoOfSignup}>
                                 <Kakao className={styles.logoOfKakao}/>
                                 <div className={styles.textOfKakao}>
                                     카카오 로그인
                                 </div>
                             </div>
+                            */}
                             <div className={styles.naverOfSignup}>
                                 <Naver className={styles.logoOfNaver}/>
                                 <div className={styles.textOfNaver}>

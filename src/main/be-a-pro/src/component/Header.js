@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import $ from 'jquery';
 import jquery from 'jquery';
 import { useRef } from 'react';
-import Signup from './Signup';
+import MessageOfSignup from './modal/MessageOfSignup';
 
 function Header() {
 
@@ -31,7 +31,7 @@ function Header() {
         <header className={styles.header}>
             {/* 여기에 모달창이 삽입될거예요 :-) */}
             <div className={styles.modal} ref={modal}>
-                <Signup state={state} setState={setState}/>
+                <MessageOfSignup state={state} setState={setState}/>
             </div>
 
             <nav className={styles.nav}>
