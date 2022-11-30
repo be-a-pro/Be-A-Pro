@@ -1,5 +1,6 @@
 package com.beer.BeAPro.Controller;
 
+import com.beer.BeAPro.Domain.Category;
 import com.beer.BeAPro.Domain.Project;
 import com.beer.BeAPro.Domain.ProjectImage;
 import com.beer.BeAPro.Domain.User;
@@ -12,6 +13,7 @@ import com.beer.BeAPro.Service.AuthService;
 import com.beer.BeAPro.Service.FileUploadService;
 import com.beer.BeAPro.Service.ProjectService;
 import com.beer.BeAPro.Service.UserService;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -182,9 +184,35 @@ public class ProjectApiController {
 
     // 프로젝트 목록 불러오기
     @GetMapping("/list")
-    public ResponseEntity<ResponseDto.GetProjectListDto> getProjectList(@RequestParam(value = "id", required = false) Long lastProjectId) {
+    public ResponseEntity<ResponseDto.GetProjectListDto> getProjectList(@RequestParam(value = "id", required = false) Long lastProjectId,
+                                                                        @RequestParam(required = false) String sort,
+                                                                        @RequestParam(required = false) String filter,
+                                                                        @RequestParam(required = false) String position) {
         // 페이징 처리
-        Slice<Project> projects = projectService.defaultPagingProjectList(lastProjectId);
+        if ((sort != null && !sort.equals("view")) || (filter != null && !filter.equals("recruiting"))) {
+            throw new RestApiException(ErrorCode.BAD_REQUEST);
+        }
+        boolean sortByView = sort != null; // 조회순 정렬일 경우
+        boolean isRecruitmentCompletionExcluded = filter != null; // 모집 완료 제외 여부 필터링
+        // 포지션 필터링
+        Category category = null;
+        if (position != null) {
+            switch (position) {
+                case "development":
+                    category = Category.DEVELOPMENT;
+                    break;
+                case "design":
+                    category = Category.DESIGN;
+                    break;
+                case "planning":
+                    category = Category.PLANNING;
+                    break;
+                case "etc":
+                    category = Category.ETC;
+                    break;
+            }
+        }
+        Slice<Project> projects = projectService.pagingProjectList(lastProjectId, sortByView, isRecruitmentCompletionExcluded, category);
 
         // 프로젝트 목록에 보일 전체 데이터 DTO로 변환
         List<ResponseDto.TotalDataOfProjectListDto> projectList = new ArrayList<>();
