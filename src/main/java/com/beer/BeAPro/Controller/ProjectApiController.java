@@ -1,5 +1,6 @@
 package com.beer.BeAPro.Controller;
 
+import com.beer.BeAPro.Domain.Category;
 import com.beer.BeAPro.Domain.Project;
 import com.beer.BeAPro.Domain.ProjectImage;
 import com.beer.BeAPro.Domain.User;
@@ -12,7 +13,9 @@ import com.beer.BeAPro.Service.AuthService;
 import com.beer.BeAPro.Service.FileUploadService;
 import com.beer.BeAPro.Service.ProjectService;
 import com.beer.BeAPro.Service.UserService;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -165,7 +170,7 @@ public class ProjectApiController {
     }
 
     // 프로젝트 상세 내용 가져오기
-    @GetMapping("/project/detail")
+    @GetMapping
     public ResponseEntity<ResponseDto.GetProjectDetailDto> getProjectDetail(@RequestParam Long id) {
         Project findProject = projectService.findById(id);
         if (findProject != null) {
@@ -175,6 +180,52 @@ public class ProjectApiController {
         } else {
             throw new RestApiException(ErrorCode.POST_NOT_FOUND);
         }
+    }
+
+    // 프로젝트 목록 불러오기
+    @GetMapping("/list")
+    public ResponseEntity<ResponseDto.GetProjectListDto> getProjectList(@RequestParam(value = "id", required = false) Long lastProjectId,
+                                                                        @RequestParam(required = false) String sort,
+                                                                        @RequestParam(required = false) String filter,
+                                                                        @RequestParam(required = false) String position) {
+        // 페이징 처리
+        if ((sort != null && !sort.equals("view")) || (filter != null && !filter.equals("recruiting"))) {
+            throw new RestApiException(ErrorCode.BAD_REQUEST);
+        }
+        boolean sortByView = sort != null; // 조회순 정렬일 경우
+        boolean isRecruitmentCompletionExcluded = filter != null; // 모집 완료 제외 여부 필터링
+        // 포지션 필터링
+        Category category = null;
+        if (position != null) {
+            switch (position) {
+                case "development":
+                    category = Category.DEVELOPMENT;
+                    break;
+                case "design":
+                    category = Category.DESIGN;
+                    break;
+                case "planning":
+                    category = Category.PLANNING;
+                    break;
+                case "etc":
+                    category = Category.ETC;
+                    break;
+            }
+        }
+        Slice<Project> projects = projectService.pagingProjectList(lastProjectId, sortByView, isRecruitmentCompletionExcluded, category);
+
+        // 프로젝트 목록에 보일 전체 데이터 DTO로 변환
+        List<ResponseDto.TotalDataOfProjectListDto> projectList = new ArrayList<>();
+        for (Project project : projects) {
+            projectList.add(projectService.getTotalDataOfProjectList(project));
+        }
+
+        // 프로젝트 목록과 다음 컨텐츠 유무 여부
+        ResponseDto.GetProjectListDto responseDto = ResponseDto.GetProjectListDto.builder()
+                .projectList(projectList)
+                .hasNext(projects.hasNext())
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
 
