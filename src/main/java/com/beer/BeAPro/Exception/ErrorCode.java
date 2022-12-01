@@ -30,6 +30,7 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "Forbidden."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied."),
     CREATING_PROJECT_DENIED(HttpStatus.FORBIDDEN, "Unable to create the project. The portfolio must be made public."),
+    CANNOT_AVAILABLE(HttpStatus.FORBIDDEN, "Apply is not available."),
 
     /*
      * 404 NOT_FOUND: 리소스를 찾을 수 없음
@@ -37,6 +38,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found post."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found user."),
     PROJECT_AWAITING_DELETION(HttpStatus.NOT_FOUND, "Project awaiting deletion."),
+    NOT_EXIST_POSITION(HttpStatus.NOT_FOUND, "This position does not exist."),
 
     /*
      * 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출
@@ -49,6 +51,7 @@ public enum ErrorCode {
      */
     CONFLICT_REQUEST(HttpStatus.CONFLICT, "Conflict request."),
     LEADER_ALREADY_EXISTS(HttpStatus.CONFLICT, "The team leader of the project already exists."),
+    DUPLICATE_APPLICATION(HttpStatus.CONFLICT, "Users who have already applied for the project."),
 
     /*
      * 413 PAYLOAD_TOO_LARGE: 서버에서 지원하지 않는 미디어 포맷
