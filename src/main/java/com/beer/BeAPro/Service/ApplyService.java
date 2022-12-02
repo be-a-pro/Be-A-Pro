@@ -81,4 +81,10 @@ public class ApplyService {
         Apply apply = Apply.createApply(user, project, position);
         applyRepository.save(apply);
     }
+
+    @Transactional
+    public void deleteApplyByDeletingProject(Project project) {
+        List<Apply> allByProject = applyRepository.findAllByProject(project);
+        applyRepository.deleteAll(allByProject);
+    }
 }

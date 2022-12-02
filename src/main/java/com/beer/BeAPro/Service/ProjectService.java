@@ -42,6 +42,8 @@ public class ProjectService {
     private final ProjectMemberRepository projectMemberRepository;
     private final PositionRepository positionRepository;
 
+    private final ApplyService applyService;
+
 
     // ===== 생성 및 업데이트 ===== //
     @Transactional
@@ -158,6 +160,9 @@ public class ProjectService {
     // 프로젝트 객체 삭제(영구 삭제)
     @Transactional
     public void deleteProject(Project project) {
+        // Apply 삭제
+        applyService.deleteApplyByDeletingProject(project);
+
         // ProjectMember 삭제
         List<ProjectMember> findProjectMembers = projectMemberRepository.findAllByProject(project);
         projectMemberRepository.deleteAll(findProjectMembers);
