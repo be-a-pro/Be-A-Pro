@@ -145,7 +145,7 @@ public class ProjectApiController {
         Project findProject = findProjectByWriter(findUser, id);
 
         // 프로젝트 데이터 가져오기
-        ResponseDto.GetProjectDataDto getProjectDataDto = projectService.getProjectData(findProject);
+        ResponseDto.GetProjectDataDto getProjectDataDto = projectService.getProjectData(findProject, true);
         return ResponseEntity.status(HttpStatus.OK).body(getProjectDataDto);
     }
 

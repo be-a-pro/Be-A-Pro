@@ -59,8 +59,6 @@ public class RequestDto {
         @NotEmpty
         private List<PositionDto> projectPositions;
         @NotEmpty
-        private List<Long> currentCountPerPosition; // 현재 인원
-        @NotEmpty
         private List<Long> closingCountPerPosition; // 마감 인원 // 최대 10명
         @NotNull
         private Boolean isTemporary; // 임시저장 여부

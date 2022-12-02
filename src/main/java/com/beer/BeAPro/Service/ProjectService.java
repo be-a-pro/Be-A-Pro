@@ -65,19 +65,15 @@ public class ProjectService {
         List<Position> positions = projectDto.getProjectPositions().stream()
                 .map(Position::createPosition) // Position 생성
                 .collect(Collectors.toList());
-        List<Long> currentCountPerPosition = projectDto.getCurrentCountPerPosition();
         List<Long> closingCountPerPosition = projectDto.getClosingCountPerPosition();
         if (closingCountPerPosition.stream().mapToLong(Long::longValue).sum() > 10)
             throw new RestApiException(ErrorCode.BAD_REQUEST);
 
         List<ProjectPosition> projectPositions = new ArrayList<>();
         for (int i = 0; i < positions.size(); i++) {
-            if (currentCountPerPosition.get(i) > closingCountPerPosition.get(i))
-                throw new RestApiException(ErrorCode.BAD_REQUEST);
-
             ProjectPosition projectPosition =
                     ProjectPosition.createProjectPosition
-                            (project, positions.get(i), currentCountPerPosition.get(i), closingCountPerPosition.get(i));
+                            (project, positions.get(i), closingCountPerPosition.get(i));
             projectPositions.add(projectPosition);
         }
         String usedStacks = String.join(",", projectDto.getUsedStacks());
@@ -117,19 +113,15 @@ public class ProjectService {
         List<Position> positions = projectDto.getProjectPositions().stream()
                 .map(Position::createPosition) // Position 생성
                 .collect(Collectors.toList());
-        List<Long> currentCountPerPosition = projectDto.getCurrentCountPerPosition();
         List<Long> closingCountPerPosition = projectDto.getClosingCountPerPosition();
         if (closingCountPerPosition.stream().mapToLong(Long::longValue).sum() > 10)
             throw new RestApiException(ErrorCode.BAD_REQUEST);
 
         List<ProjectPosition> projectPositions = new ArrayList<>();
         for (int i = 0; i < positions.size(); i++) {
-            if (currentCountPerPosition.get(i) > closingCountPerPosition.get(i))
-                throw new RestApiException(ErrorCode.BAD_REQUEST);
-
             ProjectPosition projectPosition =
                     ProjectPosition.createProjectPosition
-                            (project, positions.get(i), currentCountPerPosition.get(i), closingCountPerPosition.get(i));
+                            (project, positions.get(i), closingCountPerPosition.get(i));
             projectPositions.add(projectPosition);
         }
         String usedStacks = String.join(",", projectDto.getUsedStacks());
@@ -224,7 +216,8 @@ public class ProjectService {
     // ===== 비즈니스 로직 ===== //
 
     // 프로젝트 데이터 불러오기
-    public ResponseDto.GetProjectDataDto getProjectData(Project project) {
+    public ResponseDto.GetProjectDataDto getProjectData(Project project,
+                                                        boolean update) { // 지원자가 있는지 확인해야할 때 true
         // 삭제 처리된 프로젝트일 경우
         if(project.getRestorationDate() != null)
             throw new RestApiException(ErrorCode.PROJECT_AWAITING_DELETION);
@@ -236,6 +229,7 @@ public class ProjectService {
         List<ResponseDto.PositionDto> projectPositions = new ArrayList<>();
         List<Long> currentCountPerPosition = new ArrayList<>();
         List<Long> closingCountPerPosition = new ArrayList<>();
+        List<Boolean> isApplicants = new ArrayList<>();
         for (ProjectPosition projectPosition : project.getProjectPositions()) {
             Position position = projectPosition.getPosition();
             projectPositions.add(ResponseDto.PositionDto.builder()
@@ -247,6 +241,14 @@ public class ProjectService {
                     .build());
             currentCountPerPosition.add(projectPosition.getCurrentCount());
             closingCountPerPosition.add(projectPosition.getClosingCount());
+            if (update) {
+                Apply apply = applyService.findByProjectAndPosition(project, position);
+                if (apply != null) {
+                    isApplicants.add(true);
+                } else {
+                    isApplicants.add(false);
+                }
+            }
         }
         List<String> usedStacks = Arrays.stream(project.getUsedStacks().split(","))
                 .collect(Collectors.toList());
@@ -260,20 +262,38 @@ public class ProjectService {
                     .build();
         }
 
-        return ResponseDto.GetProjectDataDto.builder()
-                .title(project.getTitle())
-                .projectImage(projectImage)
-                .projectHashtags(projectHashtags)
-                .kakaoLink(project.getKakaoLink())
-                .info(project.getInfo())
-                .freeInfo(project.getFreeInfo())
-                .progressMethod(project.getProgressMethod())
-                .usedStacks(usedStacks)
-                .referenceLinks(referenceLinks)
-                .projectPositions(projectPositions)
-                .currentCountPerPosition(currentCountPerPosition)
-                .closingCountPerPosition(closingCountPerPosition)
-                .build();
+        if (!update) {
+            return ResponseDto.GetProjectDataDto.builder()
+                    .title(project.getTitle())
+                    .projectImage(projectImage)
+                    .projectHashtags(projectHashtags)
+                    .kakaoLink(project.getKakaoLink())
+                    .info(project.getInfo())
+                    .freeInfo(project.getFreeInfo())
+                    .progressMethod(project.getProgressMethod())
+                    .usedStacks(usedStacks)
+                    .referenceLinks(referenceLinks)
+                    .projectPositions(projectPositions)
+                    .currentCountPerPosition(currentCountPerPosition)
+                    .closingCountPerPosition(closingCountPerPosition)
+                    .build();
+        } else {
+            return ResponseDto.GetProjectDataDto.builder()
+                    .title(project.getTitle())
+                    .projectImage(projectImage)
+                    .projectHashtags(projectHashtags)
+                    .kakaoLink(project.getKakaoLink())
+                    .info(project.getInfo())
+                    .freeInfo(project.getFreeInfo())
+                    .progressMethod(project.getProgressMethod())
+                    .usedStacks(usedStacks)
+                    .referenceLinks(referenceLinks)
+                    .projectPositions(projectPositions)
+                    .currentCountPerPosition(currentCountPerPosition)
+                    .closingCountPerPosition(closingCountPerPosition)
+                    .isApplicants(isApplicants)
+                    .build();
+        }
     }
 
     // 프로젝트 목록 페이지에서 보일 프로젝트 데이터 불러오기
@@ -330,7 +350,7 @@ public class ProjectService {
 
     public ResponseDto.GetProjectDetailDto getProjectDetail(Project project) {
         // GetProjectDataDto 생성
-        ResponseDto.GetProjectDataDto projectData = getProjectData(project);
+        ResponseDto.GetProjectDataDto projectData = getProjectData(project, false);
         // ProjectWriterDto 생성
         User projectWriter = project.getUser();
         ResponseDto.ProjectWriterDto projectWriterDto = null; // 사용자가 탈퇴했을 경우 null

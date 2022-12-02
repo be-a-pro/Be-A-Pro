@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.beer.BeAPro.Domain.QPosition.position;
 import static com.beer.BeAPro.Domain.QProjectPosition.projectPosition;
@@ -80,6 +81,10 @@ public class ApplyService {
         }
         Apply apply = Apply.createApply(user, project, position);
         applyRepository.save(apply);
+    }
+
+    public Apply findByProjectAndPosition(Project project, Position position) {
+        return applyRepository.findOneByProjectAndPosition(project, position).orElse(null);
     }
 
     @Transactional

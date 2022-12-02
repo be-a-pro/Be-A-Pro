@@ -83,6 +83,7 @@ public class ResponseDto {
         private List<Long> currentCountPerPosition; // 현재 인원
         @NotEmpty
         private List<Long> closingCountPerPosition; // 마감 인원
+        private List<Boolean> isApplicants = null; // 지원자 있는지 여부
 
         @Builder
         public GetProjectDataDto(String title,
@@ -96,7 +97,8 @@ public class ResponseDto {
                                  List<String> referenceLinks,
                                  List<PositionDto> projectPositions,
                                  List<Long> currentCountPerPosition,
-                                 List<Long> closingCountPerPosition) {
+                                 List<Long> closingCountPerPosition,
+                                 List<Boolean> isApplicants) {
             this.title  = title;
             this.projectImage = projectImage;
             this.projectHashtags = projectHashtags;
@@ -109,6 +111,7 @@ public class ResponseDto {
             this.projectPositions = projectPositions;
             this.currentCountPerPosition = currentCountPerPosition;
             this.closingCountPerPosition = closingCountPerPosition;
+            this.isApplicants = isApplicants;
         }
     }
 
