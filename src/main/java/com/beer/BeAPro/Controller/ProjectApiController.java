@@ -9,11 +9,7 @@ import com.beer.BeAPro.Dto.RequestDto;
 import com.beer.BeAPro.Dto.ResponseDto;
 import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
-import com.beer.BeAPro.Service.AuthService;
-import com.beer.BeAPro.Service.FileUploadService;
-import com.beer.BeAPro.Service.ProjectService;
-import com.beer.BeAPro.Service.UserService;
-import com.querydsl.core.Tuple;
+import com.beer.BeAPro.Service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -36,6 +32,7 @@ public class ProjectApiController {
     private final FileUploadService fileUploadService;
     private final UserService userService;
     private final AuthService authService;
+    private final ApplyService applyService;
 
 
     // ===== 프로젝트 생성 및 수정 ===== //
@@ -226,6 +223,25 @@ public class ProjectApiController {
                 .hasNext(projects.hasNext())
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+
+    // ===== 프로젝트 지원 ===== //
+    @PostMapping("/apply")
+    public ResponseEntity<String> applyProject(@RequestHeader("Authorization") String requestAccessTokenInHeader,
+                                               @RequestBody RequestDto.ApplyDto applyDto) {
+        // 사용자 추출
+        User applicant = extractUserFromAccessToken(requestAccessTokenInHeader);
+        // 작성자일 경우, 지원 불가
+        if (projectService.findByUserAndId(applicant, applyDto.getProjectId()) != null) {
+            throw new RestApiException(ErrorCode.CANNOT_AVAILABLE);
+        }
+
+        // 프로젝트 지원
+        Project project = projectService.findById(applyDto.getProjectId());
+        applyService.applyToProject(project, applicant, applyDto.getPosition());
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 

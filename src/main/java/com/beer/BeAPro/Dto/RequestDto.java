@@ -65,4 +65,13 @@ public class RequestDto {
         @NotNull
         private Boolean isTemporary; // 임시저장 여부
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ApplyDto { // 프로젝트 지원
+        @NotBlank
+        private Long projectId;
+        @NotBlank
+        private PositionDto position;
+    }
 }

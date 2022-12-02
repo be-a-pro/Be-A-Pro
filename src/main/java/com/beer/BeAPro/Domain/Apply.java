@@ -1,6 +1,7 @@
 package com.beer.BeAPro.Domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ public class Apply extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "position_id")
+    @Column(name = "apply_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,4 +31,19 @@ public class Apply extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private JoinStatus joinStatus; // 지원자 합류 여부
+
+
+    // == 생성 메서드 == //
+    @Builder
+    public static Apply createApply(User user, Project project, Position position) {
+        Apply apply = new Apply();
+
+        apply.user = user;
+        apply.project = project;
+        apply.position = position;
+
+        apply.joinStatus = JoinStatus.UNCLASSIFIED;
+
+        return apply;
+    }
 }
