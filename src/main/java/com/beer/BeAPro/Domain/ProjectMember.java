@@ -24,8 +24,8 @@ public class ProjectMember extends BaseEntity {
     @JoinColumn(name = "project_id")
     private Project project; // 프로젝트
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position_id", unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id")
     private Position position; // 담당 포지션
 
     @Enumerated(EnumType.STRING)
