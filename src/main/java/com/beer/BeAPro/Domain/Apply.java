@@ -25,8 +25,8 @@ public class Apply extends BaseEntity {
     @JoinColumn(name = "project_id")
     private Project project; // 지원 프로젝트
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position_id", unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "position_id")
     private Position position; // 지원 포지션
 
     @Enumerated(EnumType.STRING)
