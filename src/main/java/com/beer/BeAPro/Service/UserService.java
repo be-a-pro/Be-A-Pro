@@ -81,7 +81,7 @@ public class UserService {
         }
     }
 
-    // User 영구 삭제
+    // User 탈퇴 처리
     @Transactional
     public void withdrawal(User user) {
         // TODO: 재삭제 불가능
@@ -157,6 +157,11 @@ public class UserService {
         user.setToWithdrawal();
     }
 
+    // User 데이터 삭제
+    public void deleteData(List<User> usersToBeDeleted) {
+        userRepository.deleteAll(usersToBeDeleted);
+    }
+
 
     // ===== 조회 ===== //
 
@@ -169,6 +174,12 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public List<User> findUsersToBeDeleted() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getToBeDeletedDate().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
     }
 
 
