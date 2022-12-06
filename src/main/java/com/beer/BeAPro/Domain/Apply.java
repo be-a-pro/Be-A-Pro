@@ -42,7 +42,7 @@ public class Apply extends BaseEntity {
         apply.project = project;
         apply.position = position;
 
-        apply.joinStatus = JoinStatus.UNCLASSIFIED;
+        apply.joinStatus = JoinStatus.APPLY;
 
         return apply;
     }
