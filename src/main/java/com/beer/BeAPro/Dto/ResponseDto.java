@@ -220,4 +220,15 @@ public class ResponseDto {
             this.hasNext = hasNext;
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class GetProjectListInIndexDto { // Index 페이지 NEW 프로젝트 목록
+        private List<TotalDataOfProjectListDto> projectList;
+
+        @Builder
+        public GetProjectListInIndexDto(List<TotalDataOfProjectListDto> projectList) {
+            this.projectList = projectList;
+        }
+    }
 }

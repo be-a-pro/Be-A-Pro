@@ -504,6 +504,35 @@ public class ProjectService {
         return project.projectPositions.any().position.category.eq(category);
     }
 
+    // Index 화면에서 보일 NEW 프로젝트 목록(최신순, 카테고리 필터링)
+    public List<Project> pagingProjectListInIndex(Category category) {
+        // 프로젝트 페이징
+        return jpaQueryFactory
+                .selectFrom(project)
+                // 프로젝트 대표 이미지
+                .leftJoin(project.projectImage)
+                .fetchJoin()
+                // 작성자
+                .join(project.user)
+                .fetchJoin()
+                // 작성자 프로필 이미지
+                .leftJoin(profileImage)
+                .on(profileImage.id.eq(project.user.profileImage.id))
+                .fetchJoin()
+                .where(
+                        // 공통 조건
+                        project.isTemporary.eq(false), // 임시저장된 프로젝트 제외
+                        project.restorationDate.isNull(), // 삭제 예정된 프로젝트 제외
+
+                        // 모집 포지션 필터링
+                        filterProjectPosition(category)
+                )
+                .orderBy(project.createdDate.desc()) // 최신순 정렬
+                .orderBy(project.id.desc()) // 생성 날짜가 같을 경우
+                .limit(9) // 가져올 개수
+                .fetch();
+    }
+
     // 작성자(팀장)의 ProjectMember 객체 생성
     @Transactional
     public void createProjectLeader(User writer, Project project) {
