@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum JoinStatus {
-    UNCLASSIFIED("열람 전"),
-    CHECKING("열람 중"),
-    NOT_JOINED("미참여");
+    APPLY("지원"),
+    EXAMINING("열람 중"),
+    LEADER_APPROVAL("팀장 승인"),
+    LEADER_REFUSAL("팀장 거절"),
+    APPLICANT_REFUSAL("지원자 승인");
 
     private final String title;
 }

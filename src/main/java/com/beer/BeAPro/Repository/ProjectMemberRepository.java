@@ -1,9 +1,6 @@
 package com.beer.BeAPro.Repository;
 
-import com.beer.BeAPro.Domain.Project;
-import com.beer.BeAPro.Domain.ProjectMember;
-import com.beer.BeAPro.Domain.TeamPosition;
-import com.beer.BeAPro.Domain.User;
+import com.beer.BeAPro.Domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,4 +10,5 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
     List<ProjectMember> findAllByProject(Project project);
     Optional<ProjectMember> findByUserAndProject(User user, Project project);
     Optional<ProjectMember> findByProjectAndTeamPosition(Project project, TeamPosition teamPosition);
+    Long countByPosition(Position position);
 }

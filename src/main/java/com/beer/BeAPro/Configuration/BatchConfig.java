@@ -54,6 +54,13 @@ public class BatchConfig {
                     if (usersToInactive != null) {
                         usersToInactive.forEach(userService::setInactive);
                     }
+                    
+                    // 삭제할 사용자 목록을 가져옴
+                    List<User> usersToBeDeleted = userService.findUsersToBeDeleted();
+                    // 사용자 데이터 삭제
+                    if (usersToBeDeleted != null) {
+                        userService.deleteData(usersToBeDeleted);
+                    }
                     return RepeatStatus.FINISHED;
                 }).build();
     }
