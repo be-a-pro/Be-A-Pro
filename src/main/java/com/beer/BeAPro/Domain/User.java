@@ -69,6 +69,10 @@ public class User extends BaseEntity {
     private LocalDateTime toInactiveDate; // 휴면 계정 변환 예정 날짜
 
     private Boolean isEnable; // 계정 정지 여부
+
+    private Boolean isWithdrawal; // 탈퇴 여부
+
+    private LocalDateTime toBeDeletedDate; // 데이터 삭제 예정 날짜
     
 
     // ===== OAuth2.0 ===== //
@@ -128,6 +132,12 @@ public class User extends BaseEntity {
     // 비활성화(정지)
     public void setEnable(Boolean bool) {
         this.isEnable = bool;
+    }
+
+    // 탈퇴 처리
+    public void setToWithdrawal() {
+        this.isWithdrawal = true;
+        this.toBeDeletedDate = LocalDateTime.now().plusDays(30);
     }
 
 

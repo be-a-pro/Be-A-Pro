@@ -23,7 +23,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-public class UserController {
+public class UserApiController {
 
     private final FileUploadService fileUploadService;
     private final UserService userService;
@@ -62,6 +62,15 @@ public class UserController {
             PortfolioFile savedPortfolioFile = fileUploadService.savePortfolioFile(fileUploadDto);
             userService.setPortfolioFile(findUser, savedPortfolioFile);
         }
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 사용자 계정 삭제
+    @PostMapping("/withdrawal")
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String requestAccessTokenInHeader) {
+        User user = extractUserFromAccessToken(requestAccessTokenInHeader);
+        userService.withdrawal(user);
 
         return ResponseEntity.ok().build();
     }

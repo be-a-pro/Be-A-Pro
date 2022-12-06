@@ -43,4 +43,12 @@ public class ProjectPosition {
 
         return projectPosition;
     }
+
+    // 구인중인 프로젝트에서 팀원 퇴출 또는 탈퇴
+    public void withdrawalDuringRecruiting() {
+        this.currentCount -= 1;
+        if (this.isClosing) {
+            this.isClosing = false;
+        }
+    }
 }
