@@ -1,0 +1,278 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+
+.QuickBtn {
+    position: absolute;
+    margin-top: 1.5em;
+    margin-left: 40.55em;
+    cursor: pointer;
+}
+
+.btn {
+    width: 12.5em;
+    height: 3em;
+    font-size: 16px;
+    font-family: 'Pretendard-Medium';
+    margin-bottom: 3.93em;
+    letter-spacing: -0.4px;
+    border: none;
+    border-radius: 8px;
+    background-color: #ff7827;
+}
+
+.btn.OK {
+    font-family: 'Pretendard-Bold';
+    background-color: #ff7827;
+    color: #fff;
+}
+
+.btn.NO {
+    font-family: 'Pretendard-Bold';
+    color: #999;
+    background-color: #fff;
+    border: solid 1px #999;
+}
+
+.applyTab {
+    font-size: 32px;
+    font-family: 'Pretendard-Bold';
+    letter-spacing: -0.8px;
+    color: #333;
+    margin-top: 2em;
+}
+
+.title {
+    font-size: 16px;
+    margin-top: 3em;
+    font-family: 'Pretendard-Bold';
+    letter-spacing: -0.4px;
+    color: #333;
+}
+
+.applyList {
+    margin-top: 1.71em;
+    font-size: 14px;
+    width: 42.8em;
+    box-sizing: border-box;
+    height: 3.42em;
+    padding-left: 1.14em;
+    padding-right: 1.14em;
+    border-radius: 8px;
+    border: solid 1px #ff7827;
+    background-color: #fff;
+    font-family: 'Pretendard-Bold';
+    letter-spacing: -0.35px;
+    margin-left: 4.28em;
+    margin-right: 4.28em;
+    color: #ff7827;
+
+    appearance: none;
+
+    .applyList:focus {
+        border: solid 1px #ff7827;
+        letter-spacing: -0.35px;
+    }
+}
+
+.applyList::placeholder {
+    font-family: 'Pretendard-Bold';
+}
+
+.applyContent {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    row-gap: 3px;
+    padding: 14px 20px 29px;
+    font-size: 16px;
+    width: 37.5em;
+    height: 280px;
+    flex-grow: 0;
+    margin-top: 243px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+
+    .clearBtn {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-family: 'Pretendard-Bold';
+        width: 560px;
+        height: 48px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        padding-left: 1.06em;
+        background-color: white;
+        font-size: 16px;
+        color: #bdbdbd;
+        letter-spacing: -0.4px;
+        box-sizing: border-box;
+
+        span {
+            font-family: 'Pretendard-Bold';
+            color: #bdbdbd;
+            margin-left: auto;
+            margin-right: 1.125em;
+        }
+    }
+
+    button {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-family: 'Pretendard-Bold';
+        width: 560px;
+        height: 48px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        padding-left: 1.06em;
+        background-color: #fafafd;
+        font-size: 16px;
+        color: #4834d9;
+        letter-spacing: -0.4px;
+        box-sizing: border-box;
+
+        span {
+            font-family: 'Pretendard-Bold';
+            color: black;
+            margin-left: auto;
+            margin-right: 1.125em;
+        }
+    }
+
+    button:hover {
+        opacity: 70%;
+    }
+}
+
+select option[value=""][disabled] {
+    display: none;
+}
+
+.description {
+    margin-top: 1.3em;
+    width: 50em;
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-family: 'Pretendard-Medium';
+    letter-spacing: -0.3px;
+    margin-bottom: 5.33em;
+
+    .description2 {
+        margin-top: 0.6em;
+        width: 100%;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        row-gap: 0.2em;
+        font-family: 'Pretendard-Medium';
+        letter-spacing: -0.3px;
+
+        span:nth-child(1) {
+            span:nth-child(1) {
+                font-family: 'Pretendard-Bold';
+
+                span:nth-child(1) {
+                    font-family: 'Pretendard-Bold';
+                    color: #ff7827;
+                }
+            }
+        }
+
+        span:nth-child(2),
+        span:nth-child(3) {
+            font-size: 12px;
+            margin-left: 0.7em;
+        }
+    }
+}
+
+// 삭제 모달창 CSS
+.deleteDescription {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 14.68em;
+    margin-left: 14.68em;
+    margin-bottom: 3em;
+    margin-top: 1.5em;
+    font-size: 16px;
+    color: #333;
+    font-family: 'Pretendard-Medium';
+}
+
+.deleteBtnArea {
+    display: flex;
+    column-gap: 0.5em;
+}
+
+// 삭제 완료된 모달창 CSS, 이전 이동 모달창 CSS
+
+.clearDescription,
+.prevDescription,
+.tempDescription,
+.completeDescription {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 4.75em;
+    margin-top: 1.5em;
+    font-size: 16px;
+    letter-spacing: -0.4px;
+    color: #333;
+    row-gap: 0.5em;
+
+    span {
+        font-family: 'Pretendard-Medium';
+    }
+}
+
+.clearDescription {
+    margin-right: 14.75em;
+    margin-left: 14.75em;
+}
+
+.prevDescription {
+    margin-right: 11.5em;
+    margin-left: 11.5em;
+}
+
+.tempDescription {
+    margin-right: 10.375em;
+    margin-left: 10.375em;
+}
+
+.completeDescription {
+    margin-right: 10.43em;
+    margin-left: 10.43em;
+    margin-bottom: 3em;
+}

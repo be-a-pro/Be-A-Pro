@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import Main from './component/Main';
@@ -21,17 +21,17 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-      <Header/> {/* 공통 컴포넌트인 HEADER 컴포넌트 */}
-      <ScrollToTop/> {/* 새로고침 시, 최상단으로 스크롤 이동하는 커스텀 컴포넌트 */}
-      <Routes>
-        {/* <Route path='/' element={<Main/>}></Route> ,  기존 리액트 시작 화면 */}
-        <Route path='/' element={<Index/>}></Route> , {/* 기존 리액트 시작 화면에서 메인 라우터로 변경 */}
-        <Route path='/projectList' element={<ProjectList/>}></Route> , {/* 프로젝트 리스트 라우터 */}
-        <Route path='/projectWrite' element={<ProjectWrite/>}></Route> , {/* 프로젝트 작성 라우터 */}
-        <Route path='/projectDetail' element={<ProejctDetail/>}></Route>
-        <Route path='/signup' element={<Signup/>}></Route>
-        <Route path='/test' element={<Unknown/>}></Route>
-      </Routes>
+        <Header /> {/* 공통 컴포넌트인 HEADER 컴포넌트 */}
+        <ScrollToTop /> {/* 새로고침 시, 최상단으로 스크롤 이동하는 커스텀 컴포넌트 */}
+        <Routes>
+          {/* <Route path='/' element={<Main/>}></Route> ,  기존 리액트 시작 화면 */}
+          <Route path='/' element={<Index />}></Route> , {/* 기존 리액트 시작 화면에서 메인 라우터로 변경 */}
+          <Route path='/projectList' element={<ProjectList />}></Route> , {/* 프로젝트 리스트 라우터 */}
+          <Route path='/projectWrite' element={<ProjectWrite />}></Route> , {/* 프로젝트 작성 라우터 */}
+          <Route path='/projectDetail' element={<ProejctDetail />}></Route>
+          <Route path='/signup' element={<Signup />}></Route>
+          <Route path='/test' element={<Unknown />}></Route>
+        </Routes>
       </div>
     </BrowserRouter>
   );
