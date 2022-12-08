@@ -43,8 +43,7 @@ pre {
     padding-top: 100px;
 }
 
-.containerOfCenter {
-}
+.containerOfCenter {}
 
 .containerOfView {
     display: flex;
@@ -86,11 +85,11 @@ pre {
     object-fit: contain;
 }
 
-.imageOfCalendar g > path:nth-child(1) {   
+.imageOfCalendar g>path:nth-child(1) {
     fill: black;
 }
 
-.imageOfCalendar g > path:nth-child(2) {   
+.imageOfCalendar g>path:nth-child(2) {
     fill: white;
 }
 
@@ -158,16 +157,16 @@ pre {
 .containerOfPosition {
     display: flex;
     flex-direction: row;
-    flex-wrap : wrap;
+    flex-wrap: wrap;
     row-gap: 8px;
 }
 
 
-.containerOfPosition > div:nth-child(odd) {
+.containerOfPosition>div:nth-child(odd) {
     margin-right: auto;
 }
 
-.containerOfPosition > div:nth-child(even) {
+.containerOfPosition>div:nth-child(even) {
     margin-left: auto;
 }
 
@@ -195,7 +194,7 @@ pre {
     width: 500px;
     display: flex;
     flex-direction: row;
-    flex-wrap : wrap;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -429,7 +428,7 @@ pre {
     width: 700px;
     display: flex;
     flex-direction: row;
-    flex-wrap : wrap;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -451,58 +450,5 @@ pre {
     font-size: 14px;
     text-align: left;
     margin-top: 24px;
-    color: #000;
-}
-
-.boxOfGoogleForm {
-    width: 776px;
-    height: 110px;
-    flex-grow: 0;
-    padding: 0 0 0 16px;
-    border: solid 1px #b0b0b0;
-}
-
-.boxOfUser {
-    display: flex;
-    align-items: center;
-    margin-top: 14px;
-}
-
-.boxOfImage {
-    position: absolute;
-    width: 210px;
-    height: 110px;
-    margin-left: 567px;
-    flex-grow: 0;
-    background-image: linear-gradient(to top, #000 66%, rgba(0, 0, 0, 0) 0%);
-    background-color: black;
-}
-
-.boxOfLink {
-    margin-left: 8px;
-    width: 500px;
-    font-family: 'Pretendard-Medium';
-    font-size: 12px;
-    text-align: left;
-    color: #000;
-}
-
-.boxOfContents {
-    margin-top: 16px;
-}
-
-.boxTitle {
-    font-family: 'Pretendard-Medium';
-    font-size: 14px;
-    font-weight: 500;
-    text-align: left;
-    color: #000;
-}
-
-.boxContent {
-    margin-top: 7px;
-    font-family: 'Pretendard-Medium';
-    font-size: 12px;
-    text-align: left;
     color: #000;
 }
