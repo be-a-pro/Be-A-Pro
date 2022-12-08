@@ -30,46 +30,46 @@ function Banner() {
     return (
         <div className={styles.banner}>
 
-        <Swiper
-            className={styles.swiper}
-            spaceBetween={50}
-            slidesPerView={1}
-            navigation
-            pagination={{ clickable: true }}
-            autoplay={{ 
-                delay: 3000,
-                disableOnInteraction: false,
-            }}
-            onSlideChange={(e) => {
-                for (let i = 0; i<e.pagination.bullets.length; i++) {
-                    if (e.pagination.bullets[i].classList.contains("swiper-pagination-bullet-active")) {
-                        e.pagination.bullets[i].style.backgroundColor = "white";
-                        e.pagination.bullets[i].style.width = "20px";
-                        e.pagination.bullets[i].style.borderRadius = "20px 20px";
-                        e.pagination.bullets[i].style.transition = "all 0.5s";
-                    }
-                    else {
-                        e.pagination.bullets[i].style.width = "8px";
-                        e.pagination.bullets[i].style.borderRadius = "50%";
-                        e.pagination.bullets[i].style.transition = "all 0.5s";
-                    }
-                };
-            }}
+            <Swiper
+                className={styles.swiper}
+                spaceBetween={50}
+                slidesPerView={1}
+                navigation
+                pagination={{ clickable: true }}
+                autoplay={{
+                    delay: 4000,
+                    disableOnInteraction: false,
+                }}
+                onSlideChange={(e) => {
+                    for (let i = 0; i < e.pagination.bullets.length; i++) {
+                        if (e.pagination.bullets[i].classList.contains("swiper-pagination-bullet-active")) {
+                            e.pagination.bullets[i].style.backgroundColor = "white";
+                            e.pagination.bullets[i].style.width = "20px";
+                            e.pagination.bullets[i].style.borderRadius = "20px 20px";
+                            e.pagination.bullets[i].style.transition = "all 0.5s";
+                        }
+                        else {
+                            e.pagination.bullets[i].style.width = "8px";
+                            e.pagination.bullets[i].style.borderRadius = "50%";
+                            e.pagination.bullets[i].style.transition = "all 0.5s";
+                        }
+                    };
+                }}
             >
 
-            <SwiperSlide>
-                <img src={banner} className={styles.imageOfBanner} alt="첫번째 이미지"/>
-            </SwiperSlide>
-            <SwiperSlide>
-                <img src={banner} className={styles.imageOfBanner} alt="두번째 이미지"/>
-            </SwiperSlide>
-            <SwiperSlide>
-                <img src={banner} className={styles.imageOfBanner} alt="세번째 이미지"/>
-            </SwiperSlide>
-            <SwiperSlide>
-                <img src={banner} className={styles.imageOfBanner} alt="네번째 이미지"/>
-            </SwiperSlide>
-        </Swiper>
+                <SwiperSlide>
+                    <img src={banner} className={styles.imageOfBanner} alt="첫번째 이미지" />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <img src={banner} className={styles.imageOfBanner} alt="두번째 이미지" />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <img src={banner} className={styles.imageOfBanner} alt="세번째 이미지" />
+                </SwiperSlide>
+                <SwiperSlide>
+                    <img src={banner} className={styles.imageOfBanner} alt="네번째 이미지" />
+                </SwiperSlide>
+            </Swiper>
         </div>
     )
 }
