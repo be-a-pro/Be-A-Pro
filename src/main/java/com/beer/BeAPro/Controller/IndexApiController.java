@@ -47,6 +47,8 @@ public class IndexApiController {
                 case "etc":
                     category = Category.ETC;
                     break;
+                default:
+                    throw new RestApiException(ErrorCode.BAD_REQUEST);
             }
         }
 
@@ -76,6 +78,8 @@ public class IndexApiController {
                 case "etc":
                     category = Category.ETC;
                     break;
+                default:
+                    throw new RestApiException(ErrorCode.BAD_REQUEST);
             }
         }
         List<Project> projects = projectService.pagingProjectListInIndex(category);

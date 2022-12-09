@@ -207,6 +207,8 @@ public class ProjectApiController {
                 case "etc":
                     category = Category.ETC;
                     break;
+                default:
+                    throw new RestApiException(ErrorCode.BAD_REQUEST);
             }
         }
         Slice<Project> projects = projectService.pagingProjectList(lastProjectId, sortByView, isRecruitmentCompletionExcluded, category);
