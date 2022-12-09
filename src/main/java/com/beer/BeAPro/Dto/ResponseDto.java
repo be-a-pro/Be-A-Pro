@@ -223,12 +223,50 @@ public class ResponseDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class GetProjectListInIndexDto { // Index 페이지 NEW 프로젝트 목록
+    public static class ProjectListInIndexDto { // Index 페이지 NEW 프로젝트 목록
         private List<TotalDataOfProjectListDto> projectList;
 
         @Builder
-        public GetProjectListInIndexDto(List<TotalDataOfProjectListDto> projectList) {
+        public ProjectListInIndexDto(List<TotalDataOfProjectListDto> projectList) {
             this.projectList = projectList;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class DataOfUserInIndexDto { // Index 페이지에서 보일 사용자 데이터
+        @NotBlank
+        private Long id;
+        @NotBlank
+        private String name;
+        @NotBlank
+        private PositionDto position;
+        private ImageDto profileImage = null;
+        @NotEmpty
+        private List<String> userTools;
+
+        @Builder
+        public DataOfUserInIndexDto(Long id,
+                                    String name,
+                                    PositionDto position,
+                                    ImageDto profileImage,
+                                    List<String> userTools) {
+            this.id = id;
+            this.name = name;
+            this.position = position;
+            this.profileImage = profileImage;
+            this.userTools = userTools;
+        }
+    }
+    
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UserListInIndexDto { // Index 페이지 NEW 프로 목록
+        private List<DataOfUserInIndexDto> userList;
+
+        @Builder
+        public UserListInIndexDto(List<DataOfUserInIndexDto> userList) {
+            this.userList = userList;
         }
     }
 }
