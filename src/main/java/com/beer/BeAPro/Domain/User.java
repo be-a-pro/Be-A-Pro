@@ -102,6 +102,10 @@ public class User extends BaseEntity {
         user.role = Role.USER;
         user.oAuthType = OAuthType.NAVER;
 
+        user.isInactive = false;
+        user.isEnable = false;
+        user.isWithdrawal = false;
+
         return user;
     }
 
