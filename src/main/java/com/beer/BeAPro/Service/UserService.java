@@ -1,28 +1,28 @@
 package com.beer.BeAPro.Service;
 
 import com.beer.BeAPro.Domain.*;
-import com.beer.BeAPro.Dto.AuthDto;
-import com.beer.BeAPro.Dto.OAuth2NaverUserDto;
-import com.beer.BeAPro.Dto.RequestDto;
-import com.beer.BeAPro.Dto.UserDto;
+import com.beer.BeAPro.Dto.*;
 import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.*;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.beer.BeAPro.Domain.QApply.apply;
+import static com.beer.BeAPro.Domain.QPosition.*;
 import static com.beer.BeAPro.Domain.QProjectMember.*;
 import static com.beer.BeAPro.Domain.QProjectPosition.projectPosition;
+import static com.beer.BeAPro.Domain.QUser.user;
+import static com.beer.BeAPro.Domain.QUserPosition.userPosition;
+import static com.beer.BeAPro.Domain.QUserTool.userTool;
 
 
 @Service
@@ -213,12 +213,17 @@ public class UserService {
     @Transactional
     public void saveUserAdditionalInfo(User user, RequestDto.SignUpAdditionalInfoDto signUpAdditionalInfoDto) {
         // 데이터 가공
-        List<Position> positions = signUpAdditionalInfoDto.getUserPositions().stream()
-                .map(Position::createPosition) // Position 생성
-                .collect(Collectors.toList());
-        List<UserPosition> userPositions = positions.stream()
-                .map(position -> UserPosition.createUserPosition(user, position)) // UserPosition 생성
-                .collect(Collectors.toList());
+        List<Position> positions = new ArrayList<>();
+        List<UserPosition> userPositions = new ArrayList<>();
+        signUpAdditionalInfoDto.getUserPositions()
+                .forEach(createPositionDto -> {
+                    // Position 생성
+                    Position position = Position.createPosition(createPositionDto.getPosition());
+                    positions.add(position);
+                    // UserPosition 생성
+                    UserPosition userPosition = UserPosition.createUserPosition(user, position, createPositionDto.getIsRepresentative());
+                    userPositions.add(userPosition);
+                });
         List<UserInterestKeyword> userInterestKeywords = signUpAdditionalInfoDto.getUserInterestKeywords().stream()
                 .map(keyword -> UserInterestKeyword.createUserInterestKeyword(user, keyword)) // UserInterestKeyword 생성
                 .collect(Collectors.toList());
@@ -249,5 +254,192 @@ public class UserService {
     @Transactional
     public void setPortfolioFile(User user, PortfolioFile portfolioFile) {
         user.setPortfolioFile(portfolioFile);
+    }
+
+    // Index 화면에서 보일 NEW 프로 목록(최신순, 카테고리 필터링)
+    public List<ResponseDto.DataOfUserInIndexDto> pagingUserListInIndex(Category category) {
+        List<User> users = jpaQueryFactory
+                .selectFrom(user)
+                // ProfileImage
+                .leftJoin(user.profileImage)
+                .fetchJoin()
+                // 대표 포지션인 UserPosition
+                .join(userPosition)
+                .on(userPosition.isRepresentative.eq(true),
+                        user.id.eq(userPosition.user.id))
+                .fetchJoin()
+                // 포지션별 필터링 용도
+                .leftJoin(position)
+                .on(position.id.eq(userPosition.position.id))
+                .fetchJoin()
+                .where(
+                        // 공통 조건
+                        user.isWithdrawal.eq(false), // 탈퇴 여부
+                        user.isEnable.eq(false), // 비활성화
+                        user.isInactive.eq(false), // 휴면 계정
+
+                        // 포지션별 필터링이 필요할 경우
+                        filterPositionFromUser(category)
+                )
+                .orderBy(user.createdDate.desc()) // 최신순 정렬
+                .orderBy(user.id.desc()) // 생성 날짜가 같을 경우
+                .limit(20) // 가져올 개수
+                .fetch();
+
+        // 해당하는 사용자가 없을 경우
+        if (users.size() == 0) {
+            return null;
+        }
+
+        // 가져올 사용자 목록 id 범위
+        User userWithMinId = users.stream().min(Comparator.comparingLong(User::getId)).orElseGet(() -> null);
+        Long minId = userWithMinId.getId();
+        Long maxId = users.stream().max(Comparator.comparingLong(User::getId))
+                .orElseGet(() -> userWithMinId) // 사용자 목록이 1개일 경우
+                .getId();
+
+        // 사용자의 Position 데이터
+        List<UserPosition> userPositions = jpaQueryFactory
+                .selectFrom(userPosition)
+                .leftJoin(user)
+                .on(userPosition.user.id.eq(user.id))
+                .fetchJoin()
+                .join(userPosition.position)
+                .fetchJoin()
+                .where(
+                        // 공통 조건
+                        user.isWithdrawal.eq(false), // 탈퇴 여부
+                        user.isEnable.eq(false), // 비활성화
+                        user.isInactive.eq(false), // 휴면 계정
+
+                        // id 범위
+                        user.id.between(minId, maxId),
+
+                        // 포지션 데이터을 가져오기 위한 필터링
+                        filterRepresentativeUserPosition(category)
+                )
+                .orderBy(userPosition.user.createdDate.desc()) // 최신순 정렬
+                .orderBy(userPosition.user.id.desc()) // 생성 날짜가 같을 경우
+                .fetch();
+
+        // UserTool
+        List<UserTool> userTools = jpaQueryFactory
+                .selectFrom(userTool)
+                .join(userTool.user)
+                .fetchJoin()
+                .where(
+                        // 공통 조건
+                        userTool.user.isWithdrawal.eq(false), // 탈퇴 여부
+                        userTool.user.isEnable.eq(false), // 비활성화
+                        userTool.user.isInactive.eq(false), // 휴면 계정
+
+                        // id 범위
+                        userTool.user.id.between(minId, maxId)
+                )
+                .orderBy(userTool.user.createdDate.desc()) // 최신순 정렬
+                .orderBy(userTool.user.id.desc()) // 생성 날짜가 같을 경우
+                .fetch();
+
+        // 사용자 목록에 보일 전체 데이터 DTO로 변환
+        List<ResponseDto.DataOfUserInIndexDto> userList = new ArrayList<>();
+        // 데이터 가공
+        for (User user : users) {
+            Long userId = user.getId();
+            // 사용자의 ProfileImage
+            ResponseDto.ImageDto profileImage = null;
+            if (user.getProfileImage() != null) {
+                ProfileImage userProfileImage = user.getProfileImage();
+                profileImage = ResponseDto.ImageDto.builder()
+                        .filepath(userProfileImage.getFilepath())
+                        .originalName(userProfileImage.getOriginalName())
+                        .build();
+            }
+            // 해당 id를 가진 사용자의 UserPosition 및 Position
+            ResponseDto.PositionDto positionDto = null;
+            for (UserPosition userPosition : userPositions) {
+                if (userPosition.getUser().getId().equals(userId)) {
+                    Position position = userPosition.getPosition();
+                    positionDto = ResponseDto.PositionDto.builder()
+                            .category(position.getCategory())
+                            .design(position.getDesign())
+                            .development(position.getDevelopment())
+                            .planning(position.getPlanning())
+                            .etc(position.getEtc())
+                            .build();
+                    break;
+                }
+            }
+            // 해당 id를 가진 사용자의 UserTool 목록
+            List<String> litOfUserTool = new ArrayList<>();
+            for (UserTool userTool : userTools) {
+                if (userTool.getUser().getId().equals(userId)) {
+                    litOfUserTool.add(userTool.getName());
+                }
+            }
+            
+            // DTO로 변환 및 목록에 추가
+            userList.add(ResponseDto.DataOfUserInIndexDto.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .position(positionDto)
+                    .profileImage(profileImage)
+                    .userTools(litOfUserTool)
+                    .build());
+        }
+
+        return userList;
+    }
+
+    // 대표 포지션이 카테고리에 속하는 사용자 필터
+    public BooleanExpression filterPositionFromUser(Category category) {
+        if (category == null) { // 전체(default)
+            return null;
+        }
+        return userPosition.position.category.eq(category);
+    }
+
+    // 카테고리에 해당되는 (대표) 포지션 정보 필터
+    public BooleanExpression filterRepresentativeUserPosition(Category category) {
+        if (category == null) { // 전체(default)
+            return null;
+        }
+        return userPosition.position.category.eq(category)
+                .and(userPosition.isRepresentative.eq(true));
+    }
+
+    public ResponseDto.DataOfUserInIndexDto getDataOfUserInIndex(User user) {
+        List<UserPosition> userPositions = user.getUserPositions();
+        // Position
+        Position position = Objects.requireNonNull(userPositions.stream()
+                .filter(UserPosition::isRepresentative)
+                .findFirst().orElse(null)).getPosition();
+        ResponseDto.PositionDto positionDto = ResponseDto.PositionDto.builder()
+                .category(position.getCategory())
+                .design(position.getDesign())
+                .development(position.getDevelopment())
+                .planning(position.getPlanning())
+                .etc(position.getEtc())
+                .build();
+
+        // ProfileImage
+        ProfileImage userProfileImage = user.getProfileImage();
+        ResponseDto.ImageDto profileImage = ResponseDto.ImageDto.builder()
+                .filepath(userProfileImage.getFilepath())
+                .originalName(userProfileImage.getOriginalName())
+                .build();
+
+        // UserTools
+        List<String> userTools = new ArrayList<>();
+        for (UserTool userTool : user.getUserTools()) {
+            userTools.add(userTool.getName());
+        }
+
+        return ResponseDto.DataOfUserInIndexDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .position(positionDto)
+                .profileImage(profileImage)
+                .userTools(userTools)
+                .build();
     }
 }

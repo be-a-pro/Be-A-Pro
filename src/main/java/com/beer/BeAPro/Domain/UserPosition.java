@@ -24,13 +24,16 @@ public class UserPosition {
     @JoinColumn(name = "position_id", unique = true)
     private Position position; // 사용자의 포지션
 
+    private boolean isRepresentative;
+
 
     // == 생성 메서드 == //
-    public static UserPosition createUserPosition(User user, Position position) {
+    public static UserPosition createUserPosition(User user, Position position, boolean isRepresentative) {
         UserPosition userPosition = new UserPosition();
 
         userPosition.user = user;
         userPosition.position = position;
+        userPosition.isRepresentative = isRepresentative;
 
         return userPosition;
     }
