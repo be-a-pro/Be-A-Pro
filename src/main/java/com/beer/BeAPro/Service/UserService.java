@@ -213,12 +213,17 @@ public class UserService {
     @Transactional
     public void saveUserAdditionalInfo(User user, RequestDto.SignUpAdditionalInfoDto signUpAdditionalInfoDto) {
         // 데이터 가공
-        List<Position> positions = signUpAdditionalInfoDto.getUserPositions().stream()
-                .map(Position::createPosition) // Position 생성
-                .collect(Collectors.toList());
-        List<UserPosition> userPositions = positions.stream()
-                .map(position -> UserPosition.createUserPosition(user, position)) // UserPosition 생성
-                .collect(Collectors.toList());
+        List<Position> positions = new ArrayList<>();
+        List<UserPosition> userPositions = new ArrayList<>();
+        signUpAdditionalInfoDto.getUserPositions()
+                .forEach(createPositionDto -> {
+                    // Position 생성
+                    Position position = Position.createPosition(createPositionDto.getPosition());
+                    positions.add(position);
+                    // UserPosition 생성
+                    UserPosition userPosition = UserPosition.createUserPosition(user, position, createPositionDto.getIsRepresentative());
+                    userPositions.add(userPosition);
+                });
         List<UserInterestKeyword> userInterestKeywords = signUpAdditionalInfoDto.getUserInterestKeywords().stream()
                 .map(keyword -> UserInterestKeyword.createUserInterestKeyword(user, keyword)) // UserInterestKeyword 생성
                 .collect(Collectors.toList());

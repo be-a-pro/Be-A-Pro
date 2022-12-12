@@ -28,12 +28,12 @@ public class UserPosition {
 
 
     // == 생성 메서드 == //
-    public static UserPosition createUserPosition(User user, Position position) {
+    public static UserPosition createUserPosition(User user, Position position, boolean isRepresentative) {
         UserPosition userPosition = new UserPosition();
 
         userPosition.user = user;
         userPosition.position = position;
-        userPosition.isRepresentative = false;
+        userPosition.isRepresentative = isRepresentative;
 
         return userPosition;
     }

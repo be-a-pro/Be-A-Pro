@@ -26,10 +26,20 @@ public class RequestDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class CreateUserPositionDto {
+        @NotBlank
+        private PositionDto position;
+        @NotNull
+        private Boolean isRepresentative;
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class SignUpAdditionalInfoDto { // 회원가입 절차 중 추가 정보 입력
         @NotNull
         private Boolean mobileIsPublic;
-        private List<PositionDto> userPositions;
+        @Size(min = 1) // 대표 포지션
+        private List<CreateUserPositionDto> userPositions;
         private List<String> userInterestKeywords;
         private List<String> userTools;
         @NotNull
