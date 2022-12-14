@@ -14,7 +14,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 
 @Configuration
 public class SwaggerConfig {
@@ -27,14 +26,14 @@ public class SwaggerConfig {
 
     @Profile({"test || dev"})
     @Bean
-    private Docket docket(String groupName, Predicate<String> selector) {
+    public Docket docket() {
 
         return new Docket(DocumentationType.OAS_30)
                 .consumes(getConsumeContentTypes())
                 .useDefaultResponseMessages(false)
                 .securityContexts(List.of(this.securityContext()))
                 .securitySchemes(List.of(this.apiKey()))
-                .apiInfo(this.apiInfo(groupName))
+                .apiInfo(this.apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .apis(RequestHandlerSelectors.
@@ -43,7 +42,7 @@ public class SwaggerConfig {
     }
 
     // ApiInfo 정의
-    private ApiInfo apiInfo(String description) {
+    private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("비어프로 API 문서")
                 .version("0.0.1")
