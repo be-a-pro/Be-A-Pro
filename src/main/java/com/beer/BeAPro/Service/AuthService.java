@@ -1,6 +1,8 @@
 package com.beer.BeAPro.Service;
 
 import com.beer.BeAPro.Dto.AuthDto;
+import com.beer.BeAPro.Exception.ErrorCode;
+import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -106,13 +108,13 @@ public class AuthService {
 
     // 로그아웃
     @Transactional
-    public boolean logout(String requestAccessTokenInHeader) {
+    public void logout(String requestAccessTokenInHeader) {
         String requestAccessToken = resolveToken(requestAccessTokenInHeader);
         String email = getPrincipal(requestAccessToken);
 
         // 이미 로그아웃했거나, 만료 기간 제외 유효하지 않은 AT
         if (!jwtTokenProvider.validateAccessToken(requestAccessToken)) {
-            return false;
+            throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
         }
 
         // Redis에 저장되어 있는 RT 삭제
@@ -128,7 +130,6 @@ public class AuthService {
                     "logout",
                     expiration);
         }
-        return true;
     }
 
 

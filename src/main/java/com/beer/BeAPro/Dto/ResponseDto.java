@@ -1,6 +1,7 @@
 package com.beer.BeAPro.Dto;
 
 import com.beer.BeAPro.Domain.*;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,10 +30,15 @@ public class ResponseDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PositionDto {
         @NotBlank
+        @ApiModelProperty(example = "DEVELOPMENT") // swagger 예시
         private Category category;
+        @ApiModelProperty(example = "AI") // swagger 예시
         private Development development;
+        @ApiModelProperty(hidden = true) // swagger 예시
         private Design design;
+        @ApiModelProperty(hidden = true) // swagger 예시
         private Planning planning;
+        @ApiModelProperty(hidden = true) // swagger 예시
         private Etc etc;
 
         @Builder

@@ -1,6 +1,8 @@
 package com.beer.BeAPro.Security;
 
 import com.beer.BeAPro.Domain.User;
+import com.beer.BeAPro.Exception.ErrorCode;
+import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,13 +19,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetailsImpl loadUserByUsername(String email) throws UsernameNotFoundException {
         User findUser = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Can't find user with this email. -> " + email));
+                .orElseThrow(() -> new RestApiException(ErrorCode.USER_NOT_FOUND));
 
-        if(findUser != null){
-            UserDetailsImpl userDetails = new UserDetailsImpl(findUser);
-            return  userDetails;
-        }
-
-        return null;
+        return new UserDetailsImpl(findUser);
     }
 }

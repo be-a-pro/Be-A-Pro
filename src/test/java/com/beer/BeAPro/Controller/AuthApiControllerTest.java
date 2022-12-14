@@ -1,10 +1,8 @@
 package com.beer.BeAPro.Controller;
 
-import com.beer.BeAPro.Domain.User;
 import com.beer.BeAPro.Dto.AuthDto;
 import com.beer.BeAPro.Exception.GlobalExceptionHandler;
 import com.beer.BeAPro.Service.AuthService;
-import com.beer.BeAPro.Service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -32,8 +29,6 @@ class AuthApiControllerTest {
 
     @MockBean
     AuthService authService;
-    @MockBean
-    UserService userService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,7 +39,7 @@ class AuthApiControllerTest {
     @BeforeEach
     public void beforeEach() {
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new AuthApiController(authService, userService))
+                .standaloneSetup(new AuthApiController(authService))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
 
@@ -54,39 +49,6 @@ class AuthApiControllerTest {
                 .build();
     }
 
-
-    @DisplayName("약관 동의")
-    @Test
-    @Rollback(value = false)
-    public void setUserTermsAgree() throws Exception {
-        // given
-        User user = User.registerUserTestOnly("user@email.com");
-        String requestAccessTokenInHeader = "Bearer accessToken";
-        AuthDto.AgreeDto agreeDto = AuthDto.AgreeDto.builder()
-                .provideToThirdParties(true)
-                .marketingEmail(true)
-                .marketingSMS(true)
-                .build();
-
-        Mockito.when(authService.resolveToken(requestAccessTokenInHeader))
-                .thenReturn("accessToken");
-        Mockito.when(authService.getPrincipal("accessToken"))
-                .thenReturn("user@email.com");
-        Mockito.when(userService.findByEmail("user@email.com"))
-                .thenReturn(user);
-
-        String requestAgreeDto = objectMapper.writeValueAsString(agreeDto);
-
-        // when
-        mockMvc.perform(
-                post(authControllerUrl + "/agree")
-                        .header("Authorization", requestAccessTokenInHeader)
-                        .content(requestAgreeDto)
-                        .contentType(MediaType.APPLICATION_JSON))
-        // then
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
 
     @DisplayName("AT 재발급 필요X")
     @Test
@@ -192,7 +154,9 @@ class AuthApiControllerTest {
         // given
         String requestAccessTokenInHeader = "Bearer accessToken";
 
-        Mockito.when(authService.logout(requestAccessTokenInHeader)).thenReturn(true);
+        Mockito.doNothing()
+                .when(authService)
+                .logout(requestAccessTokenInHeader);
 
         // when
         mockMvc.perform(

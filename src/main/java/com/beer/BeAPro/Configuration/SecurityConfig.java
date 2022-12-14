@@ -1,5 +1,9 @@
-package com.beer.BeAPro.Security;
+package com.beer.BeAPro.Configuration;
 
+import com.beer.BeAPro.Security.JwtAccessDeniedHandler;
+import com.beer.BeAPro.Security.JwtAuthenticationEntryPoint;
+import com.beer.BeAPro.Security.JwtAuthenticationFilter;
+import com.beer.BeAPro.Security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
