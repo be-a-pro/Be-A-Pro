@@ -1,4 +1,4 @@
-package com.beer.BeAPro.Security;
+package com.beer.BeAPro.Configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
