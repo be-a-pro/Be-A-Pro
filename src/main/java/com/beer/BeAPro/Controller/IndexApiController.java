@@ -2,12 +2,15 @@ package com.beer.BeAPro.Controller;
 
 import com.beer.BeAPro.Domain.Category;
 import com.beer.BeAPro.Domain.Project;
-import com.beer.BeAPro.Domain.User;
 import com.beer.BeAPro.Dto.ResponseDto;
 import com.beer.BeAPro.Exception.ErrorCode;
 import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Service.ProjectService;
 import com.beer.BeAPro.Service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +31,16 @@ public class IndexApiController {
     private final ProjectService projectService;
     private final UserService userService;
 
-
+    @Operation(summary = "NEW PROS 목록 불러오기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "해당하는 사용자 목록"),
+            @ApiResponse(responseCode = "204", description = "해당하는 사용자 목록 없음"),
+            @ApiResponse(responseCode = "400", description = "잘못된 position 파라미터 입력시"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     @GetMapping("/new/users")
-    public ResponseEntity<List<ResponseDto.DataOfUserInIndexDto>> getUserList(@RequestParam(required = false) String position) {
+    public ResponseEntity<List<ResponseDto.DataOfUserInIndexDto>> getUserList(
+            @Parameter(description = "포지션 필터: development / design / planning / etc") @RequestParam(required = false) String position) {
         // 포지션 필터링
         Category category = null;
         if (position != null) {
@@ -48,7 +58,7 @@ public class IndexApiController {
                     category = Category.ETC;
                     break;
                 default:
-                    throw new RestApiException(ErrorCode.BAD_REQUEST);
+                    throw new RestApiException(ErrorCode.INVALID_CATEGORY);
             }
         }
 
@@ -60,8 +70,16 @@ public class IndexApiController {
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
+    @Operation(summary = "NEW PROJECTS 목록 불러오기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "해당하는 프로젝트 목록"),
+            @ApiResponse(responseCode = "204", description = "해당하는 프로젝트 목록 없음"),
+            @ApiResponse(responseCode = "400", description = "잘못된 position 파라미터 입력시"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     @GetMapping("/new/projects")
-    public ResponseEntity<ResponseDto.ProjectListInIndexDto> getProjectList(@RequestParam(required = false) String position) {
+    public ResponseEntity<ResponseDto.ProjectListInIndexDto> getProjectList(
+            @Parameter(description = "포지션 필터: development / design / planning / etc") @RequestParam(required = false) String position) {
         // 포지션 필터링
         Category category = null;
         if (position != null) {
@@ -79,7 +97,7 @@ public class IndexApiController {
                     category = Category.ETC;
                     break;
                 default:
-                    throw new RestApiException(ErrorCode.BAD_REQUEST);
+                    throw new RestApiException(ErrorCode.INVALID_CATEGORY);
             }
         }
         List<Project> projects = projectService.pagingProjectListInIndex(category);

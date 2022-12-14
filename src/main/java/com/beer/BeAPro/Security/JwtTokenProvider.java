@@ -1,6 +1,8 @@
 package com.beer.BeAPro.Security;
 
 import com.beer.BeAPro.Dto.AuthDto;
+import com.beer.BeAPro.Exception.ErrorCode;
+import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Service.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -118,7 +120,7 @@ public class JwtTokenProvider implements InitializingBean {
     public boolean validateRefreshToken(String refreshToken){
         try {
             if (redisService.getValues(refreshToken).equals("delete")) { // 회원 탈퇴했을 경우
-                return false;
+                throw new RestApiException(ErrorCode.USER_NOT_FOUND);
             }
             Jwts.parserBuilder()
                     .setSigningKey(signingKey)
@@ -138,7 +140,7 @@ public class JwtTokenProvider implements InitializingBean {
         } catch (NullPointerException e){
             log.error("JWT Token is empty.");
         }
-        return false;
+        throw new RestApiException(ErrorCode.INVALID_TOKEN);
     }
 
     // AT가 유효 기간을 제외하고 정상적인 토큰인지 검증
@@ -155,9 +157,18 @@ public class JwtTokenProvider implements InitializingBean {
             return true;
         } catch(ExpiredJwtException e) {
             return true;
-        } catch (Exception e) {
-            return false;
+        } catch (SignatureException e) {
+            log.error("Invalid JWT signature.");
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token.");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty.");
+        } catch (NullPointerException e){
+            log.error("JWT Token is empty.");
         }
+        throw new RestApiException(ErrorCode.INVALID_TOKEN);
     }
 
     // AT가 유효기간만 만료된 정상적인 토큰인지 검증
@@ -169,9 +180,18 @@ public class JwtTokenProvider implements InitializingBean {
                     .before(new Date());
         } catch(ExpiredJwtException e) {
             return true;
-        } catch (Exception e) {
-            return false;
+        } catch (SignatureException e) {
+            log.error("Invalid JWT signature.");
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token.");
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty.");
+        } catch (NullPointerException e){
+            log.error("JWT Token is empty.");
         }
+        throw new RestApiException(ErrorCode.INVALID_TOKEN);
     }
 
 }

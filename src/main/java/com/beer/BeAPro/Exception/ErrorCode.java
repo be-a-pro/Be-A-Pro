@@ -15,6 +15,7 @@ public enum ErrorCode {
     PARAMETER_REQUIRED(HttpStatus.BAD_REQUEST, "Parameter required."),
     INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "Invalid file name."),
     VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "Validation failed for argument"),
+    INVALID_CATEGORY(HttpStatus.BAD_REQUEST, "Invalid category."),
 
     /*
      * 401 UNAUTHORIZED: 인증되지 않은 사용자의 요청
@@ -23,6 +24,8 @@ public enum ErrorCode {
     SOCIAL_LOGIN_ERROR(HttpStatus.UNAUTHORIZED, "Unauthorized."),
     TERMS_AGREEMENT_REQUIRED(HttpStatus.UNAUTHORIZED, "Agreement to the terms and conditions is required."),
     LOGOUT_FAILED(HttpStatus.UNAUTHORIZED, "Logout failed. Invalid user."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Expired token."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Token"),
 
     /*
      * 403 FORBIDDEN: 권한이 없는 사용자의 요청
@@ -30,14 +33,12 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "Forbidden."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied."),
     CREATING_PROJECT_DENIED(HttpStatus.FORBIDDEN, "Unable to create the project. The portfolio must be made public."),
-    CANNOT_AVAILABLE(HttpStatus.FORBIDDEN, "Apply is not available."),
 
     /*
      * 404 NOT_FOUND: 리소스를 찾을 수 없음
      */
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found post."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "Not found user."),
-    PROJECT_AWAITING_DELETION(HttpStatus.NOT_FOUND, "Project awaiting deletion."),
     NOT_EXIST_POSITION(HttpStatus.NOT_FOUND, "This position does not exist."),
 
     /*
@@ -52,6 +53,8 @@ public enum ErrorCode {
     CONFLICT_REQUEST(HttpStatus.CONFLICT, "Conflict request."),
     LEADER_ALREADY_EXISTS(HttpStatus.CONFLICT, "The team leader of the project already exists."),
     DUPLICATE_APPLICATION(HttpStatus.CONFLICT, "Users who have already applied for the project."),
+    CANNOT_AVAILABLE(HttpStatus.CONFLICT, "Apply is not available."),
+    PROJECT_AWAITING_DELETION(HttpStatus.CONFLICT, "Project awaiting deletion."),
 
     /*
      * 413 PAYLOAD_TOO_LARGE: 서버에서 지원하지 않는 미디어 포맷

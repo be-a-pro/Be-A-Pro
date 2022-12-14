@@ -14,6 +14,10 @@ import com.beer.BeAPro.Service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -69,6 +73,14 @@ public class NaverLoginApiController {
         this.redisService = redisService;
     }
 
+    @Operation(summary = "네이버 소셜 로그인 API를 이용한 로그인 또는 회원가입",
+            description = "성공시 자동으로 콜백 리다이렉트됨")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "네이버 계정 로그인 및 사용자 정보 받아오는 중"),
+            @ApiResponse(responseCode = "400", description = "로그인 또는 회원가입 실패"),
+            @ApiResponse(responseCode = "403", description = "로그인 또는 회원가입 실패"),
+            @ApiResponse(responseCode = "500", description = "서버 문제로 로그인 또는 회원가입 실패")
+    })
     @RequestMapping(
             value = "/login",
             method = {RequestMethod.GET, RequestMethod.POST})
@@ -112,6 +124,13 @@ public class NaverLoginApiController {
     // Callback 리다이렉트
     // 토큰 발급 및 저장 후, 사용자 프로필 요청
     // 회원가입/로그인
+    @Operation(summary = "네이버 소셜 로그인 API 콜백 리다이렉트")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "로그인 또는 회원가입 성공. Access Token, Refresh Token 발급 완료."),
+            @ApiResponse(responseCode = "400", description = "로그인 또는 회원가입 실패"),
+            @ApiResponse(responseCode = "403", description = "로그인 또는 회원가입 실패"),
+            @ApiResponse(responseCode = "500", description = "서버 문제로 로그인 또는 회원가입 실패")
+    })
     @RequestMapping(
             value = "/redirect",
             method = {RequestMethod.GET, RequestMethod.POST})
@@ -225,12 +244,23 @@ public class NaverLoginApiController {
     }
 
     // AT 재발급 후, 네이버 로그인 연동 해제(AT 삭제)
+    @Operation(summary = "네이버 소셜 로그인 연동 해제 API 호출",
+            description = "연동 해제 및 로그아웃 처리. Access Token, Refresh Token 삭제.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "연동 해제 및 로그이웃 성공. Access Token, Refresh Token 삭제 완료."),
+            @ApiResponse(responseCode = "400", description = "연동 해제 및 로그아웃 실패"),
+            @ApiResponse(responseCode = "403", description = "연동 해제 및 로그아웃 실패"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없을 경우"),
+            @ApiResponse(responseCode = "500", description = "서버 문제로 연동 해제 실패")
+    })
     @RequestMapping(
             value = "/disconnect",
             method = {RequestMethod.GET, RequestMethod.POST})
-    public ResponseEntity<String> disconnect(@RequestHeader("Authorization") String beaproAccessToken) { // 서버 AT
+    public ResponseEntity<String> disconnect(
+            @Parameter(description = "Access Token", example = "Bearer {access-token}")
+            @RequestHeader("Authorization") String beaproAccessTokenInHeader) { // 서버 AT
         // Redis에서 네이버 RT 읽어오기
-        String principal = authService.getPrincipal(authService.resolveToken(beaproAccessToken));
+        String principal = authService.getPrincipal(authService.resolveToken(beaproAccessTokenInHeader));
         String naverRefreshToken = redisService.getValues("RT(" + clientName + "):" + principal);
         if (naverRefreshToken == null) { // 이미 연동이 해제된 경우
             log.error("Error: Naver OAuth2 disconnect: Not found naver refresh token.");
@@ -310,12 +340,9 @@ public class NaverLoginApiController {
             throw new RuntimeException("Error: Naver OAuth2 disconnect: Not defined.");
         }
 
-        // RT 삭제
+        // AT, RT 삭제
         redisService.deleteValues("RT(" + clientName + "):" + principal); // 네이버
-        boolean isLoggedOut = authService.logout(beaproAccessToken);// 비어프로
-        if (!isLoggedOut) {
-            throw new RestApiException(ErrorCode.LOGOUT_FAILED);
-        }
+        authService.logout(beaproAccessTokenInHeader); // 비어프로
 
         ResponseCookie responseCookie = ResponseCookie.from("refresh-token", "")
                 .maxAge(0)
