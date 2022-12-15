@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.beer.BeAPro.Domain.QProfileImage.profileImage;
@@ -167,9 +168,18 @@ public class ProjectService {
     // 프로젝트 삭제 처리(USER 권한으로 삭제할 경우)
     @Transactional
     public void deleteProcessingProject(Project project) {
+        // 이미 삭제 처리된 프로젝트일 경우
+        if (project.getRestorationDate() != null) {
+            throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
+        }
+
+        // 팀장 ProjectMember 삭제
+        projectMemberRepository.findByProjectAndTeamPosition(project, TeamPosition.LEADER)
+                .ifPresent(projectMemberRepository::delete);
+
         // 팀장 제외 팀원이 있는지
         if (projectMemberRepository.findByProjectAndTeamPosition(project, TeamPosition.MEMBER).isPresent()) {
-            project.setRestorationDate(true); // 복구 가능 기간 가짐
+            project.setDeleteProcessing(); // 복구 가능 기간 설정
         } else {
             deleteProject(project); // 영구 삭제
         }
@@ -542,7 +552,7 @@ public class ProjectService {
             throw new RestApiException(ErrorCode.LEADER_ALREADY_EXISTS);
         }
         // 이미 프로젝트의 팀원일 경우
-        if (projectMemberRepository.findByUserAndProject(writer, project).isPresent()) {
+        if (isProjectMember(writer, project)) {
             throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
         }
         projectMemberRepository.save(projectMember);
