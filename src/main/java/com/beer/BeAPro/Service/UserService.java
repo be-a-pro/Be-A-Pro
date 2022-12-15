@@ -212,6 +212,21 @@ public class UserService {
     // 추가 정보 저장
     @Transactional
     public void saveUserAdditionalInfo(User user, RequestDto.SignUpAdditionalInfoDto signUpAdditionalInfoDto) {
+        // 이미 저장되어 있는 정보가 있을 경우 삭제
+        List<UserPosition> savedUserPositions = jpaQueryFactory
+                .selectFrom(userPosition)
+                .join(userPosition.position)
+                .fetchJoin()
+                .where(userPosition.user.id.eq(user.getId()))
+                .fetch();
+        List<Position> savedPositions = savedUserPositions.stream()
+                .map(UserPosition::getPosition)
+                .collect(Collectors.toList());
+        userPositionRepository.deleteAll(savedUserPositions);
+        positionRepository.deleteAll(savedPositions);
+        userInterestKeywordRepository.deleteAll(userInterestKeywordRepository.findAllByUser(user));
+        userToolRepository.deleteAll(userToolRepository.findAllByUser(user));
+
         // 데이터 가공
         List<Position> positions = new ArrayList<>();
         List<UserPosition> userPositions = new ArrayList<>();
