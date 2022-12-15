@@ -33,6 +33,7 @@ public enum ErrorCode {
     FORBIDDEN_ACCESS(HttpStatus.FORBIDDEN, "Forbidden."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access Denied."),
     CREATING_PROJECT_DENIED(HttpStatus.FORBIDDEN, "Unable to create the project. The portfolio must be made public."),
+    PROJECT_RESTORE_DENIED(HttpStatus.FORBIDDEN, "User does not have permission for the request."),
 
     /*
      * 404 NOT_FOUND: 리소스를 찾을 수 없음
@@ -45,7 +46,7 @@ public enum ErrorCode {
      * 405 METHOD_NOT_ALLOWED: 허용되지 않은 Request Method 호출
      */
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Not allowed method."),
-    CANNOT_DISCONNECT(HttpStatus.METHOD_NOT_ALLOWED, "The SNS account used for membership registration cannot be disconnected."),
+    CANNOT_RESTORE_PROJECT(HttpStatus.METHOD_NOT_ALLOWED, "Unable to restore the project. This date is not a recoverable period."),
 
     /*
      * 409 CONFLICT: 서버의 현재 상태와 요청이 충돌

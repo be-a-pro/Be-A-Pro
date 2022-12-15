@@ -185,10 +185,31 @@ public class ProjectService {
         }
     }
 
-    // 삭제된 프로젝트 복구(삭제 예정 취소)
+    // 삭제 처리된 프로젝트 복구
     @Transactional
-    public void restorationProject(Project project) {
-        project.setRestorationDate(false);
+    public void restoreProject(Project project, User user) {
+        // 이미 복구되었거나 삭제 처리된 프로젝트가 아닐 경우
+        if (project.getRestorationDate() == null) {
+            throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
+        }
+
+        // 복구 가능 기간이 아닐 경우
+        if (project.getRestorationDate().isBefore(LocalDateTime.now())) {
+            throw new RestApiException(ErrorCode.CANNOT_RESTORE_PROJECT);
+        }
+
+        // 프로젝트 복구
+        project.restore(user);
+        // 복구한 사용자를 MEMBER->LEADER 변환
+        projectMemberRepository.findByUserAndProject(user, project)
+                        .ifPresent(projectMember -> {
+                            // 삭제되는 ProjectMember의 Position을 가진 팀원이 더이상 없는 경우, Position 칼럼 삭제
+                            if (projectMemberRepository.countByPosition(projectMember.getPosition()) <= 0) {
+                                positionRepository.delete(projectMember.getPosition());
+                            }
+                            // 사용자를 팀장으로 변환
+                            projectMember.modifyMemberToLeader();
+                        });
     }
 
     // ProjectPosition 객체와 연관된 Position 삭제
@@ -222,6 +243,10 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
+    // 사용자가 프로젝트의 팀원인지 확인
+    public boolean isProjectMember(User user, Project project) {
+        return projectMemberRepository.findByUserAndProject(user, project).isPresent();
+    }
 
     // ===== 비즈니스 로직 ===== //
 

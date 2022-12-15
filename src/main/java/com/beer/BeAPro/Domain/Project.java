@@ -112,6 +112,12 @@ public class Project extends BaseEntity {
         this.restorationDate = LocalDateTime.now().plusWeeks(2); // 복구 기한 설정
     }
 
+    // 프로젝트 복구
+    public void restore(User user) {
+        this.user = user; // 복구한 사용자
+        this.restorationDate = null;
+    }
+
     // 조회수 증가
     public void increaseViews() {
         this.views += 1;
