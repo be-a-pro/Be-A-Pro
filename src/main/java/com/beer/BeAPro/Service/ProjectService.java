@@ -9,6 +9,7 @@ import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.*;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.beer.BeAPro.Domain.QPosition.position;
 import static com.beer.BeAPro.Domain.QProfileImage.profileImage;
 import static com.beer.BeAPro.Domain.QProject.*;
+import static com.beer.BeAPro.Domain.QProjectMember.projectMember;
 import static com.beer.BeAPro.Domain.QProjectPosition.projectPosition;
 
 
@@ -587,5 +587,50 @@ public class ProjectService {
     @Transactional
     public void increaseViews(Project project) {
         project.increaseViews();
+    }
+
+    // 복구 가능한 날짜가 지난 프로젝트 처리
+    public void setProjectOutOfRestorationDate() {
+        // ProjectPosition, Position 가져오기
+        List<ProjectPosition> projectPositions = jpaQueryFactory
+                .select(projectPosition)
+                .from(project)
+                .join(projectPosition)
+                .on(project.id.eq(projectPosition.project.id))
+                .where(project.restorationDate.before(LocalDateTime.now()))
+                .fetch();
+        List<Long> projectPositionIdList = new ArrayList<>();
+        List<Long> tempPositionIdList = new ArrayList<>();
+        for (ProjectPosition projectPosition : projectPositions) {
+            projectPositionIdList.add(projectPosition.getId());
+            tempPositionIdList.add(projectPosition.getPosition().getId());
+        }
+
+        // tempPositionIdList의 Position 중, 해당 Position과 매핑된 ProjectMember가 아닌 Position
+        List<Long> positionIdList = new ArrayList<>();
+        List<Position> positions = jpaQueryFactory
+                .selectFrom(position)
+                .join(projectPosition)
+                .on(projectPosition.position.id.eq(position.id))
+                .fetchJoin()
+                .where(position.id.in(tempPositionIdList),
+                        JPAExpressions
+                                .selectOne()
+                                .from(projectMember)
+                                .where(projectMember.position.id.eq(projectPosition.position.id)).notExists())
+                .fetch();
+        for (Position position : positions) {
+            positionIdList.add(position.getId());
+        }
+
+        // 삭제
+        jpaQueryFactory
+                .delete(projectPosition)
+                .where(projectPosition.id.in(projectPositionIdList))
+                .execute();
+        jpaQueryFactory
+                .delete(position)
+                .where(position.id.in(positionIdList))
+                .execute();
     }
 }
