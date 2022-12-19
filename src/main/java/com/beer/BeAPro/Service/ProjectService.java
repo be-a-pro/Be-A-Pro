@@ -9,6 +9,7 @@ import com.beer.BeAPro.Exception.RestApiException;
 import com.beer.BeAPro.Repository.*;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.beer.BeAPro.Domain.QApply.apply;
+import static com.beer.BeAPro.Domain.QPosition.position;
 import static com.beer.BeAPro.Domain.QProfileImage.profileImage;
-import static com.beer.BeAPro.Domain.QProject.*;
+import static com.beer.BeAPro.Domain.QProject.project;
+import static com.beer.BeAPro.Domain.QProjectHashtag.projectHashtag;
+import static com.beer.BeAPro.Domain.QProjectImage.projectImage;
+import static com.beer.BeAPro.Domain.QProjectMember.projectMember;
 import static com.beer.BeAPro.Domain.QProjectPosition.projectPosition;
 
 
@@ -42,6 +46,7 @@ public class ProjectService {
     private final ProjectMemberRepository projectMemberRepository;
     private final PositionRepository positionRepository;
 
+    private final FileUploadService fileUploadService;
     private final ApplyService applyService;
 
 
@@ -103,8 +108,8 @@ public class ProjectService {
     // 업데이트
     @Transactional
     public Project update(Project project, RequestDto.ProjectDto projectDto, ProjectImage projectImage) {
-        // 연관 Position 객체 삭제
-        deletePosition(project);
+        // 생성되어 있는 ProjectPosition, Position 객체 삭제
+        deleteProjectPositionsAndPositions(project);
 
         // 데이터 가공
         List<ProjectHashtag> projectHashtags = projectDto.getProjectHashtags().stream()
@@ -149,45 +154,186 @@ public class ProjectService {
 
 
     // ===== 삭제 ===== //
-    // 프로젝트 객체 삭제(영구 삭제)
+    // 임시저장된 프로젝트 삭제(영구 삭제)
     @Transactional
     public void deleteProject(Project project) {
         // Apply 삭제
         applyService.deleteApplyByDeletingProject(project);
 
-        // ProjectMember 삭제
-        List<ProjectMember> findProjectMembers = projectMemberRepository.findAllByProject(project);
-        projectMemberRepository.deleteAll(findProjectMembers);
-        // Position 삭제
-        deletePosition(project);
-        // Project 삭제
+        // Position, ProjectPosition 삭제
+        deleteProjectPositionsAndPositions(project);
+
+        // AWS S3에서 ProjectImage 파일 삭제
+        fileUploadService.deleteFile(project.getProjectImage().getModifiedName());
+
+        // 팀장 ProjectMember 삭제
+        projectMemberRepository.deleteByProject(project);
+
+        // Project 삭제(ProjectImage, ProjectHashtag 자동 삭제)
         projectRepository.delete(project);
     }
 
     // 프로젝트 삭제 처리(USER 권한으로 삭제할 경우)
     @Transactional
     public void deleteProcessingProject(Project project) {
+        // 이미 삭제 처리된 프로젝트일 경우
+        if (project.getRestorationDate() != null) {
+            throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
+        }
+
+        // 팀장 ProjectMember 삭제
+        projectMemberRepository.findByProjectAndTeamPosition(project, TeamPosition.LEADER)
+                .ifPresent(projectMemberRepository::delete);
+
         // 팀장 제외 팀원이 있는지
         if (projectMemberRepository.findByProjectAndTeamPosition(project, TeamPosition.MEMBER).isPresent()) {
-            project.setRestorationDate(true); // 복구 가능 기간 가짐
+            project.setDeleteProcessing(); // 복구 가능 기간 설정
         } else {
             deleteProject(project); // 영구 삭제
         }
     }
 
-    // 삭제된 프로젝트 복구(삭제 예정 취소)
+    // 복구 기한으로부터 1년이 지난 프로젝트를 DB에서 삭제(영구 삭제)
     @Transactional
-    public void restorationProject(Project project) {
-        project.setRestorationDate(false);
+    public void deleteProjectAndRelatedData() {
+        // 복구 기한으로부터 1년이 지난 Project, ProjectImage 목록
+        List<Project> projects = jpaQueryFactory
+                .selectFrom(project)
+                .where(project.restorationDate.before(LocalDateTime.now().minusDays(1)))
+                .fetch();
+        List<Long> projectIdList = new ArrayList<>();
+        List<Long> projectImageIdList = new ArrayList<>();
+        List<String> projectImageFilenameList = new ArrayList<>();
+        for (Project project : projects) {
+            projectIdList.add(project.getId());
+            ProjectImage projectImage = project.getProjectImage();
+            projectImageIdList.add(projectImage.getId());
+            projectImageFilenameList.add(projectImage.getModifiedName());
+        }
+
+        // 삭제할 ProjectPosition Id 목록, 매핑된 Position Id 목록 추출
+        List<ProjectPosition> projectPositions = jpaQueryFactory
+                .selectFrom(projectPosition)
+                .where(projectPosition.project.id.in(projectIdList))
+                .fetch();
+        List<Long> projectPositionIdList = new ArrayList<>();
+        List<Long> positionIdList = new ArrayList<>();
+        for (ProjectPosition projectPosition : projectPositions) {
+            projectPositionIdList.add(projectPosition.getId());
+            positionIdList.add(projectPosition.getPosition().getId());
+        }
+
+        // 삭제할 ProjectMember Id 목록, 매핑된 Position Id 목록 추출
+        List<ProjectMember> projectMembers = jpaQueryFactory
+                .selectFrom(projectMember)
+                .where(projectMember.project.id.in(projectIdList))
+                .fetch();
+        List<Long> projectMemberIdList = new ArrayList<>();
+        for (ProjectMember projectMember : projectMembers) {
+            if (projectMember.getPosition() != null) { // 팀장일 경우, null
+                positionIdList.add(projectMember.getPosition().getId());
+            }
+            projectMemberIdList.add(projectMember.getId());
+        }
+
+        // Apply 삭제
+        jpaQueryFactory
+                .delete(apply)
+                .where(apply.project.id.in(projectIdList))
+                .execute();
+
+        // ProjectPosition 삭제
+        jpaQueryFactory
+                .delete(projectPosition)
+                .where(projectPosition.id.in(projectPositionIdList))
+                .execute();
+
+        // ProjectMember 삭제
+        jpaQueryFactory
+                .delete(projectMember)
+                .where(projectMember.id.in(projectMemberIdList))
+                .execute();
+
+        // Position 삭제
+        List<Long> positionIdListWithoutDuplication = new ArrayList<Long>(new HashSet<Long>(positionIdList)); // 중복 제거
+        jpaQueryFactory
+                .delete(position)
+                .where(position.id.in(positionIdListWithoutDuplication))
+                .execute();
+
+        // ProjectHashtag 삭제
+        jpaQueryFactory
+                .delete(projectHashtag)
+                .where(projectHashtag.project.id.in(projectIdList))
+                .execute();
+
+        // Project 삭제
+        jpaQueryFactory
+                .delete(project)
+                .where(project.id.in(projectIdList))
+                .execute();
+
+        // ProjectImage 삭제
+        projectImageFilenameList.forEach(fileUploadService::deleteFile);
+        jpaQueryFactory
+                .delete(projectImage)
+                .where(projectImage.id.in(projectImageIdList))
+                .execute();
     }
 
-    // ProjectPosition 객체와 연관된 Position 삭제
+    // 삭제 처리된 프로젝트 복구
     @Transactional
-    public void deletePosition(Project project) {
-        List<ProjectPosition> findProjectPositions = projectPositionRepository.findAllByProject(project);
-        if (findProjectPositions != null) {
-            findProjectPositions.forEach(findProjectPosition -> positionRepository.delete(findProjectPosition.getPosition()));
+    public void restoreProject(Project project, User user) {
+        // 이미 복구되었거나 삭제 처리된 프로젝트가 아닐 경우
+        if (project.getRestorationDate() == null) {
+            throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
         }
+
+        // 복구 가능 기간이 아닐 경우
+        if (project.getRestorationDate().isBefore(LocalDateTime.now())) {
+            throw new RestApiException(ErrorCode.CANNOT_RESTORE_PROJECT);
+        }
+
+        // 프로젝트 복구
+        project.restore(user);
+        // 복구한 사용자를 MEMBER->LEADER 변환
+        projectMemberRepository.findByUserAndProject(user, project)
+                        .ifPresent(projectMember -> {
+                            // 삭제되는 ProjectMember의 Position을 가진 팀원이 더이상 없는 경우, Position 칼럼 삭제
+                            if (projectMemberRepository.countByPosition(projectMember.getPosition()) <= 0) {
+                                positionRepository.delete(projectMember.getPosition());
+                            }
+                            // 사용자를 팀장으로 변환
+                            projectMember.modifyMemberToLeader();
+                        });
+    }
+
+    // Project의 ProjectPosition, Position 삭제
+    @Transactional
+    public void deleteProjectPositionsAndPositions(Project project) {
+        // 삭제할 ProjectPosition Id 목록, 매핑된 Position Id 목록 추출
+        List<ProjectPosition> projectPositions = jpaQueryFactory
+                .selectFrom(projectPosition)
+                .where(projectPosition.project.id.eq(project.getId()))
+                .fetch();
+        List<Long> projectPositionIdList = new ArrayList<>();
+        List<Long> positionIdList = new ArrayList<>();
+        for (ProjectPosition projectPosition : projectPositions) {
+            projectPositionIdList.add(projectPosition.getId());
+            positionIdList.add(projectPosition.getPosition().getId());
+        }
+
+        // ProjectPosition 삭제
+        jpaQueryFactory
+                .delete(projectPosition)
+                .where(projectPosition.id.in(projectPositionIdList))
+                .execute();
+
+        // Position 삭제
+        jpaQueryFactory
+                .delete(position)
+                .where(position.id.in(positionIdList))
+                .execute();
     }
 
 
@@ -205,13 +351,10 @@ public class ProjectService {
         return projectRepository.findByUserAndId(user, id).orElse(null);
     }
 
-    // DB에서 삭제할 프로젝트 목록
-    public List<Project> findProjectToDelete() {
-        return projectRepository.findAll().stream()
-                .filter(project -> project.getRestorationDate().isBefore(LocalDateTime.now()))
-                .collect(Collectors.toList());
+    // 사용자가 프로젝트의 팀원인지 확인
+    public boolean isProjectMember(User user, Project project) {
+        return projectMemberRepository.findByUserAndProject(user, project).isPresent();
     }
-
 
     // ===== 비즈니스 로직 ===== //
 
@@ -542,7 +685,7 @@ public class ProjectService {
             throw new RestApiException(ErrorCode.LEADER_ALREADY_EXISTS);
         }
         // 이미 프로젝트의 팀원일 경우
-        if (projectMemberRepository.findByUserAndProject(writer, project).isPresent()) {
+        if (isProjectMember(writer, project)) {
             throw new RestApiException(ErrorCode.CONFLICT_REQUEST);
         }
         projectMemberRepository.save(projectMember);
@@ -552,5 +695,50 @@ public class ProjectService {
     @Transactional
     public void increaseViews(Project project) {
         project.increaseViews();
+    }
+
+    // 복구 가능한 날짜가 지난 프로젝트 처리
+    public void setProjectOutOfRestorationDate() {
+        // ProjectPosition, Position 가져오기
+        List<ProjectPosition> projectPositions = jpaQueryFactory
+                .select(projectPosition)
+                .from(project)
+                .join(projectPosition)
+                .on(project.id.eq(projectPosition.project.id))
+                .where(project.restorationDate.before(LocalDateTime.now()))
+                .fetch();
+        List<Long> projectPositionIdList = new ArrayList<>();
+        List<Long> tempPositionIdList = new ArrayList<>();
+        for (ProjectPosition projectPosition : projectPositions) {
+            projectPositionIdList.add(projectPosition.getId());
+            tempPositionIdList.add(projectPosition.getPosition().getId());
+        }
+
+        // tempPositionIdList의 Position 중, 해당 Position과 매핑된 ProjectMember가 아닌 Position
+        List<Long> positionIdList = new ArrayList<>();
+        List<Position> positions = jpaQueryFactory
+                .selectFrom(position)
+                .join(projectPosition)
+                .on(projectPosition.position.id.eq(position.id))
+                .fetchJoin()
+                .where(position.id.in(tempPositionIdList),
+                        JPAExpressions
+                                .selectOne()
+                                .from(projectMember)
+                                .where(projectMember.position.id.eq(projectPosition.position.id)).notExists())
+                .fetch();
+        for (Position position : positions) {
+            positionIdList.add(position.getId());
+        }
+
+        // 삭제
+        jpaQueryFactory
+                .delete(projectPosition)
+                .where(projectPosition.id.in(projectPositionIdList))
+                .execute();
+        jpaQueryFactory
+                .delete(position)
+                .where(position.id.in(positionIdList))
+                .execute();
     }
 }

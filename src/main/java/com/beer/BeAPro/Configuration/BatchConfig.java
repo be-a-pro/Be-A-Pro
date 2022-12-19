@@ -83,12 +83,13 @@ public class BatchConfig {
                     log.info("===== Delete Project Step =====");
                     log.info("requestDate = {}", time);
 
-                    // DB에서 삭제할 프로젝트 목록을 가져옴
-                    List<Project> projectToDelete = projectService.findProjectToDelete();
-                    // 삭제
-                    if (projectToDelete != null) {
-                        projectToDelete.forEach(projectService::deleteProject);
-                    }
+
+                    // 복구 가능한 기간이 지난 프로젝트들의 복구 불가능 처리
+                    projectService.setProjectOutOfRestorationDate();
+
+                    // 복구 가능한 기간으로부터 1년이 지난 프로젝트들 삭제
+                    projectService.deleteProjectAndRelatedData();
+
                     return RepeatStatus.FINISHED;
                 }).build();
     }

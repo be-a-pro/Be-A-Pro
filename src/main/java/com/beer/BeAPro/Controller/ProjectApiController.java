@@ -189,6 +189,41 @@ public class ProjectApiController {
     }
 
 
+    // 삭제 처리된 프로젝트 복구
+    @Operation(summary = "삭제 처리된 프로젝트 복구",
+            description = "프로젝트의 팀원일 경우, 복구 가능 기한 내에 삭제 처리된 프로젝트를 복구할 수 있음")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "프로젝트 복구 완료"),
+            @ApiResponse(responseCode = "403", description = "프로젝트의 팀원이 아닐 경우"),
+            @ApiResponse(responseCode = "404", description = "사용자 혹은 프로젝트를 찾을 수 없을 경우"),
+            @ApiResponse(responseCode = "405", description = "복구 가능 기간이 아닐 경우"),
+            @ApiResponse(responseCode = "409", description = "이미 복구되었거나 삭제 처리된 프로젝트가 아닐 경우"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @PutMapping("/restore")
+    public ResponseEntity<String> restoreProject(
+            @Parameter(description = "Access Token", example = "Bearer {access-token}")
+            @RequestHeader("Authorization") String requestAccessTokenInHeader,
+            @Parameter(description = "프로젝트 id") @RequestParam Long id) {
+        // 사용자 검증
+        User findUser = extractUserFromAccessToken(requestAccessTokenInHeader);
+        Project findProject = projectService.findById(id);
+        if (findProject == null) {
+            throw new RestApiException(ErrorCode.POST_NOT_FOUND);
+        }
+
+        // 프로젝트의 팀원인지 확인
+        if (!projectService.isProjectMember(findUser, findProject)) {
+            throw new RestApiException(ErrorCode.PROJECT_RESTORE_DENIED);
+        }
+
+        // 복구 처리
+        projectService.restoreProject(findProject, findUser);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
+
     // ===== 프로젝트 조회 ===== //
     // 프로젝트 데이터 가져오기: 임시저장된 글 작성 또는 글 수정시
     @Operation(summary = "프로젝트 데이터 가져오기(임시저장된 글 작성 / 작성된 글 수정)")

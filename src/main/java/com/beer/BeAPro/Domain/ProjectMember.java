@@ -42,4 +42,10 @@ public class ProjectMember extends BaseEntity {
 
         return projectMember;
     }
+
+    // 팀장 멤버로 변환
+    public void modifyMemberToLeader() {
+        this.position = null;
+        this.teamPosition = TeamPosition.LEADER;
+    }
 }

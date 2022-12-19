@@ -106,13 +106,16 @@ public class Project extends BaseEntity {
     }
 
     // == 비즈니스 로직 == //
-    // 복구 가능 기한 설정(삭제 처리)
-    public void setRestorationDate(boolean bool) {
-        if (bool) {
-            this.restorationDate = LocalDateTime.now().plusWeeks(2);
-        } else {
-            this.restorationDate = null;
-        }
+    // 프로젝트 삭제 처리
+    public void setDeleteProcessing() {
+        this.user = null; // 팀장 삭제
+        this.restorationDate = LocalDateTime.now().plusWeeks(2); // 복구 기한 설정
+    }
+
+    // 프로젝트 복구
+    public void restore(User user) {
+        this.user = user; // 복구한 사용자
+        this.restorationDate = null;
     }
 
     // 조회수 증가
