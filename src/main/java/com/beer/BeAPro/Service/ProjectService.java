@@ -25,9 +25,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.beer.BeAPro.Domain.QApply.apply;
 import static com.beer.BeAPro.Domain.QPosition.position;
 import static com.beer.BeAPro.Domain.QProfileImage.profileImage;
-import static com.beer.BeAPro.Domain.QProject.*;
+import static com.beer.BeAPro.Domain.QProject.project;
+import static com.beer.BeAPro.Domain.QProjectHashtag.projectHashtag;
+import static com.beer.BeAPro.Domain.QProjectImage.projectImage;
 import static com.beer.BeAPro.Domain.QProjectMember.projectMember;
 import static com.beer.BeAPro.Domain.QProjectPosition.projectPosition;
 
@@ -43,6 +46,7 @@ public class ProjectService {
     private final ProjectMemberRepository projectMemberRepository;
     private final PositionRepository positionRepository;
 
+    private final FileUploadService fileUploadService;
     private final ApplyService applyService;
 
 
@@ -185,6 +189,94 @@ public class ProjectService {
         }
     }
 
+    // 복구 기한으로부터 1년이 지난 프로젝트를 DB에서 삭제(영구 삭제)
+    @Transactional
+    public void deleteProjectAndRelatedData() {
+        // 복구 기한으로부터 1년이 지난 Project, ProjectImage 목록
+        List<Project> projects = jpaQueryFactory
+                .selectFrom(project)
+                .where(project.restorationDate.before(LocalDateTime.now().minusDays(1)))
+                .fetch();
+        List<Long> projectIdList = new ArrayList<>();
+        List<Long> projectImageIdList = new ArrayList<>();
+        List<String> projectImageFilenameList = new ArrayList<>();
+        for (Project project : projects) {
+            projectIdList.add(project.getId());
+            ProjectImage projectImage = project.getProjectImage();
+            projectImageIdList.add(projectImage.getId());
+            projectImageFilenameList.add(projectImage.getModifiedName());
+        }
+
+        // 삭제할 ProjectPosition Id 목록, 매핑된 Position Id 목록 추출
+        List<ProjectPosition> projectPositions = jpaQueryFactory
+                .selectFrom(projectPosition)
+                .where(projectPosition.project.id.in(projectIdList))
+                .fetch();
+        List<Long> projectPositionIdList = new ArrayList<>();
+        List<Long> positionIdList = new ArrayList<>();
+        for (ProjectPosition projectPosition : projectPositions) {
+            projectPositionIdList.add(projectPosition.getId());
+            positionIdList.add(projectPosition.getPosition().getId());
+        }
+
+        // 삭제할 ProjectMember Id 목록, 매핑된 Position Id 목록 추출
+        List<ProjectMember> projectMembers = jpaQueryFactory
+                .selectFrom(projectMember)
+                .where(projectMember.project.id.in(projectIdList))
+                .fetch();
+        List<Long> projectMemberIdList = new ArrayList<>();
+        for (ProjectMember projectMember : projectMembers) {
+            if (projectMember.getPosition() != null) { // 팀장일 경우, null
+                positionIdList.add(projectMember.getPosition().getId());
+            }
+            projectMemberIdList.add(projectMember.getId());
+        }
+
+        // Apply 삭제
+        jpaQueryFactory
+                .delete(apply)
+                .where(apply.project.id.in(projectIdList))
+                .execute();
+
+        // ProjectPosition 삭제
+        jpaQueryFactory
+                .delete(projectPosition)
+                .where(projectPosition.id.in(projectPositionIdList))
+                .execute();
+
+        // ProjectMember 삭제
+        jpaQueryFactory
+                .delete(projectMember)
+                .where(projectMember.id.in(projectMemberIdList))
+                .execute();
+
+        // Position 삭제
+        List<Long> positionIdListWithoutDuplication = new ArrayList<Long>(new HashSet<Long>(positionIdList)); // 중복 제거
+        jpaQueryFactory
+                .delete(position)
+                .where(position.id.in(positionIdListWithoutDuplication))
+                .execute();
+
+        // ProjectHashtag 삭제
+        jpaQueryFactory
+                .delete(projectHashtag)
+                .where(projectHashtag.project.id.in(projectIdList))
+                .execute();
+
+        // Project 삭제
+        jpaQueryFactory
+                .delete(project)
+                .where(project.id.in(projectIdList))
+                .execute();
+
+        // ProjectImage 삭제
+        projectImageFilenameList.forEach(fileUploadService::deleteFile);
+        jpaQueryFactory
+                .delete(projectImage)
+                .where(projectImage.id.in(projectImageIdList))
+                .execute();
+    }
+
     // 삭제 처리된 프로젝트 복구
     @Transactional
     public void restoreProject(Project project, User user) {
@@ -234,13 +326,6 @@ public class ProjectService {
 
     public Project findByUserAndId(User user, Long id) {
         return projectRepository.findByUserAndId(user, id).orElse(null);
-    }
-
-    // DB에서 삭제할 프로젝트 목록
-    public List<Project> findProjectToDelete() {
-        return projectRepository.findAll().stream()
-                .filter(project -> project.getRestorationDate().isBefore(LocalDateTime.now()))
-                .collect(Collectors.toList());
     }
 
     // 사용자가 프로젝트의 팀원인지 확인
