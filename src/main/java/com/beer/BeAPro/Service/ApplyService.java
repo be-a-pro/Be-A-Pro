@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.beer.BeAPro.Domain.QApply.apply;
 import static com.beer.BeAPro.Domain.QProjectPosition.projectPosition;
 
 
@@ -90,7 +91,9 @@ public class ApplyService {
 
     @Transactional
     public void deleteApplyByDeletingProject(Project project) {
-        List<Apply> allByProject = applyRepository.findAllByProject(project);
-        applyRepository.deleteAll(allByProject);
+        jpaQueryFactory
+                .delete(apply)
+                .where(apply.project.id.eq(project.getId()))
+                .execute();
     }
 }

@@ -108,8 +108,8 @@ public class ProjectService {
     // 업데이트
     @Transactional
     public Project update(Project project, RequestDto.ProjectDto projectDto, ProjectImage projectImage) {
-        // 연관 Position 객체 삭제
-        deletePosition(project);
+        // 생성되어 있는 ProjectPosition, Position 객체 삭제
+        deleteProjectPositionsAndPositions(project);
 
         // 데이터 가공
         List<ProjectHashtag> projectHashtags = projectDto.getProjectHashtags().stream()
@@ -154,18 +154,22 @@ public class ProjectService {
 
 
     // ===== 삭제 ===== //
-    // 프로젝트 객체 삭제(영구 삭제)
+    // 임시저장된 프로젝트 삭제(영구 삭제)
     @Transactional
     public void deleteProject(Project project) {
         // Apply 삭제
         applyService.deleteApplyByDeletingProject(project);
 
-        // ProjectMember 삭제
-        List<ProjectMember> findProjectMembers = projectMemberRepository.findAllByProject(project);
-        projectMemberRepository.deleteAll(findProjectMembers);
-        // Position 삭제
-        deletePosition(project);
-        // Project 삭제
+        // Position, ProjectPosition 삭제
+        deleteProjectPositionsAndPositions(project);
+
+        // AWS S3에서 ProjectImage 파일 삭제
+        fileUploadService.deleteFile(project.getProjectImage().getModifiedName());
+
+        // 팀장 ProjectMember 삭제
+        projectMemberRepository.deleteByProject(project);
+
+        // Project 삭제(ProjectImage, ProjectHashtag 자동 삭제)
         projectRepository.delete(project);
     }
 
@@ -304,13 +308,32 @@ public class ProjectService {
                         });
     }
 
-    // ProjectPosition 객체와 연관된 Position 삭제
+    // Project의 ProjectPosition, Position 삭제
     @Transactional
-    public void deletePosition(Project project) {
-        List<ProjectPosition> findProjectPositions = projectPositionRepository.findAllByProject(project);
-        if (findProjectPositions != null) {
-            findProjectPositions.forEach(findProjectPosition -> positionRepository.delete(findProjectPosition.getPosition()));
+    public void deleteProjectPositionsAndPositions(Project project) {
+        // 삭제할 ProjectPosition Id 목록, 매핑된 Position Id 목록 추출
+        List<ProjectPosition> projectPositions = jpaQueryFactory
+                .selectFrom(projectPosition)
+                .where(projectPosition.project.id.eq(project.getId()))
+                .fetch();
+        List<Long> projectPositionIdList = new ArrayList<>();
+        List<Long> positionIdList = new ArrayList<>();
+        for (ProjectPosition projectPosition : projectPositions) {
+            projectPositionIdList.add(projectPosition.getId());
+            positionIdList.add(projectPosition.getPosition().getId());
         }
+
+        // ProjectPosition 삭제
+        jpaQueryFactory
+                .delete(projectPosition)
+                .where(projectPosition.id.in(projectPositionIdList))
+                .execute();
+
+        // Position 삭제
+        jpaQueryFactory
+                .delete(position)
+                .where(position.id.in(positionIdList))
+                .execute();
     }
 
 

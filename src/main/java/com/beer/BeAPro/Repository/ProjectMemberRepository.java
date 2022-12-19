@@ -11,4 +11,5 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, Lo
     Optional<ProjectMember> findByUserAndProject(User user, Project project);
     Optional<ProjectMember> findByProjectAndTeamPosition(Project project, TeamPosition teamPosition);
     Long countByPosition(Position position);
+    void deleteByProject(Project project);
 }
