@@ -93,12 +93,6 @@ public class FileUploadService {
                 .build();
     }
 
-    // AWS S3에서 파일 삭제
-    @Transactional
-    public void deleteFile(String fileName) {
-        awsS3UploadService.deleteFile(fileName);
-    }
-
 
     // ===== DB에 저장 ===== //
 
@@ -124,20 +118,27 @@ public class FileUploadService {
     }
 
 
-    // ===== DB에서 삭제 ===== //
+    // ===== 파일 삭제 ===== //
+    // AWS S3에서 파일 삭제
+    public void deleteFile(String fileName) {
+        awsS3UploadService.deleteFile(fileName);
+    }
 
     @Transactional
     public void deleteProfileImage(ProfileImage profileImage) {
+        deleteFile(profileImage.getModifiedName());
         profileImageRepository.delete(profileImage);
     }
 
     @Transactional
     public void deleteProjectImage(ProjectImage projectImage) {
+        deleteFile(projectImage.getModifiedName());
         projectImageRepository.delete(projectImage);
     }
 
     @Transactional
     public void deletePortfolioFile(PortfolioFile portfolioFile) {
+        deleteFile(portfolioFile.getModifiedName());
         portfolioFileRepository.delete(portfolioFile);
     }
 }

@@ -115,13 +115,13 @@ public class ProjectApiController {
         Project findProject = findProjectByWriter(findUser, id);
 
         // 프로젝트 대표 이미지
-        // AWS S3에서 기존 프로젝트 대표 이미지 삭제
+        // AWS S3 및 DB에서 기존 프로젝트 대표 이미지 삭제
         if (findProject.getProjectImage() != null) {
-            fileUploadService.deleteFile(findProject.getProjectImage().getModifiedName());
+            fileUploadService.deleteProjectImage(findProject.getProjectImage());
         }
         // 생성 및 S3에 업로드
         ProjectImage savedProjectImage = null;
-        if (!projectImage.isEmpty()) {
+        if (projectImage != null) {
             long sizeLimit = 5000000; // 5MB
             FileUploadDto fileUploadDto = fileUploadService.uploadFile(projectImage, sizeLimit, "image");
 
