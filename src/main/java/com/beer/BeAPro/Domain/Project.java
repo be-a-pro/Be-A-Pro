@@ -99,7 +99,6 @@ public class Project extends BaseEntity {
         // 연관관계 매핑 중 콜렉션 데이터 처리
         this.projectHashtags.clear();
         this.projectHashtags.addAll(saveDataDto.getProjectHashtags());
-        this.projectPositions.clear();
         this.projectPositions.addAll(saveDataDto.getProjectPositions());
 
         return this;

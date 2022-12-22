@@ -108,8 +108,10 @@ public class ProjectService {
     // 업데이트
     @Transactional
     public Project update(Project project, RequestDto.ProjectDto projectDto, ProjectImage projectImage) {
-        // 생성되어 있는 ProjectPosition, Position 객체 삭제
-        deleteProjectPositionsAndPositions(project);
+        // 프로젝트 모집이 마감되었거나 삭제 처리된 경우
+        if (!project.getIsApplyPossible() || project.getRestorationDate() != null) {
+            throw new RestApiException(ErrorCode.CANNOT_MODIFY_PROJECT);
+        }
 
         // 데이터 가공
         List<ProjectHashtag> projectHashtags = projectDto.getProjectHashtags().stream()
@@ -119,18 +121,58 @@ public class ProjectService {
                 .map(Position::createPosition) // Position 생성
                 .collect(Collectors.toList());
         List<Long> closingCountPerPosition = projectDto.getClosingCountPerPosition();
-        if (closingCountPerPosition.stream().mapToLong(Long::longValue).sum() > 10)
+        if (closingCountPerPosition.stream().mapToLong(Long::longValue).sum() > 10) {
             throw new RestApiException(ErrorCode.BAD_REQUEST);
-
-        List<ProjectPosition> projectPositions = new ArrayList<>();
+        }
+        List<ProjectPosition> newProjectPositions = new ArrayList<>();
         for (int i = 0; i < positions.size(); i++) {
             ProjectPosition projectPosition =
                     ProjectPosition.createProjectPosition
                             (project, positions.get(i), closingCountPerPosition.get(i));
-            projectPositions.add(projectPosition);
+            newProjectPositions.add(projectPosition);
         }
         String usedStacks = String.join(",", projectDto.getUsedStacks());
         String referenceLinks = String.join(",", projectDto.getReferenceLinks());
+
+        // 기존 저장되어 있는 ProjectPosition 목록
+        List<ProjectPosition> originalProjectPositions = projectPositionRepository.findAllByProject(project);
+        List<ProjectPosition> projectPositionsToBeDeleted = new ArrayList<>(); // DTO에 없는 ProjectPosition(삭제 예정)
+        List<Position> positionsToBeDeleted = new ArrayList<>();
+        for (ProjectPosition originalProjectPosition : originalProjectPositions) {
+            Position originalPosition = originalProjectPosition.getPosition(); // 기존 모집 포지션
+            Long originalCurrentCount = originalProjectPosition.getCurrentCount(); // 모집된 팀원
+            // DTO로 받은 모집 포지션 중 일치하는 것이 있을 경우, 데이터 변경
+            for (ProjectPosition newProjectPosition : newProjectPositions) {
+                Position newPosition = newProjectPosition.getPosition();
+                if (newPosition.getCategory().equals(originalPosition.getCategory())
+                        && (newPosition.getDevelopment() == null || newPosition.getDevelopment().equals(originalPosition.getDevelopment()))
+                        && (newPosition.getDesign() == null || newPosition.getDesign().equals(originalPosition.getDesign()))
+                        && (newPosition.getPlanning() == null || newPosition.getPlanning().equals(originalPosition.getPlanning()))
+                        && (newPosition.getEtc() == null || newPosition.getEtc().equals(originalPosition.getEtc()))) {
+                    // 같은 포지션일 경우
+                    // 기존 데이터(originalProjectPosition) 변경
+                    Long newClosingCount = newProjectPosition.getClosingCount();
+                    if (originalCurrentCount > newClosingCount) { // 마감 인원을 팀원 수보다 적게 설정하려 할 경우
+                        throw new RestApiException(ErrorCode.WRONG_CLOSING_COUNT);
+                    } else {
+                        originalProjectPosition.updateClosingCount(newClosingCount);
+                    }
+                    // 새로 입력 받은 데이터(newProjectPosition)는 삭제
+                    newProjectPositions.remove(newProjectPosition);
+                    positions.remove(newPosition);
+                } else {
+                    // 기존 모집 포지션이 DTO에 없을 경우
+                    // 기존 모집 포지션의 지원자 혹은 팀원이 있을 경우 삭제 불가능
+                    if (applyService.findByProjectAndPosition(project, originalPosition) != null
+                            || originalCurrentCount > 0) {
+                        throw new RestApiException(ErrorCode.CANNOT_DELETE_POSITION);
+                    }
+                    // 기존 모집 포지션 삭제
+                    projectPositionsToBeDeleted.add(originalProjectPosition);
+                    positionsToBeDeleted.add(originalPosition);
+                }
+            }
+        }
 
         // DTO 생성
         ProjectDto.SaveDataDto saveDataDto = ProjectDto.SaveDataDto.builder()
@@ -143,10 +185,13 @@ public class ProjectService {
                 .progressMethod(projectDto.getProgressMethod())
                 .usedStacks(usedStacks)
                 .referenceLinks(referenceLinks)
-                .projectPositions(projectPositions)
+                .projectPositions(newProjectPositions) // 기존에 없고 새로 추가된 것
                 .isTemporary(projectDto.getIsTemporary())
                 .build();
 
+        // 삭제
+        projectPositionRepository.deleteAll(projectPositionsToBeDeleted);
+        positionRepository.deleteAll(positionsToBeDeleted);
         // 저장
         positionRepository.saveAll(positions);
         return project.update(saveDataDto);

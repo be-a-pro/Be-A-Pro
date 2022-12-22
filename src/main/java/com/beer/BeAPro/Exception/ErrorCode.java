@@ -56,6 +56,9 @@ public enum ErrorCode {
     DUPLICATE_APPLICATION(HttpStatus.CONFLICT, "Users who have already applied for the project."),
     CANNOT_AVAILABLE(HttpStatus.CONFLICT, "Apply is not available."),
     PROJECT_AWAITING_DELETION(HttpStatus.CONFLICT, "Project awaiting deletion."),
+    WRONG_CLOSING_COUNT(HttpStatus.CONFLICT, "There are more team members than the closing count to modify."),
+    CANNOT_DELETE_POSITION(HttpStatus.CONFLICT, "The position cannot be deleted because an applicant or team member exists."),
+    CANNOT_MODIFY_PROJECT(HttpStatus.CONFLICT, "Projects closed for recruitment cannot be modified."),
 
     /*
      * 413 PAYLOAD_TOO_LARGE: 서버에서 지원하지 않는 미디어 포맷

@@ -51,4 +51,10 @@ public class ProjectPosition {
             this.isClosing = false;
         }
     }
+
+    // 프로젝트 모집 상태 변경
+    public void updateClosingCount(Long closingCount) {
+        this.closingCount = closingCount;
+        this.isClosing = this.currentCount >= closingCount;
+    }
 }
