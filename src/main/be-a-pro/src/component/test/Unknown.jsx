@@ -9,7 +9,6 @@ import ProjectDelete from "../project/modal/ProjectDelete.jsx";
 import ProjectPrev from "../project/modal/ProjectPrev.jsx";
 import ProjectTemp from "../project/modal/ProjectTemp.jsx";
 import MessageOfAegree from "../signup/modal/MessageOfAgree.js";
-import NaverLogin from "../signup/modal/NaverLogin.js";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import loading from '../../images/loading.gif'
