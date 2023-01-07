@@ -16,8 +16,7 @@ export default function MessageOfSignup(props) {
         axios.get(`/api/oauth2/naver/login`)
             .then((res) => {
                 const URL = res.request.responseURL;
-                window.open(URL);
-                console.log(res);
+                document.location.href = URL;
             })
     }
 
@@ -35,9 +34,9 @@ export default function MessageOfSignup(props) {
                     </div>
                 </div>
             */}
-            <div className={styles.naverOfSignup}>
+            <div className={styles.naverOfSignup} onClick={Login}>
                 <Naver className={styles.logoOfNaver} />
-                <div className={styles.textOfNaver} onClick={Login}>
+                <div className={styles.textOfNaver}>
                     {/* <a href='https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=QOmAuOIEwIW3A8MtvlhQ&state=516sc8umqqbueffjpek842dojp&redirect_uri=http://localhost:8080/api/oauth2/naver/redirect'> */}
                     네이버 로그인
                     {/* </a> */}

@@ -7,33 +7,50 @@ import $ from 'jquery';
 import jquery from 'jquery';
 import { useRef } from 'react';
 import MessageOfSignup from './signup/modal/MessageOfSignup';
+import { useDispatch, useSelector } from 'react-redux';
+import { open, close } from '../features/socialCheck';
+import { Cookies } from 'react-cookie';
+import MessageOfAegree from './signup/modal/MessageOfAgree';
 
 function Header() {
 
     const modal = useRef(null);
-    const [state, setState] = useState(false);
+    const [login, setLogin] = useState(false);
+    const [agree, setAgree] = useState(false);
+    const test = useSelector((state) => state.opener.state)
+    const dispatch = useDispatch();
+    const cookie = new Cookies();
 
     function checkSignUp() {
-        setState(true);
+        setLogin(true);
     }
 
     useEffect(() => {
+        console.log(test);
         // 팝업이 뜨면서, 팝업에 포커스를 맞춰줘요
-        if (state) {
+        if (login || agree) {
             modal.current.style.display = 'block';
             document.body.style.overflow = "hidden";
         } else {
             modal.current.style.display = 'none';
             document.body.style.overflow = "auto";
         }
-    }, [state])
+        // dispatch(open())
+    }, [login, agree])
+
+    useEffect(() => {
+        if (cookie.get('agree') === `false` && localStorage.getItem("access-token")) {
+            setAgree(true);
+        }
+    }, [])
 
     return (
         <>
             <header className={styles.header}>
                 {/* 여기에 모달창이 삽입될거예요 :-) */}
                 <div className={styles.modal} ref={modal}>
-                    <MessageOfSignup state={state} setState={setState} />
+                    {login === true && <MessageOfSignup state={login} setState={setLogin} />}
+                    {agree === true && <MessageOfAegree state={agree} setState={setAgree} />}
                 </div>
 
                 <nav className={styles.nav}>

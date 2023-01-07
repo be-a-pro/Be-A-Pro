@@ -3,9 +3,10 @@ import styles from './MessageOfAgree.module.scss';
 import { ReactComponent as Logo } from '../../../images/be-a-pro-b.svg';
 import { ReactComponent as CheckBox } from '../../../images/icons/checkBox.svg';
 
-export default function MessageOfAegree() {
+export default function MessageOfAegree(props) {
+
     return (
-        <ModalFrame>
+        <ModalFrame state={props.state} setState={props.setState}>
             <Logo className={styles.logoOfSignup} />
             <div className={styles.sectionOfAgree}>
                 <div className={styles.articleOfCheckBox}>
