@@ -1,6 +1,0 @@
-spring:
-    datasource: # RDS 연결
-        url: jdbc:mysql://beer-matching-db.ciwi2psznp5o.ap-northeast-2.rds.amazonaws.com:3306/beermatching?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-        username: beer
-        password: gnihctamreeb2022
-        driver-class-name: com.mysql.cj.jdbc.Driver
