@@ -59,6 +59,7 @@ function Banner() {
 
                 <SwiperSlide>
                     <img src={banner} className={styles.imageOfBanner} alt="첫번째 이미지" />
+                    {/* <button className={styles.buttonOfBanner}>시작하기</button> */}
                 </SwiperSlide>
                 <SwiperSlide>
                     <img src={banner} className={styles.imageOfBanner} alt="두번째 이미지" />
