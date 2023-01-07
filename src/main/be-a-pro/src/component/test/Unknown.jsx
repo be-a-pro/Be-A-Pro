@@ -12,6 +12,7 @@ import MessageOfAegree from "../signup/modal/MessageOfAgree.js";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import loading from '../../images/loading.gif'
+import { Cookie, Cookies } from 'react-cookie';
 
 const Section = ({ children }) => {
     return (
@@ -52,6 +53,7 @@ const LoadingImg = () => {
 
 export default function Unknown() {
     const navigate = useNavigate();
+    const cookie = new Cookies();
     useEffect(() => {
         const URL = window.location.href;
         const CODE = URL.split('=')[1].split('&')[0];
@@ -62,6 +64,7 @@ export default function Unknown() {
             .then((res) => {
                 localStorage.setItem('access-token', res.headers.authorization);
                 if (localStorage.getItem('access-token')) {
+                    cookie.set("agree", false);
                     navigate('/');
                 }
             })

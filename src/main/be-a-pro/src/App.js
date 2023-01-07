@@ -24,7 +24,7 @@ function App() {
       <div className="App">
         {/* <Header /> 공통 컴포넌트인 HEADER 컴포넌트 */}
         <ScrollToTop /> {/* 새로고침 시, 최상단으로 스크롤 이동하는 커스텀 컴포넌트 */}
-        <GlobalStyles />
+        <GlobalStyles /> {/* Emotion.js 글로벌 폰트 */}
         <Routes>
           {/* <Route path='/' element={<Main/>}></Route> ,  기존 리액트 시작 화면 */}
           <Route path='/authnaver' element={<Unknown />}></Route>
